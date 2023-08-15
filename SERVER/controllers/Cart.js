@@ -301,7 +301,7 @@ exports.deleteItem =  async(req, res, next) => {
                             cart.vat = VAT.toFixed(2);
                             cart.total = (cart.subTotal + cart.shipping + cart.vat).toFixed(2);
                             await cart.save()
-                            
+
                         return res.status(201).json({removedItem: existingItem})
                 }
                 else if (!existingItem) {
@@ -326,7 +326,7 @@ exports.emptyCart = async(req, res, next) => {
             return res.status(400).json({ error: "buyer doesn't exist!" })
         }
         else if (buyer) { 
-                // check if the buyer has an existing cart
+                //check if the buyer has an existing cart
                 let cart = await Cart.findOne({buyer: username})
                 if (!cart) {
                     return res.status(401).json({ error: "The buyer does't have any product in the cart!" })
