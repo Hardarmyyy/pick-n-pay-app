@@ -1,0 +1,15 @@
+.sliderContainer {
+    width: 1150px;
+    margin: 0px auto;
+}
+
+.hotProductsContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0px 20px;
+    margin: 0px auto;
+}
+
+.hotProductsContainer a {
+    text-decoration: none; 
+}

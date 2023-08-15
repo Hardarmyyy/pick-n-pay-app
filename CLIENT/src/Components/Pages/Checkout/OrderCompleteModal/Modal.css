@@ -1,0 +1,59 @@
+.modalBackground {
+    background-color: rgb(16, 15, 15, 0.6);
+    height: 100vh;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    z-index: 999;
+}
+
+.modalContainer {
+    background-color: white;
+    width: 500px;
+    height: 370px;
+    position: absolute;
+    z-index: 1000;
+    top: 22.5%;
+    left: 35%;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.modalContainer .closeModalBtn { 
+    background-color: crimson;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.modalContainer .closeModalBtn a {
+    font-size: 18px;
+    font-family: 'Montserrat', sans-serif;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-weight: "bold";
+    padding: 10px 15px;
+}
+
+.modalContent {
+    text-align: center;
+    padding: 50px;
+}
+
+.modalContent h3 {
+    font-family: 'Jost', sans-serif;
+    color: #333333;
+    font-size: 24px;
+}
+
+.modalContent p {
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+}
+
+.modalContent .id {
+    color: crimson;
+}

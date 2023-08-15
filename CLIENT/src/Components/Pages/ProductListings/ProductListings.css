@@ -1,0 +1,54 @@
+.productContainer {
+    position: relative;
+}
+
+.productContainer .addProductMessage, .productContainer .likeMessage {
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    text-align: center;
+    background-color: rgb(92, 190, 92);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.productContainer .existingProductMessage, .productContainer .unlikeMessage {
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    text-align: center;
+    background-color: crimson;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.productContainer .title {
+    color: #041549;
+    font-family: 'Jost', sans-serif;
+    font-size: 24px;
+    text-align: center;
+    margin: 40px 0px 40px 95px;
+}
+
+.productContainer p.subTitle {
+    color: #152C5B;
+    font-family: 'Jost', sans-serif;
+    font-size: 18px;
+    margin-left: 95px;
+}
+
+.gridWrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px 20px;
+    margin: 20px 80px;
+}
+
+.emptyProducts {
+    text-align: center;
+    color: #152C5B;
+    font-family: 'Jost', sans-serif;
+    font-size: 18px;
+}

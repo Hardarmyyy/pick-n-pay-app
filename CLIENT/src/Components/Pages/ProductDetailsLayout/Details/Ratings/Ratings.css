@@ -1,0 +1,5 @@
+.starRatings span {
+    color: orange;
+    font-size: 18px;
+    cursor: pointer;
+}

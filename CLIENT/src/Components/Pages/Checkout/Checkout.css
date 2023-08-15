@@ -1,0 +1,154 @@
+.checkout{
+    color: #132A63;
+    font-family: 'Jost', sans-serif;
+    font-size: 42px;
+    padding: 0px 70px 0px;
+    margin-top: 30px;
+}
+
+.checkout a {
+    text-decoration: none;
+    color: #132A63;
+    font-family: 'Jost', sans-serif;
+    font-size: 42px;
+}
+
+.deliveryContainer {
+    padding: 0px 70px 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+form h2, .orderDetailsContainer h2, .emptyCartProduct, .loadingState {
+    color: #132A63;
+    font-family: 'Jost', sans-serif;
+    font-size: 24px;
+    margin-top: 30px;
+}
+
+form p,
+form label,.subtotal p, .shipping p, .tax p,
+.subtotal h6, .shipping h6, .tax h6 {
+    color: #333333;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+form .required {
+    color: crimson;
+}
+
+.name, .emailPhone, .addressInfo {
+    display: flex;
+    flex-direction: row;
+}
+
+form {
+    width: 700px;
+}
+
+.fname input, .lname input, .mail input, .number input{
+    width:340px;
+}
+
+.emailPhone, .addressInfo {
+    margin-top: 15px;
+}
+
+.fname input, .lname input, .mail input, .number input, .city input, .state input, .zip input, .addres input:focus {
+    border: 1px solid #DDDDDD;
+    outline: none;
+}
+
+.addres input{
+    width: 100%;
+}
+
+.city input, .state input, .zip input {
+    width: 220px;
+    margin-right: 20px;
+}
+
+.fname input, .lname input, .mail input, .number input, .city input, .state input, .zip input, .addres input {
+    height: 40px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #DDDDDD;
+    margin-right: 20px;
+}
+
+.button {
+    text-align: center;
+}
+
+/* remove the arrow button from the number input */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+
+.orderDetailsContainer {
+    text-align: center;
+    width: 400px;
+}
+
+.orderDetails {
+    width: 400px;
+    border-radius: 5px;
+    border: 1px solid #DDDDDD;
+    height: 290px;
+    overflow-y: scroll;
+    margin: 15px auto;
+    padding: 20px 10px;
+    position: relative;
+}
+
+.orderDetails::-webkit-scrollbar {
+    width: 5px;
+}
+
+.orderDetails::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+}
+
+.orderDetails::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.orderDetails::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.orderDetails .emptyCart {
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    float: right;
+}
+
+.pricing {
+    width: 400px;
+    height: 100px;
+}
+
+.subtotal, .shipping, .tax, .total {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total {
+    border-top: 1px solid #DDDDDD;
+}
+
+.total {
+    font-family: 'Jost', sans-serif;
+    color: #333333;
+    font-size: 18px;
+}

@@ -1,0 +1,103 @@
+.productForm {
+    width: 1000px;
+    height: 100vh;
+    margin: 40px 0px 0px 180px;
+    padding: 0px 40px;
+}
+
+.productForm label {
+    margin: 5px 0px;
+    color: #132A63;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.productForm input,
+.productForm select  {
+    width: 900px;
+    border-radius: 5px;
+    border: 1px solid #DDDDDD;
+    padding: 5px 10px;
+    color: #333333;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    height: 40px;
+}
+
+.productForm textarea {
+    resize: none;
+    padding: 10px 20px;
+    color: #333333;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.5em;
+    word-spacing: 3px;
+    border-radius: 5px;
+    border: 1px solid #DDDDDD;
+}
+
+.productForm textarea:focus,
+.productForm input:focus,
+.productForm select:focus{
+    border: 2px solid #132A63;
+    outline: #132A63;
+}
+
+/* remove the arrow button from the number input */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+
+/* style the image after uploading*/
+img {
+    border-radius: 5px;
+    height: 80px;
+    width: 100px;
+}
+
+.upload {
+    color: #333333;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.uploadWrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+.imageContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin: 10px 10px 0px 0px;
+}
+
+.deleteIcon {
+    color: crimson;
+    cursor: pointer;
+    margin-left: 3px;
+}
+
+/* styles for browse photo file */
+.uploadPhoto {  
+    outline: none;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #DDDDDD;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.productError {
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: crimson;
+}

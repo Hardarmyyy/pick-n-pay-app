@@ -1,0 +1,59 @@
+.container, .qty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.title, .details, .addSubtract {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.details img {
+    height: 60px;
+    width: 60px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.details .description {
+    padding: 0px 10px;
+}
+
+.title p, .details p, .qty p, .addSubtract .counter, .totalPrice  {
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    font-size: 14px;
+}
+
+.container {
+    border-bottom: 1px solid #DDDDDD;
+    margin-bottom: 20px;
+}
+
+.title p, .addSubtract .counter, .totalPrice  {
+    font-weight: 600;
+}
+
+.title .icon {
+    color: crimson;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.addSubtract button {
+    border: 1px solid #DDDDDD;
+    outline: none;
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+.container .totalPrice {
+    position: absolute;
+    right: 3%;
+    bottom: -5%;
+}

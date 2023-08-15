@@ -1,0 +1,97 @@
+.pageContainer {
+    padding: 30px 0px 10px;
+    width: 1180px;
+    margin: 0px 0px 0px 30px;
+}
+
+.topContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 1150px;
+    margin: 0px auto;
+}
+
+.productCategories {
+    width: 160px;
+    background-color: #fcfcfc;
+    height: 50.5vh;
+    border-radius: 5px;
+}
+
+.productCategories a {
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333333;
+}
+
+.productCategories p:hover {
+    background-color: rgb(193, 187, 187);
+    border-radius: 5px;
+}
+
+.productCategories p a {
+    text-decoration: none;
+    color: #333333;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+} 
+
+.newsLetter {
+    width: 220px;
+    border: 1px solid #E9EBF0;
+    margin-right: -100px;
+    height: 50.5vh;
+    border-radius: 5px;
+    padding: 5px 10px;
+    background-color: #fcfcfc;
+}
+
+.newsLetter form {
+    width: 200px;
+}
+
+.newsLetter form input {
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid #DDDDDD;
+    margin: 5px 0px;
+    font-size: 12px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    padding: 5px 10px;
+}
+
+.newsLetter form input:focus {
+    border: 1px solid #DDDDDD;
+    outline: none;
+}
+
+.newsLetter p {
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    text-align: center;
+}
+
+.newsLetter button {
+    border: 1px solid #DDDDDD;
+    outline: none;
+    background-color: crimson;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    margin: 25px 20px;
+    padding: 5px 25px;
+    border-radius: 5px;
+}
+
+.newsLetter button:hover {
+    opacity: 0.8;
+}
+
+.productSlider {
+    margin: 0px 0px 0px 70px;
+}
