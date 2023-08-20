@@ -101,10 +101,7 @@ const handleEmptyCart = () =>  {
     axios
     .delete('http://localhost:4050/api/cart/empty/' + user.username)
     .then((response) => {
-        setCartMessage('Cart has been discarded')
-        setTimeout(() => {
-        setCartMessage(null)
-    }, 1000)
+        
     })
     .catch((error) => {
         setCartMessage('Something went wrong')

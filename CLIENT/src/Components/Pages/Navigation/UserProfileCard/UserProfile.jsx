@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 const UserProfile = () => {
 const navigate = useNavigate()
 
-const {user, handleSignOut, favouritesCounter} = useContext(myUserContext)
+const {user, handleSignOut, favouritesCounter, handleEmptyCart} = useContext(myUserContext)
 const {username, usertype} = user
 
 // define a function to handle the signout process;
@@ -24,6 +24,7 @@ const userSignOut = () => {
     localStorage.removeItem('seller') || localStorage.removeItem('buyer')
     setTimeout(() => {
         handleSignOut()
+        handleEmptyCart()
         navigate('/')
     }, 1200)
 }

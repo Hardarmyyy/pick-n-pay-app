@@ -1,0 +1,22 @@
+.successContainer {
+    width: 800px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.successContainer p {
+    background-color: rgb(142, 233, 142);
+    padding: 5px 20px;
+    margin: 0px auto;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    border: 1px dashed #DDDDDD;
+    margin: 10px auto;
+}
+
+.successContainer a {
+    text-decoration: none;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+}

@@ -1,0 +1,71 @@
+p.dashBoardLoader  {
+    margin-left: 350px;
+    position: absolute;
+    top: 15%;
+    text-align: center;
+    width: 600px;
+    font-size: 24px;
+    font-family: 'Montserrat', sans-serif;
+    color:#132A63
+}
+
+.dashboard {
+    background-color: #fcfcfc;
+    border-radius: 5px;
+    margin-left: 300px;
+    position: absolute;
+    top: 12%;
+    width: 700px;
+    padding: 30px 60px;
+}
+
+.shopStats {
+    font-size: 24px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    font-weight: 500;
+    padding: 20px 55px;
+    position: absolute;
+    top: 0%;
+    margin-left: 250px;
+}
+
+.dashboardIcon {
+    font-size: 32px;
+    color: #333333;
+}
+
+.pendingOrderContainer, .customerConatiner, .stocksContainer, .salesContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    margin: 0px auto;
+    justify-content: space-around;
+}
+
+.customerAndOrders, .stocksRevenue {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.stocksRevenue {
+    margin-top: 30px;
+}
+
+.pendingOrders p, .customers p, .stockProducts p, .revenue p {
+    font-size: 18px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+}
+
+.pendingOrders:hover, .customers:hover, .stockProducts:hover, .revenue:hover {
+    background-color: rgb(193, 187, 187);
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 0px 20px;
+}
+
+
+
+
