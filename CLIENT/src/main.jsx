@@ -17,7 +17,7 @@ import ProductDetail from './Components/Pages/ProductDetailsLayout/ProductDetail
 import ProductListings from './Components/Pages/ProductListings/ProductListings.jsx'
 import Details from './Components/Pages/ProductDetailsLayout/Details/Details.jsx'
 import ProductDetailsLayout from './Components/Pages/ProductDetailsLayout/ProductDetailsLayout.jsx' 
-import StoreLayout from './Components/Pages/Shops/StoreLayout.jsx'
+import ShopLayout from './Components/Pages/Shops/ShopLayout.jsx'
 import Store from './Components/Pages/Shops/SellerStore/Store.jsx'
 import ProductForm from './Components/Pages/Shops/ProductForm/ProductForm.jsx'
 import SuccessForm from './Components/Pages/Shops/ProductForm/SuccessForm/SuccessForm.jsx'
@@ -53,7 +53,7 @@ const router = createBrowserRouter(
 
         <Route path='/orderCompleted' element={<OrderCompleteLayout></OrderCompleteLayout>}></Route>
 
-        <Route path='/shop' element={<StoreLayout></StoreLayout>}></Route>
+        <Route path='/shop' element={<ShopLayout></ShopLayout>}></Route>
 
         <Route path='/shop/all-products' element={<Store></Store>}></Route>
 
