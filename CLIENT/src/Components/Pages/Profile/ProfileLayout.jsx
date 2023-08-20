@@ -6,6 +6,7 @@ import UserProfile from '../Navigation/UserProfileCard/UserProfile';
 import { useState, useContext } from 'react';
 import { myUserContext } from '../../../Utilities/UserContext';
 import DeleteProfileModal from './DeleteProfileModal/DeleteProfileModal';
+import { BsCart3 } from "react-icons/bs";
 
 const ProfileLayout = () => {
 
@@ -13,8 +14,8 @@ const ProfileLayout = () => {
 const [active, setActive] = useState(false) 
 
 // destructure username from myUserContext;
-const {user} = useContext(myUserContext)
-const {username} = user
+const {user, cartCounter} = useContext(myUserContext)
+const {usertype, username} = user
 
 // define a state to open and close deleteAccount Modal
 const [deleteModal, setDeleteModal] = useState(false)
@@ -44,6 +45,13 @@ return (
                     <BiUserCircle className='userIcon'></BiUserCircle>
                     <span> Account {active ? <IoIosArrowUp></IoIosArrowUp> : <IoIosArrowDown></IoIosArrowDown> } </span> 
                 </div>
+
+                {usertype === 'buyer' ? 
+                    <div className='cartCounter'>
+                        <Link to='/checkout'> <BsCart3 className='cart'></BsCart3> </Link>
+                        {cartCounter > 0 && <p className='counter'> {cartCounter} </p>}
+                    </div>
+                : null}
         </div>
 
         {active ? <UserProfile></UserProfile> : null}

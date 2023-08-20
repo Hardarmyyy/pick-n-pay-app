@@ -1,67 +1,29 @@
-import React, { useEffect } from 'react'
-import { Outlet, Link } from 'react-router-dom'
+import React from 'react'
+import { AiFillDelete } from "react-icons/ai";
+import { LuEdit } from "react-icons/lu";
+import { Link } from 'react-router-dom'
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { BiUserCircle } from "react-icons/bi";
 import { useState, useContext } from 'react';
-import UserProfile from '../Navigation/UserProfileCard/UserProfile';
-import '../shops/Shop.css'
-import { myUserContext } from '../../../Utilities/UserContext';
-import { AiFillDelete } from "react-icons/ai";
-import { LuEdit } from "react-icons/lu";
-import axios from 'axios'
+import UserProfile from '../../Navigation/UserProfileCard/UserProfile';
+import { myUserContext } from '../../../../Utilities/UserContext';
 
 
-const ShopLayout = () => {
+
+const Store = () => {
 
 // define a state to show and hide the useProfile card;
-const [active, setActive] = useState(false) 
+const [active, setActive] = useState(false)  
 
 // destructure username from myUserContext;
-const {user} = useContext(myUserContext)
+const {user, deleteProduct, shopItems, message, isLoading} = useContext(myUserContext)
 const {username} = user
-
-// define a state to manage all the products for the current seller shop;
-const [shopItems, setShopItems] = useState(null)
-const [message, setMessage] = useState(null)
-
-// define a function to fetch all the products for the current seller shop;
-useEffect(() => {
-    axios
-    .get('http://localhost:4050/api/shop/all/'+username)
-    .then((response) => {
-        const result = response.data;
-        setShopItems(result?.allProductsWithSellerName);
-    })
-    .catch((error) => {
-    
-        setTimeout(() => {setMessage(null)}, 1500)
-    })
-}, [message]);
-
-// define a function to delete a product from the seller shop
-const deleteProduct = (id) => {
-    const deletedProduct = shopItems.filter((product) => product.productID === id )
-    const updatedShop = shopItems.filter((product) => product.productID !== id)
-    setShopItems(updatedShop)
-    axios
-    .delete('http://localhost:4050/api/shop/delete/'+username + '/' +deletedProduct[0].productID)
-    .then((response) => {
-        const result = response.data
-        setMessage('product deleted successfully')
-        setTimeout(() => {
-            setMessage(null)
-        }, 1000)
-    })
-    .catch((error) => {
-        
-        setTimeout(() => {setMessage(null)}, 1500)
-    }) 
-}
 
 
 return (
 
-<>
+<>  
+
     <nav className='navigation'> 
 
         <div className='logo'>
@@ -80,14 +42,18 @@ return (
         {active ? <UserProfile></UserProfile> : null}
 
     </nav>
-    
+
     <section className='shop'>
-    {message && <p className='productDeletedMessage'> {message} </p>}
+        {message && <p className='productDeletedMessage'> {message} </p>}
 
         <div className='shopLinks'>
-            <Link to='/post-product'> <p> add new product </p>  </Link>
-            <Link> <p> products </p> </Link>
+            <Link to='/post-product'> <p> Add new product </p>  </Link>
+            <Link to='/shop/all-products'> <p> All products </p> </Link>
         </div>
+
+        {isLoading && <p className='shopLoader'> Loading .... </p>}
+
+        {!isLoading &&
 
         <div className='productsShelve'>
             
@@ -105,6 +71,7 @@ return (
                     </tr>
                 </thead>
 
+            
                 {shopItems && shopItems.length > 0 ?
                     <tbody>
                         {shopItems.map((item) => (
@@ -126,16 +93,15 @@ return (
                         </tr>
                     </tbody>
                 }
+                    
             </table>
 
         </div>
+        }
 
     </section>
-
-
-    <Outlet></Outlet>
 </>
 )
 }
 
-export default ShopLayout
+export default Store

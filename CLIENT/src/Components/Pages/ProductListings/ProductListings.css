@@ -24,15 +24,14 @@
     z-index: 1;
 }
 
-.productContainer .title {
+.mainTitle {
     color: #041549;
     font-family: 'Jost', sans-serif;
     font-size: 24px;
-    text-align: center;
     margin: 40px 0px 40px 95px;
 }
 
-.productContainer p.subTitle {
+p.subTitle {
     color: #152C5B;
     font-family: 'Jost', sans-serif;
     font-size: 18px;

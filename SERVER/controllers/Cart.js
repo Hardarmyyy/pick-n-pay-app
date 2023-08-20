@@ -14,15 +14,18 @@ exports.addItemToCart = async (req, res, next) => {
         const {username} = req.params
         const buyer = await Buyer.findOne({username: username})
         const seller = await Seller.findOne({username: username})
-        if (seller) {
-            return res.status(400).json({ error: "Sorry! Your user profile can't add items to cart" })
+        if (!buyer && !seller) {
+            return res.status(400).json({ error: "Kindly signup or login to add items to cart"})
         }
-        else {
+        if (seller) {
+            return res.status(400).json({ error: "Sorry! Your user profile can't add items to cart"}) 
+        }
+        else if (buyer){
                 const { productid } = req.params
             if (!mongoose.Types.ObjectId.isValid(productid)) {
                 return res.status(404).json({ error: "The product ID is invalid!" })
             }
-                const product = await Product.findById({_id: productid}) 
+                const product = await Product.findById({_id: productid})
             if (!product) {
                 return res.status(400).send({ error: "product does not exist" }) 
             }
@@ -34,7 +37,7 @@ exports.addItemToCart = async (req, res, next) => {
                     const {price, quantity} = req.body
                     const newProduct = { productId: product._id, seller: product.sellerName, title: product.title, price: price * quantity, photo: [product.photo[0].filename], description: product.description, category: product.category, special: product.special, quantity: quantity};
                 // check and validate if the buyer has an existing cart;
-                    let cart = await Cart.findOne({buyer: username })
+                    let cart = await Cart.findOne({buyerID: buyer._id })
                 if (cart) { // if there is an existing cart for the current buyer)
                             const existingItem = cart.myCart.find((item) => item.productId === productid)
                             if (existingItem) {
@@ -63,7 +66,7 @@ exports.addItemToCart = async (req, res, next) => {
                             }
                 }
                 else { // if the buyer does not have a cart; then create a new cart for the buyer;
-                        cart = new Cart({ buyer: username, myCart: [newProduct] })
+                        cart = new Cart({ buyer: username, buyerID: buyer._id, myCart: [newProduct] })
                         // update the cart properties before saving 
                         cart.subTotal = price * quantity;
                         const shippingCost = cart.subTotal > 500 ? 80 : 50;
@@ -103,7 +106,7 @@ exports.allCartItems =  async(req, res, next) => {
         }
         else { 
             // check if the buyer has an existing cart;
-                let cart = await Cart.findOne({buyer: username})
+                let cart = await Cart.findOne({buyerID: buyer._id})
             if (!cart) {
                 return res.status(404).json({ error: "The buyer doesn't have any product in the cart!" })
             }
@@ -156,7 +159,7 @@ exports.addQuantity =  async (req, res, next) => {
         }
         else if (buyer) {
               // check if the buyer has an existing cart
-                let cart = await Cart.findOne({buyer: username})
+                let cart = await Cart.findOne({buyerID: buyer._id})
             if (!cart) {
                 return res.status(401).json({ error: "The buyer does't have any product in the cart" })
             }
@@ -215,7 +218,7 @@ exports.decrementQuantity = async (req, res, next) => {
         }
         else if (buyer){
             // check if the buyer has an existing cart
-            let cart = await Cart.findOne({buyer: username})
+            let cart = await Cart.findOne({buyerID: buyer._id})
             if (!cart) {
                 return res.status(401).json({ error: "The buyer does't have any product in the cart" })
             }
@@ -277,7 +280,7 @@ exports.deleteItem =  async(req, res, next) => {
         }
         else if (buyer) {
              // check if the buyer has an existing cart
-            let cart = await Cart.findOne({buyer: username})
+            let cart = await Cart.findOne({buyerID: buyer._id})
             if (!cart) {
                 return res.status(401).json({ error: "The buyer does't have any product in the cart" })
             }
@@ -325,9 +328,9 @@ exports.emptyCart = async(req, res, next) => {
         if (!buyer) {
             return res.status(400).json({ error: "buyer doesn't exist!" })
         }
-        else if (buyer) { 
+        else if (buyer) {  
                 //check if the buyer has an existing cart
-                let cart = await Cart.findOne({buyer: username})
+                let cart = await Cart.findOne({buyerID: buyer._id})
                 if (!cart) {
                     return res.status(401).json({ error: "The buyer does't have any product in the cart!" })
                 }

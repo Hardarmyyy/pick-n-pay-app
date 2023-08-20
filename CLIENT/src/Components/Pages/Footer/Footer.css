@@ -99,8 +99,26 @@
     font-family: 'Montserrat', sans-serif;
 }
 
+p.emailErr {
+    position: absolute;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    color: crimson;
+}
+
+p.emailSuccess {
+    position: absolute;
+    background-color: rgb(92, 190, 92);
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    color: #FFFFFF;
+    text-align: center;
+    z-index: 1;
+    width: 100vw;
+}
+
 .emailAlerts form input[type="text"]:focus {
-    border: 1px solid #DDDDDD;
+    border: 2px solid #1C3F94;
     outline: none;
 }
 
@@ -109,4 +127,17 @@
     font-size: 14px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
+}
+
+.icons a {
+    text-decoration: none;
+}
+
+.footerIcons {
+    background-color: #FFFFFF;
+    margin-right: 20px;
+    font-size: 42px;
+    color: #1C3F94;
+    padding: 10px;
+    border-radius: 5px;
 }

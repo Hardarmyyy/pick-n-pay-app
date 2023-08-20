@@ -10,38 +10,48 @@ import { useState } from 'react';
 
 const Footer = () => {
 
-// inLine styles for the social links icons
-
-const iconStyles = {
-    linkStyle: {
-        textDecoration: 'none',
-    },
-    icons: {
-        backgroundColor: '#FFFFFF',
-        marginRight: '20px ',
-        fontSize: '42px',
-        color: '#1C3F94',
-        padding: '10px',
-        borderRadius: '5px'
-    }
-}
-
 const [email, setEmail] = useState('')
 
 const handleChange = (e) => {
-    setEmail(e.target.value)
+    setEmail(e.target.value.replace(/\s/g, ""))
 }
+
+// define a state to show when email have been successfully received
+const [emailSuccess, setEmailSuccess] = useState(null)
+const [emailError, setEmailError] = useState(null)
+
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const handleFormSubmit = (e) => {
     e.preventDefault()
-    // const user = email
-    setEmail('')
+    if (!email) {
+        setEmailError('Please enter email')
+        return setTimeout(() => {
+            setEmailError(null)
+        }, 1200)
+    }
+    else if (!(emailRegex.test(email))) {
+        setEmailError('Please enter a valid email address')
+        return setTimeout(() => {
+            setEmailError(null)
+        }, 1200)
+    }
+    else {
+        // const user = email
+        setEmail('')
+        setEmailSuccess('We have received your email! We will keep you informed with the lastest updates')
+        setTimeout(() => {
+            setEmailSuccess(null) 
+        }, 2000)
+    }
 }
 
 
 return (
 
 <>
+    {emailSuccess && <p className='emailSuccess'> {emailSuccess} </p>}
+    
     <section className='footer'>
 
         <div className='footerTop'>
@@ -101,9 +111,10 @@ return (
 
                 <div className='emailAlerts'>
                     <form onSubmit={handleFormSubmit}>
-                        <input type='text' placeholder='Enter your email address' name='email' value={email} onChange={handleChange} required maxLength={45}/>
+                        <input type='text' placeholder='Enter your email address' name='email' value={email} onChange={handleChange} maxLength={45}/>
                         <Button padding='10px 15px'> Join now </Button>
                     </form>
+                    {emailError && <p className='emailErr'> {emailError} </p>}
                 </div>
 
             </div>
@@ -113,9 +124,9 @@ return (
                 <p> Follow us on social media </p>
 
                 <div className='icons'>
-                    <Link style={iconStyles.linkStyle}> <FaFacebookF style={iconStyles.icons}></FaFacebookF> </Link>
-                    <Link style={iconStyles.linkStyle}> <FaTwitter style={iconStyles.icons}></FaTwitter> </Link>
-                    <Link style={iconStyles.linkStyle}> <FaLinkedinIn style={iconStyles.icons}></FaLinkedinIn> </Link>
+                    <Link> <FaFacebookF className='footerIcons'></FaFacebookF> </Link>
+                    <Link> <FaTwitter className='footerIcons'></FaTwitter> </Link>
+                    <Link> <FaLinkedinIn className='footerIcons'></FaLinkedinIn> </Link>
                 </div>
 
             </div>

@@ -35,6 +35,17 @@
     background-color: crimson;
 }
 
+p.shopLoader {
+    margin-left: 350px;
+    position: absolute;
+    top: 10%;
+    text-align: center;
+    width: 600px;
+    font-size: 24px;
+    font-family: 'Montserrat', sans-serif;
+    color:#132A63
+}
+
 .productsTableList {
     margin-left: 250px;
     position: absolute;
@@ -95,7 +106,6 @@ td .icon {
     cursor: pointer;
     color:#151212
 }
-
 
 td .deleteIcon:hover, td .icon:hover {
     transform: scale(1.3);

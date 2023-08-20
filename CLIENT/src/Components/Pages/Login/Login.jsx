@@ -65,8 +65,8 @@ const handleSubmit = async (e) => {
     }
     else if (userData.usertype === 'seller') {
         // save the userdata in local storage;
-        localStorage.setItem('seller', JSON.stringify(userData))
-        sellerLoginSuccess(userData.token, userData.usertype, userData.username, userData.shop, userData.order)
+        localStorage.setItem('seller', JSON.stringify(userData)) 
+        sellerLoginSuccess(userData.token, userData.usertype, userData.username, userData.cartProducts, userData.shop, userData.order)
     }
     
     // navigate to home page

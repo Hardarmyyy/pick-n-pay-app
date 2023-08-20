@@ -14,9 +14,11 @@ import SignUp from './Components/Pages/SignUp/SignUp.jsx'
 import OrderCompleteLayout from './Components/Pages/Checkout/OrderCompleteModal/OrderCompleteLayout.jsx'
 import LandingPage from './Components/Pages/LandingPage/LandingPage.jsx'
 import ProductDetail from './Components/Pages/ProductDetailsLayout/ProductDetail/ProductDetail.jsx'
+import ProductListings from './Components/Pages/ProductListings/ProductListings.jsx'
 import Details from './Components/Pages/ProductDetailsLayout/Details/Details.jsx'
 import ProductDetailsLayout from './Components/Pages/ProductDetailsLayout/ProductDetailsLayout.jsx' 
-import ShopLayout from './Components/Pages/Shops/ShopsLayout.jsx'
+import StoreLayout from './Components/Pages/Shops/StoreLayout.jsx'
+import Store from './Components/Pages/Shops/SellerStore/Store.jsx'
 import ProductForm from './Components/Pages/Shops/ProductForm/ProductForm.jsx'
 import SuccessForm from './Components/Pages/Shops/ProductForm/SuccessForm/SuccessForm.jsx'
 import EditProductForm from './Components/Pages/Shops/ProductForm/EditProductForm/EditProductForm.jsx'
@@ -24,6 +26,7 @@ import ProfileLayout from './Components/Pages/Profile/ProfileLayout.jsx'
 import Profile from './Components/Pages/Profile/Profile.jsx'
 import EditProfile from './Components/Pages/Profile/EditProfile/EditProfile.jsx'
 import ChangePassword from './Components/Pages/Profile/ChangePassword/ChangePassword.jsx'
+import FavouritesLayout from './Components/Pages/Favourites/FavouritesLayout.jsx'
 
 
 
@@ -42,29 +45,35 @@ const router = createBrowserRouter(
 
       </Route>
 
+      <Route path='products/:brand' element={<ProductListings></ProductListings>}></Route>
+
       <Route path='/checkout' element={<Checkout></Checkout>}></Route>
 
       <Route  element={<PrivatesRoutes></PrivatesRoutes>}>
 
         <Route path='/orderCompleted' element={<OrderCompleteLayout></OrderCompleteLayout>}></Route>
 
-      </Route>
+        <Route path='/shop' element={<StoreLayout></StoreLayout>}></Route>
 
-      <Route path='/shop' element={<ShopLayout></ShopLayout>}></Route>
+        <Route path='/shop/all-products' element={<Store></Store>}></Route>
 
-      <Route path='/post-product' element={<ProductForm></ProductForm>}></Route>
+        <Route path='/post-product' element={<ProductForm></ProductForm>}></Route>
 
-      <Route path='/product-success' element={<SuccessForm></SuccessForm>}></Route>
+        <Route path='/product-success' element={<SuccessForm></SuccessForm>}></Route>
 
-      <Route path='/update-product/:id' element={<EditProductForm></EditProductForm>}></Route>
+        <Route path='/update-product/:id' element={<EditProductForm></EditProductForm>}></Route>
 
-      <Route path='/profile' element={<ProfileLayout></ProfileLayout>}>
+        <Route path='/profile' element={<ProfileLayout></ProfileLayout>}>
 
-        <Route index element={<Profile></Profile>}></Route>
+          <Route index element={<Profile></Profile>}></Route>
 
-        <Route path='/profile/edit/:username' element={<EditProfile></EditProfile>}></Route>
+          <Route path='/profile/edit/:username' element={<EditProfile></EditProfile>}></Route>
 
-        <Route path='/profile/update-password/:username' element={<ChangePassword></ChangePassword>}></Route>
+          <Route path='/profile/update-password/:username' element={<ChangePassword></ChangePassword>}></Route>
+
+        </Route>
+
+        <Route path='/favourites' element={<FavouritesLayout></FavouritesLayout>}> </Route>
 
       </Route>
 

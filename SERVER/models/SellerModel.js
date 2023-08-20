@@ -21,6 +21,7 @@ const sellerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Cart' }],
     shop: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Shop' }],
     order: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Orders' }]
 

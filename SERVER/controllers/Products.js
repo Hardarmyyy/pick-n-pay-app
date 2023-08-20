@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Product = require('../models/ProductsModel');
+const Buyer = require('../models/BuyerModel')
 const Category = require('../models/CategoryModel');
 const Shop = require('../models/ShopModel');
 const Seller = require('../models/SellerModel');

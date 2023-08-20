@@ -12,7 +12,7 @@ import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { BiUserCircle } from "react-icons/bi";
 import { Link, useNavigate } from 'react-router-dom'
 
-const ProductForm =  () => {
+const ProductForm =  () => { 
 
 const navigate = useNavigate();
 
@@ -98,6 +98,7 @@ const [productForm, setProductForm] = useState({
     price: '',
     description: '',
     category: '',
+    brand: '',
     stockQty: '',
 })
 
@@ -128,6 +129,7 @@ const handleFormSubmit = (e) => {
         photo: [...allImage],
         description: productForm.description,
         category: productForm.category,
+        brand: productForm.brand,
         stockQty: productForm.stockQty,
     }
     if (newProduct.photo.length == 0) {
@@ -151,6 +153,7 @@ const handleFormSubmit = (e) => {
             price: '',
             description: '',
             category: '',
+            brand: '',
             stockQty: '',
         })
         // delete the images from the server after it has been stored in the product to save memory
@@ -249,6 +252,11 @@ return (
                     ))}
                     
                 </select>
+            </div>
+
+            <div className='brand'>
+                <label> Brand <span className='required'> * </span></label> <br />
+                <input type='text' value={productForm.brand} onChange={handleChange} placeholder='' name='brand'/>
             </div>
 
             <div className='stockQty'>

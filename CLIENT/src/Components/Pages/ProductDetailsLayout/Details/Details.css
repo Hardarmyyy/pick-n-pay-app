@@ -3,6 +3,10 @@
     margin: 40px 0px 80px;
 }
 
+.loadingdetails {
+    text-align: center;
+}
+
 .wrapperDetails {
     display: flex;
     flex-direction: row;
@@ -38,7 +42,7 @@
     width: 500px;
 }
 
-.info h3 {
+.info h3, .loadingdetails {
     color: #132A63;
     font-family: 'Jost', sans-serif;
     font-size: 32px;
@@ -55,8 +59,13 @@
     color: #333333;
 }
 
-.qtyCount {
+.addProd {
     margin: 10px 0px 20px -10px;
+}
+
+.qtyCount {
+    margin-left: 10px;
+    width: 100px
 }
 
 .share {
@@ -80,7 +89,7 @@
     transform: scale(1.20);
 }
 
-.sellerInfo {
+.sellerInfo, .special {
     color: crimson;
 }
 

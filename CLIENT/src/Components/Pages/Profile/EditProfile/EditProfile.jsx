@@ -17,6 +17,8 @@ const {username} = useParams();
 // import the allUser from the user context and filter the exact user;
 const {user, allUser} = useContext(myUserContext);
 const {usertype, shop, order, cartProducts, favourites, orders} = user
+
+// find the user that needs profile update from all users
 const updateUser = allUser.filter((u) => u.username === username);
 
 
@@ -65,6 +67,7 @@ const handleSubmit = (e) => {
                 usertype: usertype,
                 username: profileChange.username,
                 email: profileChange.email,
+                cartProducts: cartProducts,
                 shop: shop,
                 order: order
             }

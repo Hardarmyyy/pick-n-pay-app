@@ -10,23 +10,25 @@ const ProductCheckout = ({title, photo, description, qty, price, deleteProduct, 
 return (
 
 <>
-    <div className='container'>
+    <div className='cardContainer'> 
 
-        <div className='title'>
+        <div className='cardTitle'>
             <p> {title} </p>
-            <AiFillDelete onClick={deleteProduct} className='icon'></AiFillDelete>
+            <AiFillDelete onClick={deleteProduct} className='deleteProductIicon'></AiFillDelete>
         </div>
 
         <div className='details'>
 
             <img src={photo}/>
-            <p className='description'> {description}....... </p>
+            <p className='description'> {description}....... </p> 
 
             <div className='qty'>
 
                 <p> Quantity </p>
                 <div className='addSubtract'>
-                    <button onClick={lessQty}> - </button> <span className='counter'> {qty} </span> <button onClick={addQty}> + </button>
+                    {qty === 1 ? <button disabled> - </button>  : <button onClick={lessQty}> - </button>  }
+                    <span className='counter'> {qty} </span> 
+                    <button onClick={addQty}> + </button>
                 </div>
 
             </div>

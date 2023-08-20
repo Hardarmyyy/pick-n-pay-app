@@ -6,12 +6,12 @@
     margin-top: 30px;
 }
 
-.checkout a {
-    text-decoration: none;
-    color: #132A63;
-    font-family: 'Jost', sans-serif;
-    font-size: 42px;
-}
+.checkoutFormError {
+    position: absolute;
+    color: crimson;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+} 
 
 .deliveryContainer {
     padding: 0px 70px 0px;
@@ -57,8 +57,13 @@ form {
     margin-top: 15px;
 }
 
-.fname input, .lname input, .mail input, .number input, .city input, .state input, .zip input, .addres input:focus {
-    border: 1px solid #DDDDDD;
+form input:focus {
+    border: 2px solid #132A63;
+    outline: none;
+}
+
+.fname .formErr, .lname .formErr, .mail .formErr, .number .formErr, .city .formErr, .state .formErr, .zip .formErr, .addres .formErr  {
+    border: 2px solid crimson;
     outline: none;
 }
 
@@ -93,6 +98,12 @@ margin: 0;
 .orderDetailsContainer {
     text-align: center;
     width: 400px;
+}
+
+.isloading {
+    color: #132A63;
+    font-family: 'Jost', sans-serif;
+    font-size: 24px;
 }
 
 .orderDetails {

@@ -2,6 +2,8 @@ const mongoose = require('mongoose'); // require mongoose to validate _id for us
 const Buyer = require('../models/BuyerModel')
 const Seller = require('../models/SellerModel')
 const Shop = require('../models/ShopModel')
+const Cart = require('../models/CartModel')
+const Favourites = require('../models/FavouritesModel')
 const Product = require('../models/ProductsModel')
 const bcrypt = require('bcrypt'); // require bcrypt to hash user password;
 const jwt = require('jsonwebtoken'); // require json web token;
@@ -70,7 +72,7 @@ exports.signup = async (req, res, next) => {
             await seller.save()
              // create token for buyer;
             const token = createToken(seller._id);
-            return res.status(201).json({ token, seller });
+            return res.status(201).json({ token, seller }); 
         }
     } 
     catch (error) {
@@ -119,7 +121,7 @@ exports.login = async (req, res, next) => {
                     // create token for user;
                     const token = createToken(findSeller._id);
 
-                    return res.status(201).json({ token, usertype: findSeller.usertype,  username: findSeller.username, shop: findSeller.shop, order: findSeller.order });
+                    return res.status(201).json({ token, usertype: findSeller.usertype,  username: findSeller.username, cartProducts: findSeller.cart, shop: findSeller.shop, order: findSeller.order });
                     }
                 }
             }
@@ -183,8 +185,44 @@ exports.deleteUser = async (req, res, next) => {
         }
         else {
             if (buyer) {
-                const deletedUser = await Buyer.findOneAndDelete({username: username})
-                return res.status(200).json({deletedBuyer: deletedUser})
+                // check if the buyer has an existing cart with products
+                const existingCart = await Cart.findOne({buyerID: buyer._id})
+                const existingFavourites = await Favourites.findOne({buyerID: buyer._id})
+                
+                if (!existingCart || !existingFavourites) {
+                    const deletedUser = await Buyer.findOneAndDelete({username: username})
+                    return res.status(200).json({deletedBuyer: deletedUser})
+                }
+        
+                else if (existingCart || existingFavourites) {
+                    // empty the cart and return the products back to the shelf
+                    await Promise.all(existingCart.myCart.map( async(product) => {
+                        // update the product new stockQty by adding the quantity back to the stockQty in the seller shop
+                            let shop = await Shop.findOne({sellerName: product.seller})
+                            const shopItem = shop.myShop.find((item) => item._id.equals(product.productId))
+                            shopItem.stockQty += product.quantity 
+
+                        // update the product stockQty by adding it back to the product qty
+                            const allProduct = await Product.find({})
+                            await Promise.all(allProduct.map( async(pro) => {
+                                if (pro._id.equals(product.productId)) {
+                                    await Product.findByIdAndUpdate({_id: product.productId}, {stockQty: pro.stockQty + product.quantity})
+                                }
+                            })) 
+                            
+                            await shop.save()
+
+                        return {productId: product.productId, seller: product.sellerName, title: product.title, price: product.price, quantity: product.quantity}
+                    }))
+                    // delete the cart
+                    await Cart.findByIdAndDelete({_id: existingCart._id})
+                    // delete the favourites
+                    await Favourites.findOneAndDelete({buyerID: buyer._id})
+
+                    const deletedUser = await Buyer.findOneAndDelete({username: username})
+                    return res.status(200).json({deletedBuyer: deletedUser})
+                }
+                
             }
             else if (seller) {
                 // check if the seller has an existing shop with products

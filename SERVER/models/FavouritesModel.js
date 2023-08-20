@@ -5,19 +5,15 @@ const mongoose = require("mongoose");
 const favouritesSchema = new mongoose.Schema(
     {
     buyerID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Buyer",
-        required: true,
-    },
+        type: String
+    }, 
     myFavourites: [
         {
             productId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Product"
+                type: String
             },
-            sellerID: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Seller"
+            seller: {
+                type: String
             },
             title: {
                 type: String,
@@ -27,17 +23,15 @@ const favouritesSchema = new mongoose.Schema(
                 type: Number,
                 required: true,
             },
-            photo: {
-                type: String,
-            },
+            photo: [
+                {type: String},
+            ],
             description: {
                 type: String,
                 required: true,
             },
             category: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Category',
-                required: true, 
+                type: String
             },
             special: {
                 type: Boolean,

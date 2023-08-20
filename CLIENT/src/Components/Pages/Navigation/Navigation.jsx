@@ -1,14 +1,13 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
-import Button from '../../../Utilities/Button'
 import '../Navigation/Navigation.css'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { BiUserCircle, BiSearch } from "react-icons/bi";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { BsCart3 } from "react-icons/bs";
 import UserProfile from './UserProfileCard/UserProfile'
-import { useContext } from 'react'
 import { myUserContext } from '../../../Utilities/UserContext'
+import { MdOutlineClear } from "react-icons/md";
+import { myProductContext } from '../../../Utilities/ProductContext'
 
 
 
@@ -17,23 +16,35 @@ const Navigation = ({ username, cartCounter}) => {
 const {user} = useContext(myUserContext)
 const {usertype} = user
 
+const {foundBrands} = useContext(myProductContext)
+
 // define a state to show and hide the useProfile card;
 const [active, setActive] = useState(false) 
 
 // define state for search input field;
-const [searchWord, setSearchWord] = useState('')
+const [searchResult, setSearchResult] = useState([]) 
+const [word, setWord] = useState('')
+const [clearResult, setClearResult] = useState(false)
 
 const handleSearch = (e) => {
-    setSearchWord(e.target.value)
+    const searchWord = e.target.value
+    setWord(searchWord)
+    const updatedSearch = foundBrands.filter((item) => item.toLowerCase().includes(searchWord.toLowerCase()))
+    if (searchWord === '') {
+        setSearchResult([])
+        setClearResult(false)
+    }
+    else {
+        setClearResult(true)
+        setSearchResult(updatedSearch)
+    }
 }
 
-// define a function to handle search form submit
-const handleSubmit = (e) => {
-    e.preventDefault()
-    // setFilteredProducts( searchWord)
-    setSearchWord('')
+const handleClearResult = () => {
+    setSearchResult([])
+    setWord('')
+    setClearResult(false)
 }
-
 
 return (
 
@@ -48,15 +59,23 @@ return (
 
         <div className='search'>
 
-            <form onSubmit={handleSubmit}>
+            <form className='searchForm'>
 
                 <BiSearch className='searchIcon'></BiSearch>
-                <input type='text' placeholder='search products by brand ' name='searchWord' 
-                value={searchWord} onChange={handleSearch} maxLength={35} className='searchproduct'/>
 
-                <Button backgroundColor='crimson' padding='8px 15px'> search</Button>
+                <input type='text' placeholder='search for products or brands' name='searchWord' value={word} onChange={handleSearch} className='searchproduct'/>
+
+                {clearResult && <MdOutlineClear onClick={handleClearResult} className='clearIcon'></MdOutlineClear>}
 
             </form>
+
+            {searchResult.length > 0 &&
+                <div className='searchResult'>
+                    {searchResult.map((item, index) => 
+                        <Link to={`/products/${item}`} key={index}> {item }</Link>
+                    )}
+                </div>
+            } 
 
         </div>
 
@@ -85,10 +104,12 @@ return (
                     <span> Account {active ? <IoIosArrowUp></IoIosArrowUp> : <IoIosArrowDown></IoIosArrowDown> } </span> 
                 </div>
                 {usertype === 'buyer' ? 
-                    <div className='cartCounter'>
-                        <Link to='/checkout'> <BsCart3 className='cart'></BsCart3> </Link>
-                        {cartCounter > 0 && <p className='counter'> {cartCounter} </p>}
-                    </div>
+                    <Link to='/checkout'>
+                        <div className='cartCounter'>
+                            <BsCart3 className='cart'></BsCart3> 
+                            {cartCounter > 0 && <p className='counter'> {cartCounter} </p>}
+                        </div>
+                    </Link>
                 : null}
             </div>
 

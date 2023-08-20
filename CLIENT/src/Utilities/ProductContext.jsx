@@ -65,19 +65,26 @@ useEffect(() => {
 const specialProducts = []
 allProducts.map((item) => item.special ? specialProducts.push(item) : item)
 
-// define a function to handle like products
-const handleLike = (myProduct) => {
-    let filtered = allProducts
-    const updatedProduct = filtered.map(product => product._id === myProduct._id ? {...product, like: !product.like} : product)
-    setAllProducts(updatedProduct)
+
+// fetch and get the available products brands
+let foundBrands = []
+let product = allProducts
+
+for (let i = 0; i < allProducts.length; i++) {
+        product[i] = {...product[i]}
+
+        if (foundBrands.find((brand) => brand === product[i].brand) === undefined) {
+            foundBrands.push(product[i].brand)
+        }
 }
+
 
 
 // define a value variable to store all functions and variable 
 const value = {
-    handleLike,
     allProducts,
-    specialProducts
+    specialProducts,
+    foundBrands
 }
 
 return (

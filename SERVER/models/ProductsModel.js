@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // create a product schema  
 
-const productSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema({ 
     sellerName: {
         type: String,
         required: true
@@ -26,6 +26,10 @@ const productSchema = new mongoose.Schema({
         required: true,
     },
     category: {
+        type: String,
+        required: true,
+    },
+    brand: {
         type: String,
         required: true,
     },

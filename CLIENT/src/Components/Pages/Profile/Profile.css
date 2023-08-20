@@ -52,3 +52,14 @@
     border-radius: 5px;
     padding: 10px 20px;
 }
+
+p.profileLoader {
+    margin-left: 400px;
+    position: absolute;
+    top: 28%;
+    text-align: center;
+    width: 600px;
+    font-size: 24px;
+    font-family: 'Montserrat', sans-serif;
+    color:#132A63
+}

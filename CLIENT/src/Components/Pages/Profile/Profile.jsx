@@ -14,6 +14,7 @@ const {username} = user
 const [name, setName] = useState(null)
 const [email, setEmail] = useState(null)
 const [err, setErr] = useState(null)
+const [isLoading, setIsLoading] = useState(true)
 
 useEffect(() => {
     axios.get('http://localhost:4050/api/user/'+username)
@@ -25,6 +26,9 @@ useEffect(() => {
     .catch((error) => {
         setErr(error.response.data.error)
     })
+    setTimeout(() => {
+        setIsLoading(false)
+    }, 1200)
 }, [username, email])
 
 
@@ -33,13 +37,17 @@ return (
 <>
 
     <section>
+        {isLoading && <p className='profileLoader'> Loading ....</p>}
+        {!isLoading && 
+            <>
+                <p className='infohead'> Basic Information </p>
 
-        <p className='infohead'> Basic Information </p>
-
-        <div className='accountInfo'>
-            <p> <strong>  username: </strong> {name} </p>
-            <p> <strong>  email: </strong> {email} </p>
-        </div>
+                <div className='accountInfo'>
+                    <p> <strong>  username: </strong> {name} </p>
+                    <p> <strong>  email: </strong> {email} </p>
+                </div>
+            </>
+        }
 
     </section>
 </>

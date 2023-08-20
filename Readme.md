@@ -8,10 +8,10 @@
     - [Key Features](#key-features) -->
   - [🚀 Live Demo](#live-demo)
 - [💻 Getting Started](#getting-started)
-  <!-- - [Setup](#setup) -->
-  <!-- - [Prerequisites](#prerequisites) -->
-  <!-- - [Install](#install) -->
-  <!-- - [Usage](#usage) -->
+  - [Setup](#setup)
+  - [Prerequisites](#prerequisites)
+  - [Install](#install)
+  - [Usage](#usage)
   <!-- - [Run tests](#run-tests) -->
   <!-- - [Deployment](#)
 - [👥 Author](#)
@@ -26,7 +26,9 @@ PROJECT DESCRIPTION
 
 <!-- # 📖 [Git collaboration] <a name="Vishwanath's Pearls-Hacklag"></a> -->
 
-PickNPay E-commerce application where users can be able to search for products, add products to cart, remove products from cart and increase or decrease the quantity depending on their preference. There is an order summary section that shows the sub-total, shipping cost and VAT with a cummulative total price for the goods ordered. Finally users can checkout and be sure their ordered has been completed.
+The objective of this e-commerce website project is to create a fully functional and user-friendly online shopping platform using React.js on the front end and Node Js with Express on the backend together with MongoDB as the database. 
+The platform allows users to browse through a wide range of products, add items to their shopping cart, and proceed to checkout. The website provides a seamless shopping experience for both buyers and sellers, with a focus on intuitive navigation, smooth interactions, and a visually appealing interface.
+
 ## 🛠 Built With <a name="REACT & BOOTSTRAP"></a>
 
 ### Tech Stack <a name="MERN-stack"></a>
@@ -82,27 +84,21 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 - Have a computer and internet connection
-<!-- - Have `Ruby` installed on your computer
-- Have a basic knowledge of `Ruby` and `OOP` concept -->
 - Have a general understanding of what testing is
 - Have `visual-studio code` or any other code editor installed on your computer.
 
-<!-- ### Setup
-- In order to get a copy of this project you need to download it from https://github.com/Profsain/hello-rails-react
+### Setup
+- In order to get a copy of this project you need to download it from https://github.com/Hardarmyyy/pickNpay-app
 - Extract the zipped file and open it in your code editor
 ### Install
 - Run the command bellow in your terminal to get all required files 
-``` Ruby
-bundle install
-```
+  npm install
 
 ### Run Server
-- Run the command bellow in your terminal
-  rails server
-```Ruby
-rails server
-```
-### Run tests
+- Run the command below in your terminal
+  Nodemon index 
+
+<!-- ### Run tests
 you can run one of the following command in your terminal
 1. Run testing
 ```Ruby
@@ -111,25 +107,23 @@ rspec spec
 2. Run linters
 ```Ruby
 > Rubocop --color
-> Rubocop -A
-``` -->
+> Rubocop -A -->
+```
 ## Author
 
 👤 **Adeyemo Adams** -->
 
 GitHub: [@Hardarmyyy](https://github.com/Hardarmyyy)
-<!-- - Twitter: [@twitterhandle](https://twitter.com/profsain)
-- LinkedIn: [LinkedIn](https://www.linkedin.com/in/profsain) -->
+- LinkedIn: [LinkedIn](https://www.linkedin.com/in/adams-adeyemo-0b7a55220) -->
 
 
-<!-- ## Future Feature
+## Future Feature
 - Add users account
 - Sending greeting message to group
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome!
-
-Feel free to check the [issues page](https://github.com/Profsain/). -->
+. 
 
 ## Show your support
 

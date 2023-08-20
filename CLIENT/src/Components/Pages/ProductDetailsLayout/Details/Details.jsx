@@ -4,7 +4,6 @@ import { useParams, Link } from 'react-router-dom'
 import Navigation from '../../Navigation/Navigation';
 import Footer from '../../Footer/Footer';
 import { useContext, useState } from 'react';
-import { myProductContext } from '../../../../Utilities/ProductContext';
 import { myUserContext } from '../../../../Utilities/UserContext';
 import Button from '../../../../Utilities/Button';
 import { BsBagHeart } from "react-icons/bs";
@@ -17,30 +16,30 @@ const Details = () => {
 const currentPageUrl = window.location.href;
 
 // import user from myUserContext and destructure it contents;
-const {user, cartCounter, handleAddToFavourites, handleRemoveFromFavourites, handleAddProducts, 
-    addProductMessage, addProductError, likeMessage, unlikeMessage} = useContext(myUserContext) 
+const {user, isLoading, allProducts, cartCounter, handleAddToFavourites, handleRemoveFromFavourites, handleAddProducts, 
+    addProductMessage, addProductError, quantityMessage, quantityMessageError, likeMessage, likeMessageError, unlikeMessage, addQty, lessQty} = useContext(myUserContext) 
 
-const {username} = user
+const {username, cartProducts} = user 
 
 // catch the id property using useParams hook; 
 const {id} = useParams();
 
-// import allproducts from myProductContext;
-const {allProducts, handleLike} = useContext(myProductContext);
-
-// filter the exact product that match with type property;
+// filter the exact product that match with type property; 
 const detailedProduct = allProducts.filter((product) => product._id === id);
+
+// filter the exact product from cart to know show the quantity added
+const cartItem = cartProducts.filter((pro) => pro.productId === id)
+const cartProduct = cartItem[0] 
+
 
 // define a function to toggle addToFavourites and Like
 const likeAddtoFavourites = (prod) => {
-    handleLike(prod)
     handleAddToFavourites(prod)
 }
 
 // define a function to toggle removeFavourites and unLike
-const unLikeRemoveFavourites = (prod) => {
-    handleLike(prod)
-    handleRemoveFromFavourites(prod)
+const unLikeRemoveFavourites = (id) => {
+    handleRemoveFromFavourites(id)
 }
 
 // define state to handle show description or review
@@ -57,6 +56,23 @@ const handleshowReview = () => {
     showDescription(false)
 }
 
+// define a state to handle show quantity buttons
+const [quantity, setQuantity] = useState(null)
+
+// define a state to handle show add to cart button
+const [addCart, setAddToCart] = useState(true)
+
+const setShowQuantity = () => {
+    setAddToCart(null)
+    setQuantity(true)
+}
+
+// define a function to show add quantity buttons when item has been added to cart
+const addItemToCart = (item) => {
+    handleAddProducts(item, item._id)
+    setShowQuantity()
+}
+
 return (
 
 <> 
@@ -64,20 +80,28 @@ return (
     
     {addProductMessage && <p className='addProductMessage'> {addProductMessage} </p>}
 
-    {addProductError && <p className='addProductError'> {addProductError} </p>}
+    {quantityMessage && <p className='addProductMessage'> {quantityMessage} </p>}
+
+    {addProductError && <p className='unlikeMessage'> {addProductError} </p>}
+
+    {quantityMessageError && <p className='unlikeMessage'> {quantityMessageError} </p>}
 
     {likeMessage && <p className='likeMessage'> {likeMessage} </p>}
+
+    {likeMessageError && <p className='unlikeMessage'> {likeMessageError} </p>}
 
     {unlikeMessage && <p className='unlikeMessage'> {unlikeMessage} </p>}
 
     <section className='detailsContainer'>
 
-        {detailedProduct.map((item) =>
+        {isLoading && <p className='loadingdetails'> Loading .... </p>} 
+
+        {!isLoading && detailedProduct.map((item) =>
 
             <div key={item._id} className='wrapperDetails'>  
 
                 {item.like ? 
-                    <BsBagHeart className='likesIcon' onClick={()=>{unLikeRemoveFavourites(item)}}></BsBagHeart> 
+                    <BsBagHeart className='likesIcon' onClick={()=>{unLikeRemoveFavourites(item._id)}}></BsBagHeart> 
                 : 
                     <BsBagHeart className='unlikesIcon' onClick={()=>{likeAddtoFavourites(item)}}></BsBagHeart> 
                 }
@@ -89,14 +113,54 @@ return (
                 <div className='info'>
 
                     <h3> {item.title} </h3>
-                    <p className='pricey'> $ {item.price} </p>
+                    <p className='pricey'> $ {item.price} / unit </p>
                     <p> {item.description.slice(0,150)} </p>
 
-                    <div className='qtyCount'>
-                        <Button padding='5px 60px' eventHandler={()=>handleAddProducts(item)}> Add to cart </Button>
+                    <div className='addProd'>
+
+                        {user.usertype === 'seller' && 
+
+                            <Button padding='5px 60px' eventHandler={()=> handleAddProducts(item, item._id)} > Add to cart </Button>
+                        
+                        }
+
+                        {user.usertype === null && 
+
+                            <Button padding='5px 60px' eventHandler={()=> handleAddProducts(item, item._id)} > Add to cart </Button>
+                        
+                        }
+            
+                        {user.usertype === 'buyer' &&
+                            <>
+                                {cartProduct && 
+
+                                    <div className='qtyCount addSubtract'>
+                                        {cartProduct?.quantity === 1 ? <button disabled> - </button> : <button onClick={() => {lessQty(item._id)}}> - </button> }
+                                            <span className='counter'> {cartProduct?.quantity} </span> 
+                                        <button onClick={() => {addQty(item._id)}} > + </button>
+                                    </div>
+                                
+                                }
+                                {!cartProduct && 
+                                    <>
+                                        {addCart && <Button padding='5px 60px' eventHandler={()=>addItemToCart(item)}> Add to cart </Button>}
+                                        
+                                        { quantity && 
+                                            <div className='qtyCount addSubtract'>
+                                                {cartProduct?.quantity === 1 ? <button disabled> - </button> : <button onClick={() => {lessQty(item._id)}}> - </button> }
+                                                <span className='counter'> {cartProduct?.quantity} </span> 
+                                                <button onClick={() => {addQty(item._id)}}> + </button>
+                                            </div>
+                                        } 
+                                    </>
+                                }
+                            </>
+                        }
+                        
+
                     </div>
 
-                    {item.special ? <p> Category: Top Special </p> : null}
+                    {item.special ? <p> Category: <span  className='special'> Top Special </span> </p> : null}
 
                     <div className='share'>
                         
@@ -134,6 +198,7 @@ return (
 
         )}
 
+        {!isLoading &&
         <div className='descriptionReview'>
 
 
@@ -144,8 +209,8 @@ return (
 
             {description && 
                 <div className='description'> 
-                    {detailedProduct.map((item) =>
-                        <p key={item.id}> {item.description} </p>
+                    {detailedProduct.map((item, index) =>
+                        <p key={index}> {item.description} </p>
                     )}
                 </div>
             }
@@ -170,6 +235,7 @@ return (
             } */}
 
         </div>
+        }
     
     </section>
 

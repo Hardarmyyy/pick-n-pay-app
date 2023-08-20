@@ -12,7 +12,7 @@ const {usertype} = user
 
 return (
 
-    usertype === 'buyer' ? <Outlet></Outlet> : <Navigate to='/login' replace></Navigate> 
+    usertype === null ? <Navigate to='/login' replace></Navigate> : <Outlet></Outlet> 
 
 )
 }

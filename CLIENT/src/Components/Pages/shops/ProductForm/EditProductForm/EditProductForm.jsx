@@ -113,6 +113,7 @@ const [updateProductForm, setUpdateProductForm] = useState({
     price: updateProduct[0]?.price,
     description: updateProduct[0]?.description,
     category: updateProduct[0]?.category,
+    brand: updateProduct[0]?.brand,
     stockQty: updateProduct[0]?.stockQty,
 })
 
@@ -140,6 +141,7 @@ const handleFormSubmit = (e) => {
         photo: [...allImage],
         description: updateProductForm.description,
         category: updateProductForm.category,
+        brand: updateProductForm.brand,
         stockQty: updateProductForm.stockQty,
     }
     if (newProduct.photo.length == 0) {
@@ -167,6 +169,7 @@ const handleFormSubmit = (e) => {
             price: '',
             description: '',
             category: '',
+            brand: '',
             stockQty: '',
         })
         // delete the images from the server after it has been stored in the product to save memory
@@ -261,6 +264,11 @@ return (
                         ))}
                         
                     </select>
+                </div>
+
+                <div className='brand'>
+                    <label> Brand <span className='required'> * </span></label> <br />
+                    <input type='text' value={updateProductForm.brand} onChange={handleChange} placeholder='' name='brand'/>
                 </div>
 
                 <div className='stockQty'>

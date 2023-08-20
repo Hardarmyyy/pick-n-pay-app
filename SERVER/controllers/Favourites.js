@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'); // require mongoose to validate _id for buyers;
 const Buyer = require('../models/BuyerModel');
+const Seller = require('../models/SellerModel')
 const Favourites = require('../models/FavouritesModel')
 const Product = require('../models/ProductsModel');
 
@@ -16,24 +17,25 @@ exports.addItemToFavourites = async (req, res, next) => {
         if (!product) {
             return res.status(400).send({ error: "product does not exist" })
         }
-        // check and validate if the request _id is a mongoDB id and if buyer exist;
-            const {id} = req.params
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(404).json({ error: "The user ID is invalid!" })
+        // check and validate if the buyer exist;
+            const {username} = req.params
+            const buyer = await Buyer.findOne({username: username})
+            const seller = await Seller.findOne({username: username})
+        if (!buyer && !seller) {
+            return res.status(400).json({ error: "Kindly signup or login to add items to wishlist"})
         }
-            const buyer = await Buyer.findById({_id: id})
-        if (!buyer) {
-            return res.status(400).json({ error: "buyer doesn't exist!" })
+        else if (seller) {
+            return res.status(400).json({ error: "Sorry! Your user profile can't add items to wishlist"}) 
         }
-        else {
-            const { quantity} = req.body
-            const newProduct = { productId: product._id, sellerID: product.sellerID, title: product.title, price: product.price, photo: product.photo, description: product.description, category: product.category, special: product.special, quantity: quantity};
+        else if (buyer) {
+            const {price, quantity} = req.body
+            const newProduct = { productId: product._id, seller: product.sellerName, title: product.title, price: price, photo: product.photo[0].filename, description: product.description, category: product.category, special: product.special, quantity: quantity};
             // check and validate if the user has an existing favourites;
-                let favourites = await Favourites.findOne({buyerID: id })
+                let favourites = await Favourites.findOne({buyerID: buyer._id })
             if (favourites) { // if there is an existing favourites for the current buyer)
-                    const existingItem = favourites.myFavourites.find((item) => item.productId.equals(productid))
+                    const existingItem = favourites.myFavourites.find((item) => item.productId === productid)
                         if (existingItem) {
-                            return res.status(400).json({ error: "product is existing in the favourites already" })
+                            return res.status(400).json({ error: "product is existing in your wishlist already" })
                         }
                         else {
                             favourites.myFavourites.push(newProduct)
@@ -42,7 +44,7 @@ exports.addItemToFavourites = async (req, res, next) => {
                         }
             }
             else { // if the buyer does not have a favourites; then create a new favourites for the buyer;
-                favourites = new Favourites({ buyerID: id, myFavourites: [newProduct] })
+                favourites = new Favourites({ buyerID: buyer._id, myFavourites: [newProduct] })
                 await favourites.save()
                 return res.status(201).json({favourites});
             }
@@ -65,26 +67,20 @@ exports.removeItemFromFavourites = async (req, res, next) => {
         if (!product) {
             return res.status(400).send({ error: "product does not exist" })
         }
-        // check and validate if the request _id is a mongoDB id and if buyer exist;
-            const {id} = req.params
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(404).json({ error: "The user ID is invalid!" })
-        }
-            const buyer = await Buyer.findById({_id: id})
+        // check and validate if the buyer exist;
+            const {username} = req.params
+            const buyer = await Buyer.findOne({username: username})
         if (!buyer) {
-            return res.status(400).json({ error: "buyer doesn't exist!" })
+            return res.status(400).json({ error: "Sorry! Your user profile can't add items to cart"})
         }
         else {// check if there is an existing favourites for the current buyer)
-                let favourites = await Favourites.findOne({buyerID: id })
+                let favourites = await Favourites.findOne({buyerID: buyer._id })
             if (favourites) { 
-                    const existingItem = favourites.myFavourites.find((item) => item.productId.equals(productid))
+                    const existingItem = favourites.myFavourites.find((item) => item.productId === productid)
                     if (existingItem) {
+
                         await Favourites.findOneAndUpdate({_id: favourites._id}, {$pull: {myFavourites: {productId: productid}}})
-                        // update the favourites before saving 
-                            return res.status(201).json({removedItem: existingItem})
-                        }
-                    else if (!existingItem) {
-                        return res.status(401).json({ error: "Sorry! The product is not in your favorites"})
+                        return res.status(201).json({removedItem: existingItem})
                     }
             }
         }
@@ -98,16 +94,13 @@ exports.removeItemFromFavourites = async (req, res, next) => {
 exports.getAllFavourites =  async(req, res, next) => {
     try {
         // check and validate if the request _id is a mongoDB id and if buyer exist;
-            const {id} = req.params
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(404).json({ error: "The user ID is invalid!" })
-        }
-            const buyer = await Buyer.findById({_id: id})
+            const {username} = req.params
+            const buyer = await Buyer.findOne({username: username})
         if (!buyer) {
             return res.status(400).json({ error: "buyer doesn't exist!" })
         }
         else {
-            let favourites = await Favourites.findOne({buyerID: id})
+            let favourites = await Favourites.findOne({buyerID: buyer._id})
             if (!favourites) {
                 return res.status(404).json({ error: "The buyer doesn't have any product in the favourites!" })
             }
@@ -116,8 +109,8 @@ exports.getAllFavourites =  async(req, res, next) => {
                     return res.status(201).json({favourites})
                 }
                 else if (favourites && favourites.myFavourites.length == 0){
-                    const deletedFavourites = await Favourites.findByIdAndDelete({_id: favourites.id})
-                    return res.status(201).json({deletedFavourites})
+                    const emptyFavourites = await Favourites.findByIdAndUpdate({_id: favourites._id},  {$set: {myFavourites: []}})
+                    return res.status(201).json({emptyFavourites})
                 }
             }
         }
