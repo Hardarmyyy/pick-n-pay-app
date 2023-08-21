@@ -53,7 +53,7 @@ return (
         {usertype === null && 
             <div className='userInfo'>
                 <Link to='/profile'> <BiUserCircle className='Icon'></BiUserCircle> My Account </Link> 
-                <Link to='#'> <BsBox2 className='Icon'></BsBox2> Orders </Link> 
+                <Link to='/all-orders'> <BsBox2 className='Icon'></BsBox2> Orders </Link> 
                 <Link to='/favourites'> <BsBagHeart className='Icon'></BsBagHeart> Wishlist {favouritesCounter > 0 && <span> {favouritesCounter} </span>}</Link>
             </div>
         }
@@ -61,7 +61,7 @@ return (
             <div className='userInfo'>
                 <p className='user'> Hi {username} </p>
                 <Link to='/profile'> <BiUserCircle className='Icon'></BiUserCircle> My Account </Link> 
-                <Link to='#'> <BsBox2 className='Icon'></BsBox2> Orders </Link> 
+                <Link to='/all-orders'> <BsBox2 className='Icon'></BsBox2> Orders </Link> 
                 <Link to='/favourites'> <BsBagHeart className='Icon'></BsBagHeart> Wishlist {favouritesCounter > 0 && <span> {favouritesCounter} </span>}</Link>
             </div>
         }

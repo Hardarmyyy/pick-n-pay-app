@@ -8,7 +8,7 @@ import { useContext, useState } from 'react'
 import { AiFillDelete } from "react-icons/ai";
 import ProductCheckout from './ProductCheckout/ProductCheckout'
 import { useNavigate } from 'react-router-dom'
-
+import axios from 'axios'
 
 
 const Checkout = () => { 
@@ -32,7 +32,9 @@ const [userDeliveryInfo, setUserDeliveryInfo] = useState({
 })
 
 const handleUserDeliveryInfo = (e) => {
-    setUserDeliveryInfo((userDeliveryInfo) => {return {...userDeliveryInfo, [e.target.name]: e.target.value.replace(/\s/g, "")}})
+    const {name, value} = e.target
+    setUserDeliveryInfo((userDeliveryInfo) => {return {...userDeliveryInfo, 
+    [name]: name === 'address' ? value : value.replace(/\s/g, "")}})
 }
 
 // define a state to show all fields in the form are required
@@ -51,19 +53,29 @@ const handleFormSubmit = (e) => {
         setEmailErr(true)
         return setFormError('Please enter a valid email to proceed')
     }
+    else if (cartProducts.length === 0) {
+        alert('Kindly add products to cart to proceed to checkout')
+    }
     else {
-         // console.log(userDeliveryInfo);
-        setUserDeliveryInfo({
-            firstName: '',
-            lastName: '',
-            email: '',
-            phoneNumber: '',
-            address: '',
-            city: '',
-            state: '',
-            zipcode: ''
+        axios
+        .post('http://localhost:4050/api/shipping/create/'+ username, userDeliveryInfo)
+        .then((response) => {
+
+            setUserDeliveryInfo({
+                firstName: '',
+                lastName: '',
+                email: '',
+                phoneNumber: '',
+                address: '',
+                city: '',
+                state: '',
+                zipcode: ''
+            })
+            navigate('/complete-order')
         })
-        navigate('/orderCompleted')
+        .catch((error)=> {
+
+        })
     }
 }
 

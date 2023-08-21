@@ -11,6 +11,7 @@ const cartRoutes = require('./routers/cartRoutes');
 const favouritesRoutes = require('./routers/favouritesRoutes')
 const orderRouter = require('./routers/orderRoutes')
 const imageRouter = require('./routers/imageRoutes')
+const shippingAddressRoutes = require('./routers/shippingAddressRoutes')
 
 //  The { useUnifiedTopology: true, useNewUrlParser: true } options passed to the mongoose.connect method are used to ensure that the latest recommended options are used when establishing a connection to the MongoDB server.
 mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlParser: true})
@@ -38,6 +39,7 @@ app.use('/api/cart', cartRoutes)
 app.use('/api/favourites', favouritesRoutes)
 app.use('/api/order', orderRouter)
 app.use('/api/photo', imageRouter)
+app.use('/api/shipping', shippingAddressRoutes)
 
 // listen to server;
 

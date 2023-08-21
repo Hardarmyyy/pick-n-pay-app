@@ -3,9 +3,9 @@ const routers = express.Router();
 const {completeOrder, allOrders} = require('../controllers/Order')
 
 // order routes
-routers.post('/complete/:id', completeOrder);
-routers.get('/all/:id', allOrders);
+routers.post('/complete/:username', completeOrder);
+routers.get('/all/:username', allOrders);
 
 
 
-module.exports = routers;   
+module.exports = routers;    

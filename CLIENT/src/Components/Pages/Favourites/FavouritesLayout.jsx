@@ -3,7 +3,6 @@ import '../Favourites/Favourites.css'
 import Navigation from '../Navigation/Navigation'
 import ProductCard from '../ProductListings/ProductCard/ProductCard'
 import { myUserContext } from '../../../Utilities/UserContext'
-import { myProductContext } from '../../../Utilities/ProductContext'
 import { useContext } from 'react'
 
 const FavouritesLayout = () => {

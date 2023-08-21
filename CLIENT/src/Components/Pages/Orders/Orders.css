@@ -1,0 +1,76 @@
+.buyerOrderContainer {
+    padding: 0px 70px 0px;
+    margin-top: 30px;
+    position: relative;
+}
+
+.buyerOrderContainer .orderTitle {
+    color: #132A63;
+    font-family: 'Jost', sans-serif;
+    font-size: 32px;
+}
+
+.myOrderLoader {
+    color: #132A63;
+    font-family: 'Jost', sans-serif;
+    font-size: 24px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.orderTable table{
+    margin: 0px auto;
+    width: 800px;
+    color: #333333;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.orderTable table th {
+    border-bottom: 1px solid #DDDDDD;
+    padding-bottom: 5px;
+}
+
+td.date {
+    width: 200px;
+    text-align: center;
+}
+
+td.status, td.orderTotal {
+    width: 100px;
+    text-align: center;
+}
+
+th:not(:first-child) {
+    text-align: center;
+}
+
+.myOrders {
+    margin: 20px 0px;
+}
+
+.myOrders:hover {
+    background-color: #DDDDDD;
+    cursor: pointer;
+}
+
+.actionDetails {
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: #FFFFFF;
+    background-color: #132A63;
+}
+
+.actionDetails:hover {
+    opacity: 0.9;
+}
+
+.emptyOrder {
+    text-align: center;
+    padding: 20px 0px;
+    color: #333333;
+    font-size: 24px;
+    font-family: 'Montserrat', sans-serif;
+}

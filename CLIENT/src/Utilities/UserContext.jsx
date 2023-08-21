@@ -379,12 +379,33 @@ const deleteProduct = (id) => {
     }) 
 }
 
+
+// define a state to store and hold all orders for the current user;
+
+const [myOrders, setMyOrders] = useState(null)
+
+useEffect(() => {
+    axios
+    .get('http://localhost:4050/api/order/all/' + user.username)
+    .then((response) => {
+        setMyOrders(response?.data?.myOrders)
+    })
+    .catch((error) => {
+        
+    })
+    setTimeout(() => {
+        setIsLoading(false)
+    }, 1200)
+}, [user.username])
+
+
 // define a value variable to store all functions and variable 
 const value = {
     isLoading,
     user,
     allUser,
     allProducts,
+    myOrders,
     handleAddProducts,
     subTotal,
     cartMessage,

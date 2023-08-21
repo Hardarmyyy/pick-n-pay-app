@@ -40,9 +40,11 @@ const handleShowPassword = () => {
 const [message, setMessage] = useState(null)
 const [error, setError] = useState(null)
 
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 //define a function to handle signup form submit
 
-const handleSubmit = (e) => { 
+const handleSubmit = (e) => {
     e.preventDefault()
     const regUser ={
         usertype: userType,
@@ -50,7 +52,9 @@ const handleSubmit = (e) => {
         email: newUser.email,
         password: newUser.password,
     }
-
+    if (!(emailRegex.test(regUser.email))) {
+        return setError('Please enter a valid email to proceed')
+    }
     axios
     .post('http://localhost:4050/api/user/signup', regUser)
     .then((response) => {
@@ -80,7 +84,7 @@ const handleSubmit = (e) => {
         setError(error.response.data.error)
         setTimeout(()=> {
         setError(null)
-        }, 1500)
+        }, 2000)
     });
 }
 
@@ -108,7 +112,7 @@ return (
             <p> To sign up, fill in your personal details below.</p>
         </div>
 
-        <form className='registerForm' onSubmit={handleSubmit}>
+        <form className='registerForm' onSubmit={handleSubmit}> 
 
             <div className='userSelect'>
                 <div className='buyer'>
@@ -127,7 +131,7 @@ return (
 
             <div>
                 <label> Email <span className='required'> * </span></label> <br />
-                <input type='email' className= {error ? 'error': 'input'} value={newUser.email} onChange={handleUser} placeholder='Enter your email' name='email'  maxLength={50}/>
+                <input type='text' className= {error ? 'error': 'input'} value={newUser.email} onChange={handleUser} placeholder='Enter your email' name='email'  maxLength={50}/>
             </div>
 
             <div>
@@ -143,7 +147,7 @@ return (
             <p className='goToLogin'> Already have an account. Click <Link to='/login'> here </Link> to sign in</p>
             
             <div className="passwordToggle" onClick={handleShowPassword}>
-                    {showPassword ? <BsEye /> : <BsEyeSlash />}
+                    {showPassword ? <BsEye /> : <BsEyeSlash />} 
             </div>
 
         </form>     

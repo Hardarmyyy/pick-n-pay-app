@@ -1,8 +1,8 @@
-import React from 'react'
+
+import { useState } from 'react';
 import { Outlet, Link } from 'react-router-dom'
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { BiUserCircle } from "react-icons/bi";
-import { useState } from 'react';
 import '../Shops/Shop.css'
 import Dashboard from './Dashboard/Dashboard';
 import UserProfile from '../Navigation/UserProfileCard/UserProfile';

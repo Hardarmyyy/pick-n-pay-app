@@ -3,76 +3,92 @@ const mongoose = require("mongoose");
 // create an order model for the buyer orders
 
 const orderSchema = new mongoose.Schema( 
-    {  
+    {
     buyerID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Buyer",
-        required: true
+        type: String
     },
-    orderID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Cart",
-        required: true
-    },
-    orderedItems: [
-        {
-            productId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Product"
-            },
-            sellerID: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Seller"
-            },
-            title: {
-                type: String,
-                required: true,
-            },
-            price: {
-                type: Number,
-                required: true,
-            },
-            photo: {
-                type: String,
-            },
-            description: {
-                type: String,
-                required: true,
-            },
-            category: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Category',
-                required: true, 
-            },
-            special: {
-                type: Boolean,
-                default: false,
-            },
-            quantity: {
-                type: Number
+    myOrders: [
+        { 
+        orderID: {
+            type: String
+        },
+        orderedItems: [
+            {
+                productId: {
+                    type: String
+                },
+                seller: {
+                    type: String
+                },
+                title: {
+                    type: String,
+                },
+                price: {
+                    type: Number,
+                },
+                photo: {
+                    type: String,
+                },
+                description: {
+                    type: String,
+                },
+                category: {
+                    type: String 
+                },
+                quantity: {
+                    type: Number
+                }
             }
+        ],
+        shippingAddress:
+            {
+                firstName: {
+                    type: String
+                },
+                lastName: {
+                    type: String
+                },
+                email: {
+                    type: String
+                },
+                phoneNumber: {
+                    type: Number
+                },
+                address: {
+                    type: String
+                },
+                city: {
+                    type: String
+                },
+                state: {
+                    type: String
+                } 
+            },
+        payment: {
+            type: Boolean,
+            default: true
+        },
+        pending: {
+            type: Boolean,
+            default: true
+        },
+        shipping: {
+            type: Boolean,
+            default: false
+        },
+        completed: {
+            type: Boolean,
+            default: false
+        },
+        orderTotal: {
+            type: Number
+        },
+        date: {
+            type: String,
+            default: Date()
         }
-    ],
-    payment: {
-        type: Boolean,
-        default: true
-    },
-    Pending: {
-        type: Boolean,
-        default: true
-    },
-    shipping: {
-        type: Boolean,
-        default: false
-    },
-    completed: {
-        type: Boolean,
-        default: false
-    },
-    orderTotal: {
-        type: Number,
-        default: 0
-    }
+        },
+    ]  
     },
     { timestamps: {createdAt: true, updatedAt: true} }
 );

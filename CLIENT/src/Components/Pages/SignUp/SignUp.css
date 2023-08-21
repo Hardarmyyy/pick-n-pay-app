@@ -128,14 +128,13 @@
     text-align: center;
 }
 
-.registerForm .input:focus {
+.registerForm input:focus {
     border: 2px solid #132A63;
     outline: #132A63;
 }
 
-.registerForm .error {
+.registerForm .formErr {
     border: 2px solid #ef6f65;
-    outline: #132A63;
 }
 
 .registerForm .passwordToggle {
