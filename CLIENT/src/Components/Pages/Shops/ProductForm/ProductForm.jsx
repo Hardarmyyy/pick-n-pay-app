@@ -229,7 +229,7 @@ return (
                     {allImage &&
                         allImage.map((photo, _id) => (
                             <div className='imageContainer'  key={_id}>
-                                <img src={`../../../../../public/productphoto/${photo.filename}`} alt={photo.filename} />
+                                <img src={`../../../../../productphoto/${photo.filename}`} alt={photo.filename} />
                                 <AiFillDelete className='deleteIcon' onClick={() => {handleDeleteImage(photo._id)}}></AiFillDelete>
                             </div> 
                         ))

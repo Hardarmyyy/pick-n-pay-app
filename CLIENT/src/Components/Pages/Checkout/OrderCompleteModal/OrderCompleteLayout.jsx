@@ -154,7 +154,7 @@ return (
 
                                 <div className='details'>
 
-                                    <img src={`../../../../../public/productphoto/${product.photo[0]}`}/>
+                                    <img src={`../../../../../productphoto/${product.photo[0]}`}/>
 
                                     <p className='description'> {product.description.slice(0, 35)} </p> 
 

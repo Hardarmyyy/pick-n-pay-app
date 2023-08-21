@@ -59,7 +59,7 @@ return (
 
                                 <div className='details'>
 
-                                    <img src={`../../../../../public/productphoto/${product.photo}`}/>
+                                    <img src={`../../../../../productphoto/${product.photo}`}/>
 
                                     <p className='description'> {product.description.slice(0, 50)} </p> 
 

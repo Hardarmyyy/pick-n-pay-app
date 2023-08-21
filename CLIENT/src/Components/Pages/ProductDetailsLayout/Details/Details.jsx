@@ -107,7 +107,7 @@ return (
                 }
 
                 <div className='centerImage'>
-                    <img src={`../../../../../public/productphoto/${item.photo[0].filename}`} alt={item.title}/>
+                    <img src={`../../../../../productphoto/${item.photo[0].filename}`} alt={item.title}/>
                 </div>
 
                 <div className='info'>

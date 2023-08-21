@@ -61,7 +61,7 @@ return (
 
                 {updatedProduct.map((item) => 
                     <ProductCard key={item._id} 
-                        src={`../../../../public/productphoto/${item.photo[0].filename}`}
+                        src={`../../../../productphoto/${item.photo[0].filename}`}
                         id={item._id}
                         type={item.brand}
                         alt={item.title} 

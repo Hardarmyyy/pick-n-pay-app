@@ -57,7 +57,7 @@ return (
                 <ProductCard key={item._id}
                             id={item._id}
                             type={item.category}
-                            src={`../../../../../public/productphoto/${item.photo[0].filename}`}  
+                            src={`../../../../../productphoto/${item.photo[0].filename}`}  
                             alt={item.title} 
                             title={item.title} 
                             price={item.price} 
