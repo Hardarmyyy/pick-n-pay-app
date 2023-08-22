@@ -179,7 +179,7 @@ return (
                             {cartProducts.map((product) =>
                                 <ProductCheckout key={product.productId} 
                                     title={product.title} 
-                                    photo={`../../../../../public/productphoto/${product.photo[0]}`} 
+                                    photo={`../../../../../productphoto/${product.photo[0]}`} 
                                     description={product.description.slice(0,40)} 
                                     qty={product.quantity} 
                                     price={product.price}

@@ -16,5 +16,5 @@ export const images = [
 export const cards = [
     {title: 'mastercard', img: mastercard},
     {title: 'paypal', img: paypal},
-    {title: 'visa', img: visa}
+    {title: 'visa', img: visa} 
 ]
