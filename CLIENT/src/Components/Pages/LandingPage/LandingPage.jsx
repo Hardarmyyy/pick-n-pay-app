@@ -2,11 +2,10 @@ import React from 'react'
 import Navigation from '../Navigation/Navigation'
 import { useContext, useState} from 'react'
 import { myUserContext } from '../../../Utilities/UserContext'
-import { availableProductCategory } from '../../../Utilities/ProductContext'
 import Footer from '../Footer/Footer'
 import '../LandingPage/LandingPage.css'
-import { Link } from 'react-router-dom'
 import Carousel from './Carousel/Carousel'
+import Categories from './Categories/Categories'
 import Slider from './Slider/Slider'
 
 const LandingPage = () => {
@@ -17,7 +16,7 @@ const { username} = user
 
 const [newsLetter, setNewsLetter] = useState({
     username: '',
-    email: ''
+    email: '' 
 })
 
 // define a state to show when newsletter email have been successfully received
@@ -69,13 +68,7 @@ return (
 
         <div className='topContainer'>
 
-            <div className='productCategories'>
-                {availableProductCategory.map((type, index) => 
-                    <Link to={`/category/${type}`} key={index}> 
-                        <p>  {type}  </p> 
-                    </Link>
-                )}
-            </div>   
+            <Categories></Categories>
 
             <div className='carousel'>
                 <Carousel></Carousel> 
@@ -97,10 +90,10 @@ return (
 
         
         </div>
-
-        <div className='productSlider'>
+        {/* slide.js was removed in favor of photos */}
+        {/* <div className='productSlider'>
             <Slider></Slider>
-        </div>
+        </div> */}
 
     </section>
 

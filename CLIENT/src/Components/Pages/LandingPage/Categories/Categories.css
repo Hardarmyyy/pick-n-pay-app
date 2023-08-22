@@ -1,0 +1,25 @@
+.productCategories {
+    width: 160px;
+    background-color: #fcfcfc;
+    height: 50.5vh;
+    border-radius: 5px;
+}
+
+.productCategories a {
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333333;
+}
+
+.productCategories p:hover {
+    background-color: rgb(193, 187, 187);
+    border-radius: 5px;
+}
+
+.productCategories p a {
+    text-decoration: none;
+    color: #333333;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+} 

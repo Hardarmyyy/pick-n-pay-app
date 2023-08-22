@@ -5,6 +5,7 @@ import ProductCard from './ProductCard/ProductCard'
 import { myUserContext } from '../../../Utilities/UserContext'
 import Navigation from '../Navigation/Navigation'
 import { useParams } from 'react-router-dom'
+import Categories from '../LandingPage/Categories/Categories'
 import Footer from '../Footer/Footer'
 
 
@@ -50,39 +51,45 @@ return (
 
     <section className='productContainer'>
 
-        <h3 className='mainTitle'> Discover our weekly discounts </h3> 
+        <Categories></Categories>
 
-        <p className='subTitle'> Find a great deal to suit your selection </p>
+        <div>
 
-        {isLoading && <p className='loadingdetails cat'> Loading .... </p>}  
+            <h3 className='mainTitle'> Discover our weekly discounts </h3> 
 
-        {!isLoading && updatedProduct.length > 0 &&
-            <div className='gridWrapper'> 
+            <p className='subTitle'> Find a great deal to suit your selection </p>
 
-                {updatedProduct.map((item) => 
-                    <ProductCard key={item._id} 
-                        src={`../../../../productphoto/${item.photo[0].filename}`}
-                        id={item._id}
-                        type={item.brand}
-                        alt={item.title} 
-                        title={item.title} 
-                        price={item.price} 
-                        special={item.special}
-                        like={item.like}
-                        addProduct={() => {handleAddProducts (item, item._id)}}
-                        likeAndFavourites={() => {likeAndFavourites (item)}}
-                        unlikeAndNotFavourites={() => {unlikeAndNotFavourites (item._id)}}>
-                    </ProductCard>
-                )}
+            {isLoading && <p className='loadingdetails cat'> Loading .... </p>}  
 
-            </div>
-        }
+            {!isLoading && updatedProduct.length > 0 &&
+                <div className='gridWrapper'> 
 
-        {!isLoading && updatedProduct.length == 0 &&
-            <div className='emptyProducts'>
-                <h2> No products found </h2> 
-            </div>
-        }
+                    {updatedProduct.map((item) => 
+                        <ProductCard key={item._id} 
+                            src={`../../../../productphoto/${item.photo[0].filename}`}
+                            id={item._id}
+                            type={item.brand}
+                            alt={item.title} 
+                            title={item.title} 
+                            price={item.price} 
+                            special={item.special}
+                            like={item.like}
+                            addProduct={() => {handleAddProducts (item, item._id)}}
+                            likeAndFavourites={() => {likeAndFavourites (item)}}
+                            unlikeAndNotFavourites={() => {unlikeAndNotFavourites (item._id)}}>
+                        </ProductCard>
+                    )}
+
+                </div>
+            }
+
+            {!isLoading && updatedProduct.length == 0 &&
+                <div className='emptyProducts'>
+                    <h2> No products found </h2> 
+                </div>
+            }
+
+        </div>
 
     </section>
 

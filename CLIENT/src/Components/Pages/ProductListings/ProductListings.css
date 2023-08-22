@@ -1,5 +1,8 @@
 .productContainer {
     position: relative;
+    display: flex;
+    flex-direction: row;
+    padding: 40px;
 }
 
 .productContainer .addProductMessage, .productContainer .likeMessage {
@@ -28,7 +31,7 @@
     color: #041549;
     font-family: 'Jost', sans-serif;
     font-size: 24px;
-    margin: 40px 0px 40px 95px;
+    margin: 0px 0px 10px 95px;
 }
 
 p.subTitle {

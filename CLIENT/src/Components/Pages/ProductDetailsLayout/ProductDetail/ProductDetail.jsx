@@ -5,6 +5,7 @@ import { useContext } from 'react'
 import { myUserContext } from '../../../../Utilities/UserContext'
 import { useParams } from 'react-router-dom'
 import ProductCard from '../../ProductListings/ProductCard/ProductCard'
+import Categories from '../../LandingPage/Categories/Categories'
 import '../ProductDetail/ProductDetails.css'
 
 
@@ -45,37 +46,46 @@ return (
 
     {unlikeMessage && <p className='unlikeMessage'> {unlikeMessage} </p>}
 
-    <h3 className='mainTitle'> Discover our weekly discounts </h3> 
+    <section className='broadCatContainer'> 
 
-    <p className='subTitle'> Find a great deal to suit your selection </p>
+        <Categories className='catego'></Categories>
 
-    {isLoading && <p className='loadingdetails cat'> Loading .... </p>}  
+        <div>
 
-    {!isLoading && updatedProduct.length > 0 &&
-        <div className='wrapper'>
-            {updatedProduct.map((item) =>
-                <ProductCard key={item._id}
-                            id={item._id}
-                            type={item.category}
-                            src={`../../../../../productphoto/${item.photo[0].filename}`}  
-                            alt={item.title} 
-                            title={item.title} 
-                            price={item.price} 
-                            special={item.special}
-                            like={item.like}
-                            addProduct={() => {handleAddProducts (item, item._id)}}
-                            likeAndFavourites={() => {likeAndFavourites (item)}}
-                            unlikeAndNotFavourites={() => {unlikeAndNotFavourites (item._id)}}>
-                </ProductCard> 
-            )} 
-        </div> 
-    }
-    
-    {!isLoading && updatedProduct.length === 0 &&
-        <div className='emptyProductSeacrh'>
-            <p> No available products for this category </p>
+            <h3 className='mainTitle'> Discover our weekly discounts </h3> 
+
+            <p className='subTitle'> Find a great deal to suit your selection </p>
+
+            {isLoading && <p className='loadingdetails cat'> Loading .... </p>}  
+
+            {!isLoading && updatedProduct.length > 0 &&
+                <div className='wrapper'>
+                    {updatedProduct.map((item) =>
+                        <ProductCard key={item._id}
+                                    id={item._id}
+                                    type={item.category}
+                                    src={`../../../../../productphoto/${item.photo[0].filename}`}  
+                                    alt={item.title} 
+                                    title={item.title} 
+                                    price={item.price} 
+                                    special={item.special}
+                                    like={item.like}
+                                    addProduct={() => {handleAddProducts (item, item._id)}}
+                                    likeAndFavourites={() => {likeAndFavourites (item)}}
+                                    unlikeAndNotFavourites={() => {unlikeAndNotFavourites (item._id)}}>
+                        </ProductCard> 
+                    )} 
+                </div> 
+            }
+            
+            {!isLoading && updatedProduct.length === 0 &&
+                <div className='emptyProductSeacrh'>
+                    <p> No available products for this category </p>
+                </div>
+            }
         </div>
-    }
+
+    </section>
     
     <Footer></Footer>
 </>

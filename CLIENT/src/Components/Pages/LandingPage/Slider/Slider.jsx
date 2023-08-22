@@ -21,7 +21,7 @@ return (
         <div className='hotProductsContainer'>
             {firstSlide.map(item =>
                 <HotProduct key={item._id}  
-                    src={`../../../../../productPhoto/${item.photo[0].filename}`} 
+                    src={`../../../../../public/productPhoto/${item.photo[0].filename}`} 
                     alt={item.title} 
                     title={item.title} 
                     price={item.price} 
@@ -38,7 +38,7 @@ return (
         <div className='hotProductsContainer'>
             {secondSlide.map(item =>
                 <HotProduct key={item._id} 
-                    src={`../../../../../productPhoto/${item.photo[0].filename}`} 
+                    src={`../../../../../public/productPhoto/${item.photo[0].filename}`} 
                     alt={item.title} 
                     title={item.title} 
                     price={item.price} 

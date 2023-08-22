@@ -1,3 +1,9 @@
+.broadCatContainer {
+    display: flex;
+    flex-direction: row;
+    padding: 40px;
+}
+
 .addProductError, .unlikeMessage, .addProductMessage, .likeMessage, .emptyCartMessage {
     font-size: 14px;
     font-family: 'Montserrat', sans-serif;
@@ -8,10 +14,6 @@
     z-index: 1;
     width: 100vw;
     text-align: center;
-}
-
-.cat {
-    margin: 60px auto;
 }
 
 .addProductMessage, .likeMessage {
@@ -35,7 +37,7 @@
 
 .emptyProductSeacrh p {
     text-align: center;
-    margin: 40px auto;
+    margin: 40px 300px 40px;
     font-size: 24px;
     font-family: 'Montserrat', sans-serif;
     color: #333333;
