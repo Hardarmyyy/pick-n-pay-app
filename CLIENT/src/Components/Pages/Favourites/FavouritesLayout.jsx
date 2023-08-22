@@ -46,7 +46,7 @@ return (
                     {favourites.map((item) =>
                         <ProductCard key={item._id}
                                     id={item.productId}
-                                    src={`../../../../../public/productphoto/${item.photo[0]}`}  
+                                    src={`../../../../../productphoto/${item.photo[0]}`}  
                                     alt={item.title} 
                                     title={item.title} 
                                     price={item.price} 
