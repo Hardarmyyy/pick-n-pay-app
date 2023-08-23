@@ -30,13 +30,13 @@ return (
         </Carousel.Caption>
     </Carousel.Item>
 
-    <Carousel.Item>
+    {/* <Carousel.Item>
         <img src={images[3].img} alt={images[3].title} className='photos'/>
         <Carousel.Caption>
             <h3> {images[3].title} </h3>
             <p> Everyday deals you don't want to miss </p>
         </Carousel.Caption>
-    </Carousel.Item>
+    </Carousel.Item> */}
 </Carousel>
 );
 }
