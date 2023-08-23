@@ -388,7 +388,8 @@ useEffect(() => {
     axios
     .get('http://localhost:4050/api/order/all/' + user.username)
     .then((response) => {
-        setMyOrders(response?.data?.myOrders)
+        const sortedOrders = (response?.data?.myOrders).sort((a, b) => new Date(b.date) - new Date(a.date));
+        setMyOrders(sortedOrders)
     })
     .catch((error) => {
         

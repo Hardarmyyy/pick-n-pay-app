@@ -51,7 +51,7 @@ return (
                                         <p> {product.quantity} units </p> 
                                     :   <p> {product.quantity} unit  </p>
                                     }
-                                    <p> @ $ <strong> {(product.price * product.quantity).toFixed(2)} </strong> </p>
+                                    <p> @ $ <strong> {(product.price).toFixed(2)} </strong> </p>
 
                                 </div>
 
@@ -61,7 +61,10 @@ return (
 
                                     <img src={`../../../../../productphoto/${product.photo}`}/>
 
-                                    <p className='description'> {product.description.slice(0, 50)} </p> 
+                                    <div>
+                                        <p className='description'> {product.description.slice(0, 50)} </p>
+                                        <p className='orderProductsSeller'> <span> Seller :  </span>{product.seller} </p>
+                                    </div> 
 
                                 </div>
 

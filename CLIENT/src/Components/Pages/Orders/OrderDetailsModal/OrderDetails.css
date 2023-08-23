@@ -36,6 +36,15 @@
     position: relative;
 }
 
+.orderProductsSeller {
+    float: left;
+    margin-left: 10px;
+}
+
+.orderProductsSeller span {
+    color: crimson;
+}
+
 .orderProductsWrapper {
     border-bottom: 1px solid #DDDDDD;
     padding-bottom: 20px;
