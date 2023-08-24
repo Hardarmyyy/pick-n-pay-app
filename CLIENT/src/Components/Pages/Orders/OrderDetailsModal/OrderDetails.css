@@ -45,9 +45,18 @@
     color: crimson;
 }
 
+.cardContainer .notice {
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    position: absolute;
+    bottom: -2%;
+    left: 3%;
+}
+
 .orderProductsWrapper {
     border-bottom: 1px solid #DDDDDD;
-    padding-bottom: 20px;
+    padding-bottom: 35px;
     margin-bottom: 10px;
 }
 
@@ -86,4 +95,15 @@
     bottom: 3%;
     left: 45%;
     padding: 5px 15px;
+}
+
+.sellerConfirmation {
+    border-radius: 5px;
+    background-color: #F79009;
+    color: #FFFFFF;
+    border: none;
+    float: right;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    padding: 5px;
 }

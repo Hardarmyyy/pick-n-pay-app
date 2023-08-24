@@ -7,6 +7,7 @@ import { myUserContext } from '../../../../Utilities/UserContext'
 import '../OrderCompleteModal/OrderComplete.css'
 import {cards} from '../../../../Utilities/CarouselData/'
 import Button from '../../../../Utilities/Button'
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import axios from 'axios'
 
 const OrderCompleteLayout = () => {
@@ -111,20 +112,22 @@ return (
                         <img src={cards[2].img} alt={cards[2].title}/>
                     </div>
 
-                    <Button margin='10px 0px' padding='5px 48px'> Click to complete payment and order</Button>
+                    <Button margin='10px 0px' padding='5px 80px'> Complete payment and order</Button>
 
                 </form>
+
+                <IoShieldCheckmarkOutline className='protectionIcon'></IoShieldCheckmarkOutline> <span className='protection'> Get full refund if the item is not as described or if is not delivered </span>
 
             </div>
 
         </div>
 
-        {!isLoading && currentShippingAddress &&
+        <div className='shippingAndOrder'>
 
-            <div className='shippingAndOrder'>
+            <h4 className='shippingTitle'> Shipping information </h4>
+
+            {!isLoading && currentShippingAddress &&
                 <div className='shippingInfoContainer'>
-
-                    <h4 className='shippingTitle'> Shipping information </h4>
 
                     {currentShippingAddress.map((shipping, index ) => (
 
@@ -137,65 +140,74 @@ return (
                     ))}
 
                 </div>
+            }
 
-                <div className='summary'>
+            {!isLoading  && !currentShippingAddress &&
 
-                    <h4 className='shippingTitle'> Order summary </h4>
+                <div className='shippingInfoContainer'>
 
-                    <div className='orderDetails'>
-                    
-                        {cartProducts.map((product ) => 
+                    <p className='emptyShippingInfo'> You don't have a shipping address </p>
 
-                            <div className='cardContainer'> 
+                </div>
+            }   
 
-                                <div className='cardTitle'>
-                                    <p> {product.title} </p>
-                                </div>
+            <div className='summary'>
 
-                                <div className='details'>
+                <h4 className='shippingTitle'> Order summary </h4>
 
-                                    <img src={`../../../../../productphoto/${product.photo[0]}`}/>
+                <div className='orderDetails'>
+                
+                    {cartProducts.map((product ) => 
 
-                                    <p className='description'> {product.description.slice(0, 35)} </p> 
+                        <div className='cardContainer'> 
 
-                                </div>
+                            <div className='cardTitle'>
+                                <p> {product.title} </p>
+                            </div>
 
-                                <div className='quantity'>
+                            <div className='details'>
 
-                                    {product.quantity > 1 ? <p> {product.quantity} units ------------------------ </p> : <p> {product.quantity} unit ------------------------ </p>}
-                                    <p> @ $ <strong> {(product.price * product.quantity).toFixed(2)} </strong> </p>
+                                <img src={`../../../../../productphoto/${product.photo[0]}`}/>
 
-                                </div>
+                                <p className='description'> {product.description.slice(0, 35)} </p> 
 
                             </div>
-                        )}
 
+                            <div className='quantity'>
+
+                                {product.quantity > 1 ? <p> {product.quantity} units ------------------------ </p> : <p> {product.quantity} unit ------------------------ </p>}
+                                <p> @ $ <strong> {(product.price * product.quantity).toFixed(2)} </strong> </p>
+
+                            </div>
+
+                        </div>
+                    )}
+
+                </div>
+
+                <div className='pricing'>
+
+                    <div className='subtotal'>
+                        <p> Subtotal </p>
+                        <h6> $ {subTotal.toFixed(2)} </h6>
                     </div>
-
-                    <div className='pricing'>
-
-                        <div className='subtotal'>
-                            <p> Subtotal </p>
-                            <h6> $ {subTotal.toFixed(2)} </h6>
-                        </div>
-                        <div className='shipping'>
-                            <p> Shipping </p>
-                            <h6> $ {shipping} </h6>
-                        </div>
-                        <div className='tax'>
-                            <p> VAT Tax </p>
-                            <h6> $ {vat.toFixed(2)} </h6>
-                        </div>
-                        <div className='total'>
-                            <p> Total </p>
-                            <h6> $ {(subTotal + shipping + vat).toFixed(2)} </h6>
-                        </div>
-
+                    <div className='shipping'>
+                        <p> Shipping </p>
+                        <h6> $ {shipping} </h6>
+                    </div>
+                    <div className='tax'>
+                        <p> VAT Tax </p>
+                        <h6> $ {vat.toFixed(2)} </h6>
+                    </div>
+                    <div className='total'>
+                        <p> Total </p>
+                        <h6> $ {(subTotal + shipping + vat).toFixed(2)} </h6>
                     </div>
 
                 </div>
+
             </div>
-        }
+        </div>
 
     </section>
 

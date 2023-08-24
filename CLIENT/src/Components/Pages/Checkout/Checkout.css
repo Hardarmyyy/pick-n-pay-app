@@ -84,6 +84,14 @@ form input:focus {
     margin-right: 20px;
 }
 
+.exisitingShipping {
+    margin: 20px 0px 10px;
+}
+
+.exisitingShipping input {
+    margin-right: 10px;
+}
+
 .button {
     text-align: center;
 }

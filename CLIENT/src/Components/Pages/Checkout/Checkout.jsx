@@ -37,6 +37,13 @@ const handleUserDeliveryInfo = (e) => {
     [name]: name === 'address' ? value : value.replace(/\s/g, "")}})
 }
 
+// define a state to handle the existing shipping information;
+const [existingShippingInfo, setExistingShipping] = useState(false)
+
+const handleExistingShippingInfo = (e) => {
+    setExistingShipping((existingShippingInfo) => !existingShippingInfo)
+}
+
 // define a state to show all fields in the form are required
 const [formError, setFormError] = useState(null)
 const [emailErr, setEmailErr] = useState(false)
@@ -46,15 +53,21 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 // define a function to handle the form submit of userDeliveryInfo and setModel to open;
 const handleFormSubmit = (e) => {
     e.preventDefault();
-    if(!userDeliveryInfo.firstName || !userDeliveryInfo.lastName || !userDeliveryInfo.email || !userDeliveryInfo.phoneNumber || !userDeliveryInfo.address || !userDeliveryInfo.city || !userDeliveryInfo.state || !userDeliveryInfo.zipcode) {
-        return setFormError('Please enter all fields to proceed')
+    if(((!userDeliveryInfo.firstName || !userDeliveryInfo.lastName || !userDeliveryInfo.email || !userDeliveryInfo.phoneNumber || !userDeliveryInfo.address || !userDeliveryInfo.city || !userDeliveryInfo.state || !userDeliveryInfo.zipcode) && existingShippingInfo === true && cartProducts.length > 0)) {
+        return navigate('/complete-order')
+    }
+    if(((!userDeliveryInfo.firstName || !userDeliveryInfo.lastName || !userDeliveryInfo.email || !userDeliveryInfo.phoneNumber || !userDeliveryInfo.address || !userDeliveryInfo.city || !userDeliveryInfo.state || !userDeliveryInfo.zipcode) && existingShippingInfo === true && cartProducts.length === 0)) {
+        return alert('Kindly add products to cart to proceed to checkout')
+    }
+    else if((!userDeliveryInfo.firstName || !userDeliveryInfo.lastName || !userDeliveryInfo.email || !userDeliveryInfo.phoneNumber || !userDeliveryInfo.address || !userDeliveryInfo.city || !userDeliveryInfo.state || !userDeliveryInfo.zipcode) && existingShippingInfo === false) {
+        return setFormError('Please enter your delivery information to proceed')
     }
     else if (!(emailRegex.test(userDeliveryInfo.email))) {
         setEmailErr(true)
         return setFormError('Please enter a valid email to proceed')
     }
     else if (cartProducts.length === 0) {
-        alert('Kindly add products to cart to proceed to checkout')
+        return alert('Kindly add products to cart to proceed to checkout')
     }
     else {
         axios
@@ -157,6 +170,11 @@ return (
 
                 </div>
 
+            </div>
+
+            <div className='exisitingShipping'>
+                <input type='checkbox' value={existingShippingInfo} onChange={handleExistingShippingInfo}/> 
+                <label> I have an existing shipping address and information </label>
             </div>
 
             <div className='button'> 
