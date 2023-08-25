@@ -64,7 +64,7 @@ return (
 
                                 </div>
 
-                                <button disabled className='sellerConfirmation'> awaiting shipment  </button>
+                                {/* <button disabled className='sellerConfirmation'> awaiting shipment  </button> */}
 
                             </div>
 
@@ -72,7 +72,7 @@ return (
 
                     </div>
                     
-                    <p className='notice'> <strong> NOTE: </strong> Delivery lead time is usually between 2-5 business days after shipping</p>
+                    {/* <p className='notice'> <strong> NOTE: </strong> Delivery lead time is usually between 2-5 business days after shipping</p> */}
 
                 </div>
 
