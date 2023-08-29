@@ -37,9 +37,9 @@ useEffect(() => {
 
 for (let i = 0; i < foundCategory.length; i++) {
     const element = foundCategory[i]?.name;
-    if (availableProductCategory.find((productCategory) => productCategory === foundCategory[i]?.name) === undefined) {
+    if (availableProductCategory.find((productCategory) => productCategory === element) === undefined) {
             // building array with unique product category
-            availableProductCategory.push(foundCategory[i]?.name);
+            availableProductCategory.push(element);
     }
 }
 
