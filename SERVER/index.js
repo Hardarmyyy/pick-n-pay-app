@@ -47,3 +47,6 @@ app.listen(process.env.PORT, () => {
     console.log('server is listening and running on port', process.env.PORT)
 })
 })  
+
+// Export the Express API for vercel build up process
+module.exports = app;
