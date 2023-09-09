@@ -151,9 +151,9 @@ exports.allUser = async (req, res, next) => {
 //get a user
 exports.getUser = async (req, res, next) => {
     try {
-        const {username} = req.params
+        const {username} = req.query
         // chech if the req uest username exist in the database;
-        const buyer = await Buyer.findOne({username: username})
+        const buyer = await Buyer.findOne({username: username}) 
         const seller = await Seller.findOne({username: username})
         if (!buyer && !seller) {
             return res.status(400).json({ error: "user doesn't exist!" })

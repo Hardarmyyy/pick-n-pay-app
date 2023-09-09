@@ -8,7 +8,7 @@ const Shop = require('../models/ShopModel');
 
 
 // create a add to cart controller for the buyer
-exports.addItemToCart = async (req, res, next) => {
+exports.addItemToCart = async (req, res, next) => { 
     try {
         // check if the buyer exist;
         const {username} = req.params
