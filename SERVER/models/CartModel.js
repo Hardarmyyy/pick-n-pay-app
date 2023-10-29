@@ -3,10 +3,7 @@ const mongoose = require('mongoose');
 // define a cart model for the buyer
 const cartSchema = mongoose.Schema(
     {
-    buyer: {
-        type: String
-    },
-    buyerID: {
+    buyerId: {
         type: String
     },
     myCart: [

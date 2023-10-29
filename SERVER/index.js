@@ -1,51 +1,58 @@
+const path = require('path')
 const mongoose = require('mongoose');
 require('dotenv').config()
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const {logger} = require('./middleware/logEvents')
+const {checkAuth} = require('./Middleware/checkAuth')
+const {credentails} = require('./Middleware/credentials')
+const {corsOptions} = require('./Utilities/corsOptions')
+const cookieParser = require('cookie-parser')
 
+
+const authRoutes = require('./routers/authRoutes')
 const userRoutes = require('./routers/userRoutes');
-const productRoutes = require('./routers/productRoutes')
-const categoryRoutes = require('./routers/categoryroutes')
-const cartRoutes = require('./routers/cartRoutes');
-const favouritesRoutes = require('./routers/favouritesRoutes')
-const orderRouter = require('./routers/orderRoutes')
-const imageRouter = require('./routers/imageRoutes')
-const shippingAddressRoutes = require('./routers/shippingAddressRoutes')
 
 //  The { useUnifiedTopology: true, useNewUrlParser: true } options passed to the mongoose.connect method are used to ensure that the latest recommended options are used when establishing a connection to the MongoDB server.
 mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlParser: true})
-.then(() => {
-console.log("connected to mongo database") 
- // use cors
+    .then(() => {
 
-app.use(cors())
+     // Custom logger middleware
+    app.use(logger);
+    
+    // handle options credentials check before CORS 
+    // fetch cookies credentails requirements
+    app.use(credentails)
 
-// use middleware
+    // cross origin middleware
+    app.use(cors(corsOptions));
 
-app.use(express.json()) 
+    // build in middleware for serving files in public folder
+    app.use(express.static(path.join(__dirname, 'public'))); // this is needed to make files available in public folder;
 
-app.use((req, res, next) => {
-    console.log(req.path, req.method)
-    next()
-})
+    // build in middleware for url encoded form data
+    app.use(express.urlencoded({ extended: false }));
 
-// use routes
+    // build in middleware for json 
+    app.use(express.json());
 
-app.use('/api/user', userRoutes) 
-app.use('/api/shop', productRoutes) 
-app.use('/api/category', categoryRoutes)
-app.use('/api/cart', cartRoutes)
-app.use('/api/favourites', favouritesRoutes)
-app.use('/api/order', orderRouter)
-app.use('/api/photo', imageRouter)
-app.use('/api/shipping', shippingAddressRoutes)
+    // middleware for cookies
+    app.use(cookieParser());
 
-// listen to server;
 
-app.listen(process.env.PORT, () => {
-    console.log('server is listening and running on port', process.env.PORT)
-})
+
+    app.use('/api/v1', authRoutes)
+
+    // use routes
+    app.use(checkAuth)
+    app.use('/api/v1', userRoutes) 
+
+    // listen to server;
+
+    app.listen(process.env.PORT, () => {
+        console.log(`server is connected to db and listening on port ${process.env.PORT}`);
+    })
 })  
 
 // Export the Express API for vercel build up process

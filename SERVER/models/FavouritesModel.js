@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const favouritesSchema = new mongoose.Schema(
     {
-    buyerID: {
+    buyerId: {
         type: String
     }, 
     myFavourites: [
