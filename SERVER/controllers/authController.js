@@ -22,12 +22,20 @@ const signUp = async (req, res) => {
     try {
         if (!username || !email || !password || !usertype) return res.status(400).json({error: 'All fields are required'}) 
 
-            //check username duplicate
+        //check username duplicate
         const registeredUsername = await User.findOne({username: username})
-        if (registeredUsername) return res.json({error: true, message: 'Username already registered! kindly choose a different username'})
-            // check email duplicate
-            const registeredEmail = await User.findOne({email: email})
-        if (registeredEmail) return res.json({error: true, message: 'Email already registered! kindly choose a different Email'})
+
+        if (registeredUsername) return res.json({
+            error: true, 
+            message: 'Username already registered! kindly choose a different username'
+        })
+        // check email duplicate
+        const registeredEmail = await User.findOne({email: email})
+
+        if (registeredEmail) return res.json({
+            error: true, 
+            message: 'Email already registered! kindly choose a different Email'
+        })
         
         // hash the user password
         const salt = await bcrypt.genSalt(Number(process.env.SALT))  
@@ -64,7 +72,10 @@ const signUp = async (req, res) => {
 const emailVerification = async (req, res) =>  {
         const {email} = req.query
     try {
-        if (!email) return res.json({error: true, message: "Invalid token"});
+        if (!email) return res.status(404).json({
+            error: true, 
+            message: "Invalid token"
+        });
 
         JWT.verify(
             email, 
@@ -73,7 +84,10 @@ const emailVerification = async (req, res) =>  {
                 if (err) return res.sendStatus(403)
 
                 const isVerified = await User.findById({_id: decoded.userId})
-                if (!isVerified)  return res.json({error: true, message: 'user not found'})
+                if (!isVerified)  return res.json({
+                    error: true, 
+                    message: 'user not found'
+                })
 
                 isVerified.verified = true
                 await isVerified.save()
@@ -92,18 +106,30 @@ const emailVerification = async (req, res) =>  {
 const signIn = async (req, res) => {
         const {username, password} = req.body;
     try {
-        if (!username || !password) return res.status(400).json({error: true, message: 'All fields are required'})
+        if (!username || !password) return res.status(404).json({
+            error: true, 
+            message: 'All fields are required'
+        })
 
         // check if user exists;
         const existingUser = await User.findOne({username: username})
-        if (!existingUser) return res.json({error: true, message: 'Incorrect username or password'})
+        if (!existingUser) return res.status(404).json({
+            error: true, 
+            message: 'Incorrect username or password'
+        })
 
         // Verify the user's password.
         const isPasswordValid = await bcrypt.compare(password, existingUser.password)
-        if (!isPasswordValid) return res.json({error: true, message: 'Incorrect password'})
+        if (!isPasswordValid) return res.status(404).json({
+            error: true, 
+            message: 'Incorrect password'
+        })
 
         // Check if the user has verified their email account.
-        if (!existingUser.verified) return res.json({error: true, message: "Please verify your email and try again"})
+        if (!existingUser.verified) return res.status(404).json({
+            error: true, 
+            message: "Please verify your email and try again"
+        })
 
         // Remove any existing OTP for the user in the database before generating a new OTP.
         await Otp.deleteOne({userId: existingUser._id})
@@ -130,7 +156,7 @@ const signIn = async (req, res) => {
         });   
     }
     catch (err) {
-    res.status(500).json({error: err.message})
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
@@ -140,7 +166,10 @@ const otpVerification = async (req, res) => {
             const {verify} = req.query
             const {otp} = req.body
     try {   
-        if (!verify) return res.json({error: true, message: "Invalid token"});
+        if (!verify) return res.status(404).json({
+            error: true, 
+            message: "Invalid token"
+        });
 
         JWT.verify(
             verify, 
@@ -151,13 +180,23 @@ const otpVerification = async (req, res) => {
                 const unverifiedOtp = await Otp.findOne({userId: decoded.userId})
                 const existingUser = await User.findById({_id: decoded.userId})
 
-                if (!unverifiedOtp) return res.json({error: true, message: 'Invalid! kindly send otp to login'})
-                if (!otp) return res.json({error: true, message: 'Otp is required'})
+                if (!unverifiedOtp) return res.status(404).json({
+                    error: true,
+                    message: 'Invalid! kindly send otp to login'
+                })
+
+                if (!otp) return res.status(404).json({
+                    error: true, 
+                    message: 'Otp is required'
+                })
 
                 // confirm otp before sign in
                 const isValidOtp = await bcrypt.compare(otp, unverifiedOtp.otp)
 
-                if (!isValidOtp) return res.json({error: true, message: 'Invalid otp'})
+                if (!isValidOtp) return res.status(404).json({
+                    error: true, 
+                    message: 'Invalid otp'
+                })
 
                 // check if otp is still valid and not expired before sign in
                 const otpCreatedAt = unverifiedOtp.createdAt
@@ -166,7 +205,10 @@ const otpVerification = async (req, res) => {
                 if (isAfter(currentTime, checkIsValid)) {
                         // delete otp from the database
                         await Otp.deleteOne({userId: unverifiedOtp.userId})
-                        return res.json({error: true, message: 'Otp has expired. Kindly resend otp to login'})
+                        return res.status(404).json({
+                            error: true, 
+                            message: 'Otp has expired. Kindly resend otp to login'
+                        })
                 } 
                 
                 // delete otp from the database
@@ -193,15 +235,19 @@ const otpVerification = async (req, res) => {
             })
     }
     catch (err) {
-        res.status(500).json({error: err.message})
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
 const resendOtpVerification = async (req, res) => {
         const {verify} = req.query
-        if (!verify) return res.json({error: true, message: "Invalid token"});
 
     try {   
+        if (!verify) return res.status(404).json({
+            error: true, 
+            message: "Invalid token"
+        });
+
         JWT.verify(
             verify, 
             process.env.OTP_TOKEN_SECRET,
@@ -232,16 +278,25 @@ const resendOtpVerification = async (req, res) => {
             })
     }
     catch (err) {
-        res.status(500).json({error: err.message})
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
 const forgotPassword = async (req, res) => {
         const {email} = req.body
-        if (!email) return res.json({error: true, message: 'Please enter your registered email address'})
+
     try {
+        if (!email) return res.status(404).json({
+            error: true, 
+            message: 'Please enter your registered email address'
+        })
+
         const existinguser = await User.findOne({email: email})
-        if (!existinguser) return res.json({error: true, message: 'Email is not registered. Kindly enter your registered email address'})
+        if (!existinguser) return res.json({
+            error: true, 
+            message: 'Email is not registered. Kindly enter your registered email address'
+        })
+
         // create a token to reset password 
         const resetToken = createResetPasswordToken(existinguser._id)
         // can perform other logic like using nodemailer to send email reset link for user password reset
@@ -252,17 +307,20 @@ const forgotPassword = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(500).json({error: err.message})
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
 const resetPassword = async (req, res) => {
         const {token} = req.query
         const {password, confirmPassword} = req.body
-        if (!token) return res.json({error: true, message: 'Invalid token request'})
 
     try {   
-        
+        if (!token) return res.status(404).json({
+            error: true, 
+            message: 'Invalid token request'
+        })
+
         JWT.verify(
             token, 
             process.env.RESET_PASSWORD_TOKEN_SECRET,
@@ -270,11 +328,20 @@ const resetPassword = async (req, res) => {
                 if (err) return res.sendStatus(403)
 
                 const existingUser = await User.findById({_id: decoded.userId})
-                if (!existingUser) return res.json({error: true, message: 'User not found'})
+                if (!existingUser) return res.json({
+                    error: true, 
+                    message: 'User not found'
+                })
                 
-                if (!password || !confirmPassword) return res.json({error: true, message: 'All fields are required'})
+                if (!password || !confirmPassword) return res.status(404).json({
+                    error: true, 
+                    message: 'All fields are required'
+                })
                 // compare if the user password match
-                if (password !== confirmPassword) return res.json({error: true, message: 'Password does not match'})
+                if (password !== confirmPassword) return res.status(404).json({
+                    error: true, 
+                    message: 'Password does not match'
+                })
 
                 // hash the user password
                 const salt = await bcrypt.genSalt(Number(process.env.SALT))
@@ -292,7 +359,7 @@ const resetPassword = async (req, res) => {
         
     }
     catch (err) {
-    res.status(500).json({error: err.message})
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
@@ -359,7 +426,7 @@ const refreshToken = async (req, res) => {
             })
     }
     catch (err) {
-        res.status(500).json({error: err.message})
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
@@ -395,7 +462,7 @@ const logout = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(500).json({error: err.message})
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 

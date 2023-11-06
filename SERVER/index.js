@@ -12,18 +12,21 @@ const cookieParser = require('cookie-parser')
 
 
 const authRoutes = require('./routers/authRoutes')
+const publicRoutes = require('./routers/publicRoutes')
 const userRoutes = require('./routers/userRoutes');
+const categoryRoutes = require('./routers/categoryRoutes')
+const productRoutes = require('./routers/productRoutes')
 
 //  The { useUnifiedTopology: true, useNewUrlParser: true } options passed to the mongoose.connect method are used to ensure that the latest recommended options are used when establishing a connection to the MongoDB server.
 mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlParser: true})
     .then(() => {
 
-     // Custom logger middleware
+    // Custom logger middleware
     app.use(logger);
     
     // handle options credentials check before CORS 
     // fetch cookies credentails requirements
-    app.use(credentails)
+    app.use(credentails);
 
     // cross origin middleware
     app.use(cors(corsOptions));
@@ -43,13 +46,16 @@ mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlPars
 
 
     app.use('/api/v1', authRoutes)
+    app.use('/api/v1', publicRoutes)
+    
 
-    // use routes
-    app.use(checkAuth)
+    app.use(checkAuth) // user authentication middleware
     app.use('/api/v1', userRoutes) 
+    app.use('/api/v1', categoryRoutes) 
+    app.use('/api/v1', productRoutes) 
+
 
     // listen to server;
-
     app.listen(process.env.PORT, () => {
         console.log(`server is connected to db and listening on port ${process.env.PORT}`);
     })

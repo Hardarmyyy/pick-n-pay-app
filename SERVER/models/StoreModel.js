@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
-const shopSchema = new mongoose.Schema(
-    {
+const storeSchema = new mongoose.Schema({
     sellerId: {
         type: String,
+        required: true,
     },
-    myShop: [
+    myStore: [
         {
             productId: {
                 type: mongoose.Schema.Types.ObjectId,
@@ -19,12 +19,6 @@ const shopSchema = new mongoose.Schema(
                 type: Number,
                 required: true,
             },
-            photo: [
-                {
-                filename: {type: String},
-                _id: {type: String}
-                }
-            ],
             description: {
                 type: String,
                 required: true,
@@ -33,17 +27,13 @@ const shopSchema = new mongoose.Schema(
                 type: String,
                 required: true,
             },
-            special: {
-                type: Boolean,
-                default: false,
+            brand: {
+                type: String,
+                default: 'any',
             },
-            like: {
-                type: Boolean,
-                default: false
-            },
-            stockQty: {
+            countInStock: {
                 type: Number,
-                default: 1
+                required: true
             }
         }
     ]
@@ -51,4 +41,4 @@ const shopSchema = new mongoose.Schema(
 { timestamps: {createdAt: true, updatedAt: true} }
 );
 
-module.exports = mongoose.model("Shop", shopSchema);
+module.exports = mongoose.model("Store", storeSchema);

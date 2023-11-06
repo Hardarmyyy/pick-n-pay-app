@@ -17,12 +17,14 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true,
     },
     email: {
         type: String,
         required: true,
         unique: true,
+        trim: true,
     },
     password: {
         type: String,
@@ -41,8 +43,8 @@ const userSchema = new mongoose.Schema({
     myOrders: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'Orders' }
     ],
-    shop: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Shop' }
+    store: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Store' }
     ],
     customerOrders: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'Orders' }

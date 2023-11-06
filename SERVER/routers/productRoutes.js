@@ -1,13 +1,16 @@
 const express = require('express');
-const {createProduct, allProducts, findAProduct, deleteProduct, updateProduct, allProductFromAllSellers} = require('../controllers/Products')
 const routers = express.Router();
+const {addProduct, singleProduct, updateProduct, deleteProduct, storeProducts} = require('../controllers/productController')
+const {isAllowedRole} = require('../middleware/checkAllowedRole')
+const {sellerRole} = require('../Utilities/allowedRoles')
 
 //product routes
-routers.post('/create/:username', createProduct)
-routers.get('/all/:username', allProducts)
-routers.get('/:username/:productid', findAProduct)
-routers.patch('/update/:username/:productid', updateProduct)
-routers.delete('/delete/:username/:productid', deleteProduct)
-routers.get('/all', allProductFromAllSellers)
+
+routers.post('/add-product/:userId', isAllowedRole(sellerRole), addProduct)
+routers.get('/product/:id', isAllowedRole(sellerRole), singleProduct)
+routers.patch('/update-product/:id', isAllowedRole(sellerRole), updateProduct)
+routers.delete('/delete-product/:id', isAllowedRole(sellerRole), deleteProduct)
+routers.get('/store-all-products/:userId', isAllowedRole(sellerRole), storeProducts)
+
 
 module.exports = routers;  

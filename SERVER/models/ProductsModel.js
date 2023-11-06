@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 const productSchema = new mongoose.Schema({ 
     sellerId: {
         type: String,
-        required: true
+        required: true,
+        index: false,
     },
     title: {
         type: String,
@@ -15,12 +16,6 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    photo: [
-        {
-        filename: {type: String},
-        _id: {type: String}
-        }
-    ],
     description: {
         type: String,
         required: true,
@@ -31,17 +26,17 @@ const productSchema = new mongoose.Schema({
     },
     brand: {
         type: String,
-        required: true,
+        default: 'any',
     },
-    special: {
+    topSelling: {
         type: Boolean,
         default: false,
     },
-    like: {
-        type: Boolean,
-        default: false
+    likes: {
+        type: Number,
+        default: 0
     },
-    stockQty: {
+    countInStock: {
         type: Number,
         required: true
     }

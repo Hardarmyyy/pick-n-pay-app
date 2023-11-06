@@ -1,4 +1,4 @@
-const isAdmin = (...permission) => {
+const isAllowedRole = (...permission) => {
 
     return (req, res, next) => {
 
@@ -18,5 +18,5 @@ const isAdmin = (...permission) => {
 }
 
 module.exports = { 
-    isAdmin
+    isAllowedRole
 }
