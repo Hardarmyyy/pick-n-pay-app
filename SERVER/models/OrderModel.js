@@ -1,23 +1,20 @@
 const mongoose = require("mongoose");
 
-// create an order model for the buyer orders
 
-const orderSchema = new mongoose.Schema( 
-    {
-    buyerID: {
-        type: String
-    },
-    myOrders: [
-        { 
-        orderID: {
-            type: String
+const orderSchema = new mongoose.Schema({ 
+        buyer: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
         },
-        orderedItems: [
+        orderItems: [
             {
                 productId: {
-                    type: String
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Product',
+                    required: true,
                 },
-                seller: {
+                sellerName: {
                     type: String
                 },
                 title: {
@@ -26,13 +23,13 @@ const orderSchema = new mongoose.Schema(
                 price: {
                     type: Number,
                 },
-                photo: {
-                    type: String,
-                },
                 description: {
                     type: String,
                 },
                 category: {
+                    type: String 
+                },
+                brand: {
                     type: String 
                 },
                 quantity: {
@@ -40,57 +37,64 @@ const orderSchema = new mongoose.Schema(
                 }
             }
         ],
-        shippingAddress:
-            {
-                firstName: {
-                    type: String
-                },
-                lastName: {
-                    type: String
-                },
-                email: {
-                    type: String
-                },
-                phoneNumber: {
-                    type: Number
-                },
-                address: {
-                    type: String
-                },
-                city: {
-                    type: String
-                },
-                state: {
-                    type: String
-                } 
+        orderQuantity: {
+            type: Number,
+            default: 0
+        },
+        shippingAddress: {
+            firstName: {
+                type: String
             },
-        payment: {
+            lastName: {
+                type: String
+            },
+            email: {
+                type: String
+            },
+            phoneNumber: {
+                type: Number
+            },
+            streetAddress: {
+                type: String
+            },
+            city: {
+                type: String
+            },
+            state: {
+                type: String
+            } 
+        },
+        paymentMethod: {
+            type: String,
+        },
+        isPending: {
             type: Boolean,
             default: true
         },
-        pending: {
-            type: Boolean,
-            default: true
-        },
-        shipping: {
+        isShipped: {
             type: Boolean,
             default: false
         },
-        completed: {
+        isDelivered: {
             type: Boolean,
             default: false
+        },
+        subTotal: {
+            type: Number,
+            default: 0
+        },
+        shippingCost: {
+            type: Number,
+            default: 0
+        },
+        vat: {
+            type: Number,
+            default: 0,
         },
         orderTotal: {
-            type: Number
-        },
-        date: {
-            type: String,
-            default: Date()
+            type: Number,
+            default: 0
         }
-        },
-    ]  
-    },
-    { timestamps: {createdAt: true, updatedAt: true} }
-);
+    }, { timestamps: {createdAt: true, updatedAt: true} });
 
 module.exports = mongoose.model("Order", orderSchema);

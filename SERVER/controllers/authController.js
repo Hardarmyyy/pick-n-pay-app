@@ -5,6 +5,7 @@ const otpGenerator = require('otp-generator')
 const {addMinutes, isAfter} = require('date-fns')
 require('dotenv').config()
 const User = require('../models/UserModel')
+const Cart = require('../models/CartModel')
 const Otp = require('../models/OtpModel')
 const {
     createVerifyEmailToken,
@@ -58,6 +59,28 @@ const signUp = async (req, res) => {
 
         const emailToken = createVerifyEmailToken(user._id)
         // You can send a verification email using a library like Nodemailer here
+
+        // Check if there is a session cart for unregistered users
+    
+        const sessionCart = req.session.cart;
+        if (sessionCart) {
+            // Associate the session cart with the newly registered user
+            const newCart = new Cart({
+                buyerId: user._id, 
+                myCart: sessionCart.myCart,
+                numberOfProducts: sessionCart.numberOfProducts,
+                subTotal: sessionCart.subTotal, 
+                shippingCost: sessionCart.shippingCost, 
+                vat: sessionCart.vat, 
+                total: sessionCart.total
+            }) 
+
+            await newCart.save()
+
+            // Clear the session cart after associating with the user
+            delete req.session.cart;
+        }
+
         res.status(200).json({
             success: true, 
             message: `Verification email has been sent to ${user.email} successfully`, 
@@ -224,6 +247,42 @@ const otpVerification = async (req, res) => {
                 // update and save the existing user with a refresh token that can always be cross references when a user needs to login
                 existingUser.token = [...newRefreshTokenArray, newRefreshToken]
                 await existingUser.save()
+
+                // Check if there is a session cart for existing user before login
+                const sessionCart = req.session.cart;
+                if (sessionCart) {
+                    // Associate the session cart with the existing user
+                    let existingCart = await Cart.findOne({buyerId: existingUser._id})
+                    if (existingCart) {
+                        existingCart.myCart = [...existingCart.myCart, ...sessionCart.myCart]
+                        existingCart.numberOfProducts += sessionCart.numberOfProducts
+                        existingCart.subTotal += sessionCart.subTotal
+
+                        const shippingCost = existingCart.subTotal === 0 ? 0 : existingCart.subTotal > 500 ? 80 : 50;
+                        const VAT = existingCart.subTotal > 500 ? (7.5 / 100 ) * existingCart.subTotal : (5 / 100 ) * existingCart.subTotal;
+                
+                        existingCart.shippingCost = shippingCost;
+                        existingCart.vat = VAT.toFixed(2);
+                        existingCart.total = (existingCart.subTotal + existingCart.shippingCost + existingCart.vat).toFixed(2);
+                        await existingCart.save()
+                    }
+                    else {
+                        // create a new cart for the existing user
+                        const newCart = new Cart({
+                            buyerId: existingUser._id, 
+                            myCart: sessionCart.myCart,
+                            numberOfProducts: sessionCart.numberOfProducts,
+                            subTotal: sessionCart.subTotal, 
+                            shippingCost: sessionCart.shippingCost, 
+                            vat: sessionCart.vat, 
+                            total: sessionCart.total
+                        })
+            
+                        await newCart.save()
+                    }
+                    // Clear the session cart after associating with the existing user
+                    delete req.session.cart;
+                }
 
                 // expiry: 24 hours // secure: true // sameSite: "None" cross-site cookie (after production)) 
                 res.cookie('refresh', newRefreshToken,  { httpOnly: true, sameSite: "None", maxAge: 24 * 60 * 60 * 1000 })

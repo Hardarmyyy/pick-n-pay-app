@@ -19,4 +19,4 @@ const isAllowedRole = (...permission) => {
 
 module.exports = { 
     isAllowedRole
-}
+} 

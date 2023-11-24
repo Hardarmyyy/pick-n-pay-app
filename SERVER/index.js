@@ -1,14 +1,16 @@
-const path = require('path')
+const path = require('path');
 const mongoose = require('mongoose');
-require('dotenv').config()
+require('dotenv').config();
 const express = require('express');
 const app = express();
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const cors = require('cors');
-const {logger} = require('./middleware/logEvents')
-const {checkAuth} = require('./Middleware/checkAuth')
-const {credentails} = require('./Middleware/credentials')
-const {corsOptions} = require('./Utilities/corsOptions')
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const {logger} = require('./middleware/logEvents');
+const {checkAuth} = require('./Middleware/checkAuth');
+const {credentails} = require('./Middleware/credentials');
+const {corsOptions} = require('./Utilities/corsOptions');
 
 
 const authRoutes = require('./routers/authRoutes')
@@ -16,6 +18,27 @@ const publicRoutes = require('./routers/publicRoutes')
 const userRoutes = require('./routers/userRoutes');
 const categoryRoutes = require('./routers/categoryRoutes')
 const productRoutes = require('./routers/productRoutes')
+const cartRoutes = require('./routers/cartRoutes')
+const favouritesRoutes = require('./routers/favouritesRoutes')
+const shippingAddressRoutes = require('./routers/shippingAddressRoutes')
+const orderRoutes = require('./routers/orderRoutes.js')
+
+
+const store = new MongoStore(
+    {
+        mongoUrl: process.env.MONGO_URI,
+        collection: 'mySessions',
+        autoRemove: 'native', // Enable automatic removal of expired sessions
+    }, 
+    function(error) {
+        console.log(error);
+    }
+);
+
+// Catch errors
+store.on('error', function(error) {
+    console.log(error);
+});
 
 //  The { useUnifiedTopology: true, useNewUrlParser: true } options passed to the mongoose.connect method are used to ensure that the latest recommended options are used when establishing a connection to the MongoDB server.
 mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlParser: true})
@@ -23,6 +46,22 @@ mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlPars
 
     // Custom logger middleware
     app.use(logger);
+
+    // Use session middleware
+    app.use(
+        session({
+            secret: process.env.SESSION_SECRET,
+            resave: false,
+            saveUninitialized: true,
+            store: store,
+            cookie: { 
+                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+                secure: process.env.NODE_ENV === 'production',
+                httpOnly: true, 
+            }, 
+        })
+    );
+    
     
     // handle options credentials check before CORS 
     // fetch cookies credentails requirements
@@ -47,12 +86,16 @@ mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlPars
 
     app.use('/api/v1', authRoutes)
     app.use('/api/v1', publicRoutes)
+    app.use('/api/v1', cartRoutes) 
     
 
     app.use(checkAuth) // user authentication middleware
     app.use('/api/v1', userRoutes) 
     app.use('/api/v1', categoryRoutes) 
     app.use('/api/v1', productRoutes) 
+    app.use('/api/v1', favouritesRoutes) 
+    app.use('/api/v1', shippingAddressRoutes) 
+    app.use('/api/v1', orderRoutes) 
 
 
     // listen to server;

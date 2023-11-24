@@ -46,13 +46,10 @@ const userSchema = new mongoose.Schema({
     store: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'Store' }
     ],
-    customerOrders: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Orders' }
-    ],
     token: [
         {type: String}
     ]
 
-},{ timestamps: { createdAt: true, updatedAt: true }});
+}, { timestamps: { createdAt: true, updatedAt: true } });
 
 module.exports = mongoose.model('User', userSchema);

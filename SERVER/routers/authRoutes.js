@@ -8,7 +8,7 @@ routes.get('/verify', emailVerification);
 routes.post('/login', signIn);
 routes.post('/otp', otpVerification);
 routes.get('/otp-resend', resendOtpVerification);
-routes.post('/forgot', forgotPassword);
+routes.post('/forgot', forgotPassword); 
 routes.post('/reset', resetPassword);
 routes.get('/refresh', refreshToken);
 routes.get('/logout', logout);

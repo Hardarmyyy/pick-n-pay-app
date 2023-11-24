@@ -28,19 +28,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: 'any',
     },
-    topSelling: {
-        type: Boolean,
-        default: false,
-    },
-    likes: {
-        type: Number,
-        default: 0
-    },
     countInStock: {
         type: Number,
         required: true
     }
 
-},{ timestamps: { createdAt: true, updatedAt: true }})
+}, { timestamps: { createdAt: true, updatedAt: true } });
 
 module.exports = mongoose.model('Product', productSchema);

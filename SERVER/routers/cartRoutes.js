@@ -1,14 +1,23 @@
 const express = require('express');
 const routers = express.Router();
-const {addItemToCart, allCartItems, addQuantity, decrementQuantity, deleteItem, emptyCart} = require('../controllers/Cart')
+const {
+    addProductToCart,
+    fetchCartProducts,
+    addQuantity,
+    decrementQuantity,
+    deleteProductFromCart,
+    emptyCartProducts
+} = require('../controllers/cartController')
+const {isAllowedRole} = require('../middleware/checkAllowedRole')
+const {buyerRole} = require('../Utilities/allowedRoles')
 
-// cart routes
-routers.post('/add/:username/:productid', addItemToCart);
-routers.patch('/increment/:username/:productid', addQuantity);
-routers.patch('/decrement/:username/:productid', decrementQuantity);
-routers.get('/all/:username', allCartItems);
-routers.delete('/delete/:username/:productid', deleteItem);
-routers.delete('/empty/:username', emptyCart);
+
+routers.post('/add-cart/:id', addProductToCart);
+routers.patch('/increment-cart/:id', addQuantity);
+routers.patch('/decrement-cart/:id', decrementQuantity);
+routers.get('/all-cart-products', fetchCartProducts);
+routers.delete('/delete-cart/:id', deleteProductFromCart);
+routers.delete('/empty-cart', emptyCartProducts);
 
 
 module.exports = routers;   

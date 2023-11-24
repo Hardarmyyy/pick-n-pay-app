@@ -4,7 +4,7 @@ const {addProduct, singleProduct, updateProduct, deleteProduct, storeProducts} =
 const {isAllowedRole} = require('../middleware/checkAllowedRole')
 const {sellerRole} = require('../Utilities/allowedRoles')
 
-//product routes
+
 
 routers.post('/add-product/:userId', isAllowedRole(sellerRole), addProduct)
 routers.get('/product/:id', isAllowedRole(sellerRole), singleProduct)

@@ -33,7 +33,7 @@ const getAllUsers = async (req, res) => {
         })
     }
     catch (err) {
-        res.status(500).json({error: err.message}) 
+        res.status(500).json({error: 'Internal server error', message: err.message}) 
     }
 }
 
@@ -79,7 +79,7 @@ const getSingleUser = async (req, res) => {
 
     }
     catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
@@ -88,9 +88,9 @@ const deleteUser = async (req, res) => {
         const {id} = req.params
 
 	try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({ 
             error: true, 
-            message: "The user ID is invalid!" 
+            message: "The user ID is invalid!"
         })
 
         const user = await User.findById({_id: id})
@@ -100,76 +100,254 @@ const deleteUser = async (req, res) => {
         });
 
         // check if the user has an existing products in the cart, favorites or store
-        const existingCart = await Cart.findOne({buyerId: user._id})
-        const existingFavourites = await Favourites.findOne({buyerId: user._id})
-        const existingStore = await Store.findOne({sellerId: user._id})
-            
-        if (!existingCart || !existingFavourites || !existingStore) {
-            const deletedUser = await User.findByIdAndDelete({_id: id})
-            return res.status(200).json({
-                success: 'true', 
-                message: 'User has been deleted successfully', 
-                deletedUser: deletedUser
-            })
-        }
-        
-        else if (existingCart || existingFavourites) {
+        const existingCart = await Cart.findOne({buyerId: id})
+        const existingFavourites = await Favourites.findOne({buyerId: id})
+        const existingStore = await Store.findOne({sellerId: id})
 
+        if (existingCart && existingFavourites && existingStore) { // if the user has an exisiting cart, favourites and store with products;
             // empty the cart and return the products back to the shelf
             await Promise.all(existingCart.myCart.map( async(product) => {
-                // update the product new stockQty by adding the quantity back to the stockQty in the store
-                let store = await Store.findOne({sellerId: product.sellerId})
-                const storeItem = store.myStore.find((item) => item._id.equals(product.productId))
-                storeItem.countInStock += product.quantity 
 
-                // update the product stockQty by adding it back to the product qty
+                // update the product quantity by adding the quantity to the countInStock in the store
+                let store = await Store.findOne({sellerId: product.sellerId})
+                let existingStoreProducts = store.myStore.find((item) => item._id.equals(product.productId))
+                existingStoreProducts.countInStock += product.quantity 
+
+                // update the product quantity by adding the quantity to the countInStock
                 const allProduct = await Product.find({})
                 await Promise.all(allProduct.map( async(pro) => {
                     if (pro._id.equals(product.productId)) {
                         await Product.findByIdAndUpdate({_id: product.productId}, {countInStock: pro.countInStock + product.quantity})
                     }
                 })) 
-                    
+                
                 await store.save()
 
-                return {productId: product.productId, seller: product.sellerName, title: product.title, price: product.price, quantity: product.quantity}
+                return {productId: product.productId, sellerId: product.sellerId, title: product.title, price: product.price, description: product.description, category: product.category, quantity: product.quantity}
             }))
             
             // delete the cart
-            await Cart.findByIdAndDelete({_id: existingCart._id})
+            const deletedCart = await Cart.findByIdAndDelete({_id: existingCart._id})
             // delete the favourites
-            await Favourites.findOneAndDelete({buyerId: user._id})
+            const deletedFavourites = await Favourites.findOneAndDelete({buyerId: user._id})
+
+            // delete the products from the user(seller) store
+            const existingStoreProducts = await Promise.all(existingStore.myStore.map(  async(item) => {
+                const deleteExisitngProduct = await Product.findByIdAndDelete({_id: item._id})
+                return {deletedStoreItems: deleteExisitngProduct}
+            }))
+
+            // delete the store
+            const deletedStore = await Store.findOneAndDelete({sellerId: id})
 
             const deletedUser = await User.findByIdAndDelete({_id: id})
+
             return res.status(200).json({
                 success: 'true', 
-                message: 'User has been deleted successfully', 
+                message: 'User with cart, favourites and store has been deleted successfully',
+                deletedCart: deletedCart,
+                deletedFavourites: deletedFavourites,
+                deletedStoreProducts: existingStoreProducts, 
+                deletedStore: deletedStore, 
+                deletedUser: deletedUser
+            })
+        }
+
+        else if (existingFavourites && existingStore) { // if the user has an exisiting favourites and store with products;
+
+            // delete the favourites
+            const deletedFavourites = await Favourites.findOneAndDelete({buyerId: user._id})
+
+            // delete the products from the user(seller) store
+            const existingStoreProducts = await Promise.all(existingStore.myStore.map(  async(item) => {
+                const deleteExisitngProduct = await Product.findByIdAndDelete({_id: item._id})
+                return {deletedStoreItems: deleteExisitngProduct}
+            }))
+
+            // delete the store
+            const deletedStore = await Store.findOneAndDelete({sellerId: id})
+
+            const deletedUser = await User.findByIdAndDelete({_id: id})
+
+            return res.status(200).json({
+                success: 'true', 
+                message: 'User with favourites and store has been deleted successfully',
+                deletedFavourites: deletedFavourites,
+                deletedStoreProducts: existingStoreProducts, 
+                deletedStore: deletedStore, 
+                deletedUser: deletedUser
+            })
+        }
+
+        else if (existingCart && existingStore) { // if the user has an exisiting cart and store with products;
+            // empty the cart and return the products back to the shelf
+            await Promise.all(existingCart.myCart.map( async(product) => {
+
+                // update the product quantity by adding the quantity to the countInStock in the store
+                let store = await Store.findOne({sellerId: product.sellerId})
+                let existingStoreProducts = store.myStore.find((item) => item._id.equals(product.productId))
+                existingStoreProducts.countInStock += product.quantity 
+
+                // update the product quantity by adding the quantity to the countInStock
+                const allProduct = await Product.find({})
+                await Promise.all(allProduct.map( async(pro) => {
+                    if (pro._id.equals(product.productId)) {
+                        await Product.findByIdAndUpdate({_id: product.productId}, {countInStock: pro.countInStock + product.quantity})
+                    }
+                })) 
+                
+                await store.save()
+
+                return {productId: product.productId, sellerId: product.sellerId, title: product.title, price: product.price, description: product.description, category: product.category, quantity: product.quantity}
+            }))
+            
+            // delete the cart
+            const deletedCart = await Cart.findByIdAndDelete({_id: existingCart._id})
+
+            // delete the products from the user(seller) store
+            const existingStoreProducts = await Promise.all(existingStore.myStore.map(  async(item) => {
+                const deleteExisitngProduct = await Product.findByIdAndDelete({_id: item._id})
+                return {deletedStoreItems: deleteExisitngProduct}
+            }))
+
+            // delete the store
+            const deletedStore = await Store.findOneAndDelete({sellerId: id})
+
+            const deletedUser = await User.findByIdAndDelete({_id: id})
+
+            return res.status(200).json({
+                success: 'true', 
+                message: 'User with existing cart and store has been deleted successfully',
+                deletedCart: deletedCart,
+                deletedStoreProducts: existingStoreProducts, 
+                deletedStore: deletedStore, 
+                deletedUser: deletedUser
+            })
+        }
+        
+        else if (existingCart && existingFavourites) { // if the user(buyer) has an exisiting cart and favourites with products;
+
+            // empty the cart and return the products back to the shelf
+            await Promise.all(existingCart.myCart.map( async(product) => {
+
+                // update the product quantity by adding the quantity to the countInStock in the store
+                let store = await Store.findOne({sellerId: product.sellerId})
+                let existingStoreProducts = store.myStore.find((item) => item._id.equals(product.productId))
+                existingStoreProducts.countInStock += product.quantity 
+
+                // update the product quantity by adding the quantity to the countInStock
+                const allProduct = await Product.find({})
+                await Promise.all(allProduct.map( async(pro) => {
+                    if (pro._id.equals(product.productId)) {
+                        await Product.findByIdAndUpdate({_id: product.productId}, {countInStock: pro.countInStock + product.quantity})
+                    }
+                })) 
+                
+                await store.save()
+
+                return {productId: product.productId, sellerId: product.sellerId, title: product.title, price: product.price, description: product.description, category: product.category, quantity: product.quantity}
+            }))
+            
+            // delete the cart
+            const deletedCart = await Cart.findByIdAndDelete({_id: existingCart._id})
+            // delete the favourites
+            const deletedFavourites = await Favourites.findOneAndDelete({buyerId: user._id})
+            //delete the user
+            const deletedUser = await User.findByIdAndDelete({_id: id})
+
+            return res.status(200).json({
+                success: 'true', 
+                message: 'User with cart and favourites has been deleted successfully', 
+                deletedCart: deletedCart,
+                deletedFavourites: deletedFavourites,
+                deletedUser: deletedUser
+            })
+        }
+
+        else if (existingFavourites) { // if the user(buyer) has an exisiting favourites with products;
+
+            // delete the favourites
+            const deletedFavourites = await Favourites.findOneAndDelete({buyerId: user._id})
+            //delete the user
+            const deletedUser = await User.findByIdAndDelete({_id: id})
+
+            return res.status(200).json({
+                success: 'true', 
+                message: 'User with favourites has been deleted successfully', 
+                deletedFavourites: deletedFavourites,
+                deletedUser: deletedUser
+            })
+        }
+
+        else if (existingCart) { // if the user(buyer) has an exisiting cart with products;
+
+            // empty the cart and return the products back to the shelf
+            await Promise.all(existingCart.myCart.map( async(product) => {
+
+                // update the product quantity by adding the quantity to the countInStock in the store
+                let store = await Store.findOne({sellerId: product.sellerId})
+                let existingStoreProducts = store.myStore.find((item) => item._id.equals(product.productId))
+                existingStoreProducts.countInStock += product.quantity 
+
+                // update the product quantity by adding the quantity to the countInStock
+                const allProduct = await Product.find({})
+                await Promise.all(allProduct.map( async(pro) => {
+                    if (pro._id.equals(product.productId)) {
+                        await Product.findByIdAndUpdate({_id: product.productId}, {countInStock: pro.countInStock + product.quantity})
+                    }
+                })) 
+                
+                await store.save()
+
+                return {productId: product.productId, sellerId: product.sellerId, title: product.title, price: product.price, description: product.description, category: product.category, quantity: product.quantity}
+            }))
+            
+            // delete the cart
+            const deletedCart = await Cart.findByIdAndDelete({_id: existingCart._id})
+            
+            //delete the user
+            const deletedUser = await User.findByIdAndDelete({_id: id})
+
+            return res.status(200).json({
+                success: 'true', 
+                message: 'User with cart has been deleted successfully', 
+                deletedCart: deletedCart,
                 deletedUser: deletedUser
             })
         }
     
         else if (existingStore) { // if the user(seller) has an exisiting store with products;
             // delete the products from the user(seller) store
-            const storeItems = await Promise.all(existingStore.myStore.map(  async(item) => {
+            const existingStoreProducts = await Promise.all(existingStore.myStore.map(  async(item) => {
                 const deleteExisitngProduct = await Product.findByIdAndDelete({_id: item._id})
-                return {deletedShopItems: deleteExisitngProduct}
+                return {deletedStoreItems: deleteExisitngProduct}
             }))
 
             // delete the shop
-            const deletedShop = await Store.findOneAndDelete({sellerId: user._id})
+            const deletedStore = await Store.findOneAndDelete({sellerId: id})
 
+            const deletedUser = await User.findByIdAndDelete({_id: id})
+
+            return res.status(200).json({
+                success: 'true', 
+                message: 'User with existing store has been deleted successfully', 
+                deletedStoreProducts: existingStoreProducts, 
+                deletedStore: deletedStore, 
+                deletedUser: deletedUser
+            })
+        }
+        
+        else if (!existingCart && !existingFavourites && !existingStore) {
             const deletedUser = await User.findByIdAndDelete({_id: id})
             return res.status(200).json({
                 success: 'true', 
-                message: 'User has been deleted successfully', 
-                deletedStoreProducts: storeItems, 
-                removedShop: deletedShop, 
+                message: 'User without a cart, favourites and store has been deleted successfully', 
                 deletedUser: deletedUser
             })
-        }   
+        } 
 	} 
-    catch (error) {
-        res.status(500).send({error: error.message});
+    catch (err) {
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
@@ -224,8 +402,8 @@ const updatePassword = async (req, res) => {
             updatedUser: existingUser
         })
 	} 
-    catch (error) {
-        res.status(500).send({error: error.message});
+    catch (err) {
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 } 
 
@@ -277,8 +455,8 @@ const updateUser = async (req, res) => {
             updatedUser: existingUser
         })
     }
-    catch (error) {
-        res.status(500).send({error: error.message});
+    catch (err) {
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
@@ -320,52 +498,50 @@ const switchToSellerRole = async (req, res) => {
         
 
     }
-    catch (error) {
-        res.status(500).send({error: error.message});
+    catch (err) {
+        res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
 // switch userRole to buyer
 const switchToBuyerRole = async (req, res) => {
-    const {id} = req.params
-try {
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
-        error: true, 
-        message: "The user ID is invalid!" 
-    })
-
-    const existingUser = await User.findById({_id: id})
-    if (!existingUser) return res.json({
-        error: true, 
-        message: 'User not found'
-    });
-
-    // find the current user role
-    const currentUserRole = Object.values(existingUser.roles).filter(Boolean)
-
-    // check if the currentUser role is not thesame as the new role
-    const allowNewRole = currentUserRole.find((role) => role !== 'buyer')
-
-    if (allowNewRole) {
-        existingUser.roles = {
-            buyer: 'buyer',
-            seller: null,
-            admin: null
-        }
-
-        await existingUser.save()
-        res.status(201).json({
-            success: true,
-            message: `${existingUser.username}. Your profile has been switched to ${existingUser.roles.buyer} successfully`,
-            updatedUser: existingUser
+        const {id} = req.params
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
+            error: true, 
+            message: "The user ID is invalid!" 
         })
-    }
-    
 
-}
-catch (error) {
-    res.status(500).send({error: error.message});
-}
+        const existingUser = await User.findById({_id: id})
+        if (!existingUser) return res.json({
+            error: true, 
+            message: 'User not found'
+        });
+
+        // find the current user role
+        const currentUserRole = Object.values(existingUser.roles).filter(Boolean)
+
+        // check if the currentUser role is not thesame as the new role
+        const allowNewRole = currentUserRole.find((role) => role !== 'buyer')
+
+        if (allowNewRole) {
+            existingUser.roles = {
+                buyer: 'buyer',
+                seller: null,
+                admin: null
+            }
+
+            await existingUser.save()
+            res.status(201).json({
+                success: true,
+                message: `${existingUser.username}. Your profile has been switched to ${existingUser.roles.buyer} successfully`,
+                updatedUser: existingUser
+            })
+        }
+    }
+    catch (err) {
+        res.status(500).json({error: 'Internal server error', message: err.message})
+    }
 }
 
 

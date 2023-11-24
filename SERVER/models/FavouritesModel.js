@@ -1,18 +1,17 @@
 const mongoose = require("mongoose");
 
-// create a favourites schema for the buyer
+// create a favourites schema for the user (buyer)
 
-const favouritesSchema = new mongoose.Schema(
-    {
+const favouritesSchema = new mongoose.Schema({
     buyerId: {
         type: String
-    }, 
+    },  
     myFavourites: [
         {
             productId: {
                 type: String
             },
-            seller: {
+            sellerId: {
                 type: String
             },
             title: {
@@ -23,19 +22,17 @@ const favouritesSchema = new mongoose.Schema(
                 type: Number,
                 required: true,
             },
-            photo: [
-                {type: String},
-            ],
             description: {
                 type: String,
                 required: true,
             },
             category: {
-                type: String
+                type: String,
+                required: true,
             },
-            special: {
-                type: Boolean,
-                default: false,
+            brand: {
+                type: String,
+                default: 'any',
             },
             quantity: {
                 type: Number,
@@ -43,8 +40,6 @@ const favouritesSchema = new mongoose.Schema(
             }
         }
     ]
-    },
-    { timestamps: {createdAt: true, updatedAt: true} }
-);
+}, { timestamps: {createdAt: true, updatedAt: true} });
 
 module.exports = mongoose.model("Favourites", favouritesSchema);

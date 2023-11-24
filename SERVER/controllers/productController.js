@@ -70,14 +70,14 @@ const allProducts =  async (req, res) => {
     try {
         const products = await Product.find({}).sort({createdAt: -1}).lean();
 
-        const allProductsWithSellerName = await Promise.all(products.map( async (p) => {
+        const allProducts = await Promise.all(products.map( async (p) => {
 
             const createdTime = format(p.createdAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the created datetime
             const updatedTime = format(p.updatedAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the updated datetime
             return {...p, createdAt: createdTime, updatedAt: updatedTime}
         }))
 
-        if (!allProductsWithSellerName.length) return res.json({
+        if (!allProducts.length) return res.json({
             error: true, 
             message: 'The product list is empty', 
             products: allProductsWithSellerName
@@ -86,7 +86,7 @@ const allProducts =  async (req, res) => {
         res.status(200).json({
             success: true, 
             message: 'All products fetched successfully', 
-            products: allProductsWithSellerName
+            products: allProducts
         })
     }
     catch (err) {
@@ -108,9 +108,22 @@ const storeProducts =  async (req, res) => {
 
         // check if the user has an existing store
         let store = await Store.findOne({sellerId: userId})
-        if (!store) return res.status(404).json({ 
-            error: true, 
-            message: "The user does not have any product in the store!" 
+
+        if (!store) { // create a new store for the user(seller)
+
+            const newStore = new Store({sellerId: userId, myStore: []})
+            await newStore.save()
+
+            return res.status(404).json({ 
+                error: true, 
+                message: "The user does not have any product in the store!",
+                emptyStore: newStore
+            })
+        }
+        else if (store.myStore.length == 0) return res.status(404).json({ 
+            success: true, 
+            message: "The user does not have any existing product in the store!",
+            emptyStore: store
         })
         
         const allProductsInStore = await Promise.all(store.myStore.map( async(product) => {
@@ -130,6 +143,7 @@ const storeProducts =  async (req, res) => {
 
 const singleProduct = async (req, res) => {
     const {id} = req.params
+    const {username} = req.query
 
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ 
@@ -142,6 +156,19 @@ const singleProduct = async (req, res) => {
         if (!product) return res.status(404).json({ 
             error: true, 
             message: "The product does not exist!" 
+        })
+
+        const user = await User.findOne({username: username})
+
+        // find the store where the product exist in the user(seller) store
+        let store = await Store.findOne({sellerId: user._id}) 
+        let existingStoreItem = store.myStore.find((item) => item._id.equals(id))
+
+        if (!existingStoreItem) return res.status(404).json({ 
+            error: true, 
+            message: "The product does not exist in the user (seller) store!",
+            product: product,
+            existingStore: store
         })
 
         const createdTime = format(product.createdAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the created datetime
@@ -176,12 +203,13 @@ const singleProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     const {id} = req.params
+    const {username} = req.query
     const {title, price, description, category, brand, countInStock} = req.body
 
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ 
             error: true, 
-            message: "The product ID is invalid!" 
+            message: "The product ID is invalid!"
         })
 
         if (!title || !price || !description || !category || !brand || !countInStock) return res.status(404).json({ 
@@ -197,13 +225,17 @@ const updateProduct = async (req, res) => {
             message: "The product does not exist!" 
         })
 
+        const user = await User.findOne({username: username})
+
         // find the store where the product exist in the user(seller) store
-        let store = await Store.findOne({sellerId: existingProduct.sellerId}) 
-        
+        let store = await Store.findOne({sellerId: user._id}) 
         let existingStoreItem = store.myStore.find((item) => item._id.equals(id))
+
         if (!existingStoreItem) return res.status(404).json({ 
             error: true, 
-            message: "The product does not exist in the user (seller) store!"
+            message: "The product does not exist in the user (seller) store!",
+            existingProduct: existingProduct,
+            existingStore: store
         })
         
         // Check if the category exists in the database
@@ -246,6 +278,7 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
         const {id} = req.params
+        const {username} = req.query
     try {
         
         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ 
@@ -261,13 +294,17 @@ const deleteProduct = async (req, res) => {
             message:  "The product does not exist!" 
         })
 
+        const user = await User.findOne({username: username})
+
         // find the store where the product exist in the user(seller) store
-        let store = await Store.findOne({sellerId: existingProduct.sellerId})
-        
+        let store = await Store.findOne({sellerId: user._id}) 
         let existingStoreItem = store.myStore.find((item) => item._id.equals(id))
+
         if (!existingStoreItem) return res.status(404).json({ 
             error: true, 
-            message: "The product does not exist in the user (seller) store!"
+            message: "The product does not exist in the user (seller) store!",
+            existingProduct: existingProduct,
+            existingStore: store
         })
 
         // Delete the product from the user(seller) store;
@@ -275,8 +312,9 @@ const deleteProduct = async (req, res) => {
 
         // Delete the product from all product listings;
         const DeletedProduct = await Product.findOneAndDelete({ _id: id })
+
         return res.status(201).json({ 
-            success: true, 
+            success: true,
             message: 'Product has been deleted successfully', 
             deletedItem: DeletedProduct
         })

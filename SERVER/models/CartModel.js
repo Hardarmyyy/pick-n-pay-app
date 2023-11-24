@@ -1,52 +1,55 @@
 const mongoose = require('mongoose');
 
-// define a cart model for the buyer
-const cartSchema = mongoose.Schema(
-    {
+// define a cart model for the user (buyer)
+
+const cartSchema = mongoose.Schema({ 
     buyerId: {
-        type: String
+        type: String,
+        required: true
     },
     myCart: [
         {
-        productId: {
-            type: String
-        },
-        seller: {
-            type: String
-        },
-        title: {
-            type: String,
-            required: true,
-        },
-        price: {
-            type: Number,
-            required: true,
-        },
-        photo: [
-            {type: String}
-        ],
-        description: {
-            type: String,
-            required: true,
-        },
-        category: {
-            type: String
-        },
-        special: {
-            type: Boolean,
-            default: false,
-        },
-        quantity: {
-            type: Number,
-            default: 1,
+            productId: {
+                type: String
+            },
+            sellerId: {
+                type: String
+            },
+            title: {
+                type: String,
+                required: true,
+            },
+            price: {
+                type: Number,
+                required: true,
+            },
+            description: {
+                type: String,
+                required: true,
+            },
+            category: {
+                type: String,
+                required: true,
+            },
+            brand: {
+                type: String,
+                default: 'any',
+            },
+            quantity: {
+                type: Number,
+                default: 1,
+            }
         }
-    }
     ],
+    numberOfProducts: {
+        type: Number,
+        default: 0
+    },
     subTotal: {
         type: Number,
         default: 0
     },
-    shipping: {
+    shippingCost: {
         type: Number,
         default: 0
     },
@@ -58,7 +61,6 @@ const cartSchema = mongoose.Schema(
         type: Number,
         default: 0
     }
-    }
-,{ timestamps: { createdAt: true, updatedAt: true }});
+}, { timestamps: { createdAt: true, updatedAt: true } });
 
 module.exports = mongoose.model('Cart', cartSchema); 

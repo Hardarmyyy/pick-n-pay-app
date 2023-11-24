@@ -37,8 +37,6 @@ const storeSchema = new mongoose.Schema({
             }
         }
     ]
-},
-{ timestamps: {createdAt: true, updatedAt: true} }
-);
+}, { timestamps: {createdAt: true, updatedAt: true} });
 
 module.exports = mongoose.model("Store", storeSchema);
