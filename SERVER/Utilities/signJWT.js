@@ -1,18 +1,20 @@
 const JWT = require('jsonwebtoken');
 require('dotenv').config();
 
-const createOtpToken = (userId) => {
-    const otpToken = JWT.sign({userId: userId}, process.env.OTP_TOKEN_SECRET);
-    return otpToken
-}
+const createVerifyEmailToken = (user) => {
+    const {_id, email } = user
+    
+    const payload = {
+        userId: _id,
+        email
+    }
 
-const createVerifyEmailToken = (userId) => {
-    const verifyEmailToken = JWT.sign({userId: userId}, process.env.VERIFY_EMAIL_TOKEN_SECRET, {expiresIn: process.env.EXPIRY_KEY_EMAIL});
+    const verifyEmailToken = JWT.sign(payload, process.env.VERIFY_EMAIL_TOKEN_SECRET, {expiresIn: process.env.EXPIRY_KEY_EMAIL});
     return verifyEmailToken
 }
 
 const createAccessToken = (user) => {
-    const {_id, username, email, roles, cart, favourites, myOrders, shop, customerOrders } = user
+    const {_id, username, email, roles, cart, favourites, myOrders, store } = user
 
     const currentRole = Object.values(roles).filter(Boolean) // getting the value of roles from the user object
 
@@ -24,8 +26,7 @@ const createAccessToken = (user) => {
         cart,
         favourites, 
         myOrders, 
-        shop, 
-        customerOrders
+        store
     }
     
     const accesstoken = JWT.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.EXPIRY_KEY_ACCESS});
@@ -37,14 +38,19 @@ const createRefreshToken = (userId) => {
     return refreshtoken
 }
 
-const createResetPasswordToken = (userId) => {
-    const resetPasswordToken = JWT.sign({userId: userId}, process.env.RESET_PASSWORD_TOKEN_SECRET);
+const createResetPasswordToken = (user) => {
+    const {_id, email } = user
+    
+    const payload = {
+        userId: _id,
+        email
+    }
+    const resetPasswordToken = JWT.sign(payload, process.env.RESET_PASSWORD_TOKEN_SECRET, {expiresIn: process.env.EXPIRY_KEY_RESET});
     return resetPasswordToken
 }
 
 module.exports = {
     createVerifyEmailToken,
-    createOtpToken,
     createAccessToken,
     createRefreshToken,
     createResetPasswordToken 

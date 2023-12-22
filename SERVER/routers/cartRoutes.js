@@ -7,9 +7,7 @@ const {
     decrementQuantity,
     deleteProductFromCart,
     emptyCartProducts
-} = require('../controllers/cartController')
-const {isAllowedRole} = require('../middleware/checkAllowedRole')
-const {buyerRole} = require('../Utilities/allowedRoles')
+} = require('../controllers/cartController');
 
 
 routers.post('/add-cart/:id', addProductToCart);
@@ -20,4 +18,4 @@ routers.delete('/delete-cart/:id', deleteProductFromCart);
 routers.delete('/empty-cart', emptyCartProducts);
 
 
-module.exports = routers;   
+module.exports = routers;  

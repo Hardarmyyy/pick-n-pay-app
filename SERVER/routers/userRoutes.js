@@ -1,11 +1,13 @@
 const express = require('express');
-const { getAllUsers, getSingleUser, deleteUser, updatePassword, updateUser, switchToSellerRole, switchToBuyerRole} = require('../controllers/userController');
+const { getAllUsers, allSellers, allBuyers, getSingleUser, deleteUser, updatePassword, updateUser, switchToSellerRole, switchToBuyerRole} = require('../controllers/userController');
 const {isAllowedRole} = require('../middleware/checkAllowedRole')
 const {adminRole} = require('../Utilities/allowedRoles')
 const routers = express.Router();
 
-// user routes
+
 routers.get('/all-users/:id', isAllowedRole(adminRole), getAllUsers);
+routers.get('/all-sellers/:id', isAllowedRole(adminRole), allSellers);
+routers.get('/all-buyers/:id', isAllowedRole(adminRole), allBuyers);
 routers.get('/user/:id', getSingleUser)
 routers.delete('/delete/:id', deleteUser)
 routers.patch('/password/:id', updatePassword)

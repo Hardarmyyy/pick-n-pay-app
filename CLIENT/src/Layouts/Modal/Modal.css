@@ -1,0 +1,62 @@
+.modalBackground {
+    background-color: rgb(16, 15, 15, 0.6);
+    height: 100vh;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    z-index: 999;
+}
+
+.modalContainer {
+    background-color: white;
+    width: 520px;
+    height: 400px;
+    z-index: 1000;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    top: 21%;
+    left: 20%;
+    transform: translate(82%, 30%);
+}
+
+.modalContainer > button {
+    background: none;
+    border: none;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+}
+
+.modalContent {
+    text-align: center;
+    padding: 50px;
+}
+
+.modalContent p:first-child {
+    font-size: 18px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+}
+
+.modalContent p {
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+}
+
+.successIcon {
+    color: green;
+    font-size: 4rem; 
+    border: 2px solid green;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto;
+}

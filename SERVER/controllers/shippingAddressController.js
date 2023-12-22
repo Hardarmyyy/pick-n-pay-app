@@ -3,7 +3,7 @@ const User = require('../models/UserModel')
 const ShippingAddress = require('../models/ShippingAddressModel')
 
 
-const addNewShippingAddress = async (req, res) => {
+const createShippingAddress = async (req, res) => {
         const {userId} = req.params
         const {firstName, lastName, email, phoneNumber, streetAddress, city, state} = req.body
 
@@ -21,8 +21,7 @@ const addNewShippingAddress = async (req, res) => {
 
         // create the new shipping address
         const newShippingAddress = {
-            firstName: firstName, 
-            lastName: lastName, 
+            fullName: `${firstName} ${lastName}`, 
             email: email, 
             phoneNumber: phoneNumber, 
             streetAddress: streetAddress, 
@@ -30,25 +29,13 @@ const addNewShippingAddress = async (req, res) => {
             state: state
         }
 
-        // check if the user(buyer) have an existing shipping address;
-        let shippingAddress = await ShippingAddress.findOne({buyerId: userId})
-
-        if (!shippingAddress) {
-            shippingAddress = new ShippingAddress ({buyerId: userId, myShippingAddresses: [newShippingAddress]})
-            await shippingAddress.save()
-            return res.status(201).json({
-                success: true, 
-                message: 'New shipping address has been created successfully', 
-                shippingAddress: shippingAddress
-            })
-        }
-
-        shippingAddress.myShippingAddresses.push(newShippingAddress)
+        
+        const shippingAddress = new ShippingAddress ({buyer: userId, ...newShippingAddress})
         await shippingAddress.save()
         return res.status(201).json({
             success: true, 
-            message: 'New shipping address has been added to your existing list of addresses successfully', 
-            shippingAddress: shippingAddress
+            message: 'New shipping address created successfully', 
+            newShippingAddress: shippingAddress
         })
     }
     catch (err) {
@@ -56,7 +43,7 @@ const addNewShippingAddress = async (req, res) => {
     }
 }
 
-const fetchAllShippingAddress = async (req, res) => {
+const buyerListOfAddresses = async (req, res) => {
         const {userId} = req.params
 
     try {
@@ -65,37 +52,46 @@ const fetchAllShippingAddress = async (req, res) => {
             message: "The user ID is invalid!"
         })
     
-        const user = await User.findById({_id: userId})
-        if (!user) return res.status(404).json({ 
+        const existingUser = await User.findById({_id: userId})
+        if (!existingUser) return res.status(404).json({ 
             error: true, 
             message: "User doesn't exist!" 
         })
-        
-        // check if the user(buyer) have an existing list of addresses;
-        let shippingAddress = await ShippingAddress.findOne({buyerId: userId})
 
-        if (!shippingAddress) { // create a new shippingAddress for the user(buyer)
+        const listOfAddresses = await ShippingAddress.aggregate([
+            {
+                $match: {
+                    'buyer': existingUser._id
+                }
+            },
+            {
+                $project: {
+                    fullName: "$fullName",
+                    email: "$email",
+                    phoneNumber: "$phoneNumber",
+                    streetAddress: "$streetAddress",
+                    city: "$city",
+                    state: "$state",
+                    createdAt: "$createdAt"
+                }
+            },
+            {
+                $sort: {
+                    createdAt: -1
+                }
+            }
+        ])
 
-            const newShippingAddress = new ShippingAddress ({buyerId: userId, myShippingAddresses: []})
-            await newShippingAddress.save()
-
-            return res.status(404).json({ 
-                error: true, 
-                message: "The user does't have any existing address in the shipping address yet!",
-                shippingAddress: newShippingAddress
-            })
-        }
-
-        else if (shippingAddress.myShippingAddresses.length == 0) return res.status(201).json({ 
-            success: true, 
-            message: "The user shipping address list is empty!",
-            shippingAddress: shippingAddress
+        if (!listOfAddresses.length) return res.status(404).json({ 
+            error: true, 
+            message: "The user does't have any existing address yet!",
+            shippingAddress: newShippingAddress
         })
-
+        
         return res.status(201).json({
             success: true, 
             message: 'The user list of addresses has been fetched successfully', 
-            shippingAddress: shippingAddress
+            shippingAddress: listOfAddresses
         })
     }
     catch (err) {
@@ -110,35 +106,50 @@ const deleteShippingAddress = async (req, res) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ 
             error: true, 
-            message: "The shipping address ID is invalid!"
+            message: "The shipping address Id is invalid!"
         })
 
-        const user = await User.findOne({username: username})
+        const shippingAddress = await ShippingAddress.findById({_id: id})
+        if (!shippingAddress) return res.status(404).json({
+            error: true, 
+            message: "Address not found!"
+        })
 
-        if (!user) return res.status(404).json({ 
+        const existingUser = await User.findOne({username: username})
+        if (!existingUser) return res.status(404).json({ 
             error: true, 
             message: "User doesn't exist!" 
         })
     
-        let shippingAddress = await ShippingAddress.findOne({buyerId: user._id})
-        if (!shippingAddress) return res.status(404).json({ 
+        const buyerAddresses = await ShippingAddress.aggregate([
+            {
+                $match: {
+                    "buyer": existingUser._id
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    addressId: "$_id"
+                }
+            }
+        ])
+
+        let existingBuyerAddress = buyerAddresses.find((address) => address.addressId.equals(id))
+
+        if (!existingBuyerAddress) return res.status(404).json({ 
             error: true, 
-            message: "The user does not have any existing shipping address yet!" 
-        })
-        
-        // check  if the shipping address is existing in the user(buyer) list of shipping addresses
-        const existingShippingAddress = shippingAddress.myShippingAddresses.find((address) => address._id.equals(id))
-        if (!existingShippingAddress) return res.status(404).json({ 
-            error: true, 
-            message: "The address does not exist in the list of the user shipping addresses!",
+            message: "Address not found in the user's list of addresses!",
+            address: shippingAddress,
+            buyerAddresses: buyerAddresses
         })
 
-        await ShippingAddress.findOneAndUpdate({buyerId: user._id}, {$pull: {myShippingAddresses: {_id: id} }} )
+        const deletedShippingAddress = await ShippingAddress.findOneAndDelete({_id: id})
 
         return res.status(201).json({
             success: true, 
             message: 'Address has been deleted successfully', 
-            deletedShippingAddress: existingShippingAddress
+            deletedShippingAddress: deletedShippingAddress
         })
     }
     catch (err) {
@@ -154,43 +165,59 @@ const updateShippingAddress = async (req, res) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ 
             error: true, 
-            message: "The shipping address ID is invalid!"
+            message: "The shipping address Id is invalid!"
         })
 
-        const user = await User.findOne({username: username})
-        if (!user) return res.status(404).json({
+        let shippingAddress = await ShippingAddress.findById({_id: id})
+        if (!shippingAddress) return res.status(404).json({
             error: true, 
-            message: 'The user does not exist'
+            message: "Address not found!"
+        })
+
+        const existingUser = await User.findOne({username: username})
+        if (!existingUser) return res.status(404).json({ 
+            error: true, 
+            message: "User doesn't exist!" 
         })
     
-        let shippingAddress = await ShippingAddress.findOne({buyerId: user._id})
-        if (!shippingAddress) return res.status(404).json({ 
-            error: true, 
-            message: "The user does not have any existing shipping address yet!"
-        })
+        const buyerAddresses = await ShippingAddress.aggregate([
+            {
+                $match: {
+                    "buyer": existingUser._id
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    addressId: "$_id"
+                }
+            }
+        ])
 
-        // check  if the shipping address is existing in the user(buyer) list of shipping addresses
-        let existingShippingAddress = shippingAddress.myShippingAddresses.find((address) => address._id.equals(id))
-        if (!existingShippingAddress) return res.status(404).json({ 
+        let existingBuyerAddress = buyerAddresses.find((address) => address.addressId.equals(id))
+
+        if (!existingBuyerAddress) return res.status(404).json({ 
             error: true, 
-            message: "The address does not exist in the list of the user shipping addresses!" 
+            message: "Address not found in the user's list of addresses!",
+            address: shippingAddress,
+            buyerAddresses: buyerAddresses
         })
 
         // update ths existing shipping address with the req body
-        existingShippingAddress.firstName = firstName,
-        existingShippingAddress.lastName = lastName,
-        existingShippingAddress.email = email,
-        existingShippingAddress.phoneNumber = phoneNumber,
-        existingShippingAddress.streetAddress = streetAddress,
-        existingShippingAddress.city = city,
-        existingShippingAddress.state = state
+        shippingAddress.firstName = firstName,
+        shippingAddress.lastName = lastName,
+        shippingAddress.email = email,
+        shippingAddress.phoneNumber = phoneNumber,
+        shippingAddress.streetAddress = streetAddress,
+        shippingAddress.city = city,
+        shippingAddress.state = state
 
         await shippingAddress.save();
 
         return res.status(201).json({
             success: true, 
             message: 'Address has been updated successfully', 
-            updatedShippingAddress: existingShippingAddress
+            updatedShippingAddress: shippingAddress
         })
 
     }
@@ -199,9 +226,10 @@ const updateShippingAddress = async (req, res) => {
     }
 }
 
+
 module.exports = {
-    addNewShippingAddress,
-    fetchAllShippingAddress,
+    createShippingAddress,
+    buyerListOfAddresses,
     deleteShippingAddress,
-    updateShippingAddress
+    updateShippingAddress,
 }

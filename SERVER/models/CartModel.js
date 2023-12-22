@@ -1,19 +1,23 @@
 const mongoose = require('mongoose');
 
-// define a cart model for the user (buyer)
 
 const cartSchema = mongoose.Schema({ 
-    buyerId: {
-        type: String,
+    buyer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     myCart: [
-        {
-            productId: {
-                type: String
+        { 
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
+                required: true
             },
-            sellerId: {
-                type: String
+            seller: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Seller',
+                required: true
             },
             title: {
                 type: String,

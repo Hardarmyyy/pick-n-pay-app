@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "picknpay-408011",
+  "private_key_id": "191e41fe2ef0570d01c52e576344de80d1470492",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCqW8UdOJvwsMiB\nGnkkB1A3aZDs7SnlKDGbLvORR8jXrvm/MJHEF5aNUrd/QRp2jP1nINtOqESowVBO\nvomkboQ/aH7diQrLlOg/XSvJ7bEwv+DEaZNI2YCCEaYIGKw08XLmH2r3KqAa4CHj\nw9cn1QvCt3kIt5X3EmTv0NMqGYjkVJCHkxuEw1ZwPC0c/XninUSmxC3ksRRH05Vk\nDo5yWxkrqIoWh/tW4RzRkYs/oGWV1zV0h5ajccM5UbgwznloJ3a8LbrTUAYX41YO\n01qZ+piIrPN1nPocITQDvzax4SrymYJesWsCEqOM3eIumEkUqX2nbHXp+t8MJFzH\nOog+5OIRAgMBAAECggEAL/qXmcK7PH71gVLM4mZC49BR9kBXJ8h5rBx9kaGXgZMw\nmHWb4A/KoXO15VuXEeNkbNqWmWEPsT18mijUiCBuE5OhA1CY3zxJaqsZbY4JdNLd\ngUPArOhA5qEE00vrmB+WPhSEIid5nwgX01dxLbE1VjopFtjpngOqtNXp2vYFFVT7\nAwNhXQ/3gCNZDdt9mqBZT86vaVXpl7awA+zPrRT7ANLmyOC0frmBjg+WAiX063dU\nE9lTSbl8rDsPI8CTI+pd+70QDCA3oRIYLYvHAVhuU5F652/uucNjhZoMQlui9vhh\nCt2zmVNbkHcaYRDimTXfoId7PpeVyznyNdVSQitWNwKBgQDvXcPmTwUzQX3/Tsa/\nn6vP7l2k1dQWCu2yn6yW/6iRiUNowLkq6tnx5ArZRNnb/MEuBg7cV6jldGwbP+wS\nxudSWz2RDuZB38ToUIY4EAKgQDGZIvAC1LPQLg9mYcw5Z0b48S7MGLXYo2vlABdI\n8hSmq4ahudkArcC1W7lrEuZ3twKBgQC2MmHjegE7Mk87hti7sD534yr0fhKtQgTa\ninOLh4VDzqsfRYu4ouycOn59hy+Zeti+wj71YVkj7Q2tb0TglFEkDR92OKpRyINh\n/mheC5FocMMbrLaMMf1259rop8uVC7PYsleY8LbJpvcpPIXDMn2G7e3yHijW+MpW\n1UY1Q36kdwKBgB5p1IVDzw5XKPIyiTA50nPF/qH+BUeTteX3Qc+hxkJPpX/+1Mgu\nNOj2J6a5h9DayZTWcjbu8GfPJhlEQvOT0Dp3m1f+A6WlD/jQmm0vI5ZG8cZaWRKT\nAhHWeGBy1qcIh00EIAUQsrJG+WOMYmkDUTpoGuAbpAXhDdY9RE7lhOD7AoGBAIBJ\n5YdI5wkJmaSuhHlT1giQmjRheUEp1UUUa9t5ZyqhoPh5/bHadoRi46H7yFZnm6pm\nF/Krwxp61kCisnr3tFKQMvEJYVQIvgoIGvDtcEt76sXXzQnWQUSyaP+c9spR3Sbe\nHLQB+pLuz+XnScByEtUpP3xWJCeKMt8FeVQT3F5tAoGANr/cZVKIgVCl5Zf0jBKz\nRl2DvurXcqEf4nO1WUgbjyBFjAgpPekiOVXcFGNu/gbRO5X7crROnPmkAGZNe+68\nNpEbtkp8p0kQrK4vK8rUaHOsUxv9Z8y6jfybBILri6tcjuGrInA7dtD0wHzu3lZT\nGYNlm01JDqkREjj2SmGy0Zs=\n-----END PRIVATE KEY-----\n",
+  "client_email": "picknpay@picknpay-408011.iam.gserviceaccount.com",
+  "client_id": "110091201765902484166",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/picknpay%40picknpay-408011.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

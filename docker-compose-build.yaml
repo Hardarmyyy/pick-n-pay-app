@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  CLIENT:
+    build:
+      context: ./CLIENT
+      dockerfile: Dockerfile
+  
+  SERVER:
+    build:
+      context: ./SERVER
+      dockerfile: Dockerfile
+

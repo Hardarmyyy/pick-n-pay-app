@@ -1,0 +1,66 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(rel='stylesheet', href='../styles/style.css')
+    title Verification | Email
+    style.
+
+      section.container, footer {
+          text-align: center;
+      }
+
+      h2 {
+        font-size: 24px
+      }
+
+      div.content, div.notify {
+        font-size: 18px
+      }
+
+      div.link {
+          cursor: pointer
+      }
+
+      div.link button {
+          border: none;
+          outline: 1px solid #132A63;
+          background-color: #132A63;
+          color: #FFFFFF;
+          opacity: 0.9;
+          border-radius: 5px;
+          padding: 5px 20px;
+          margin: 20px auto;
+          cursor: pointer
+      }
+
+      div.link button:hover {
+          opacity: 1;
+      }
+
+      footer {
+        font-size: 12px;
+        color: crimson
+      }
+  body
+
+    section.container
+
+      h2 Verify Your Email Address
+
+      div.content
+        p Hello #{username}. Thank you for signing up.
+        p Your OTP verification code is 
+          b #{otp}
+
+      div.link
+        a(href=url)
+         button Verify Email Address
+
+      div.notify
+       p 
+        b NOTE: The above link is valid for only 7 days
+
+    footer
+      p &copy; 2023. All rights reserved. 

@@ -1,0 +1,52 @@
+version: "3.7"
+
+networks:
+
+  app-network:
+
+volumes:
+
+    app-volume:
+
+services:
+  # Frontend
+  CLIENT:
+    build:
+      context: ./CLIENT 
+      dockerfile: Dockerfile
+    image: hardarmyyy/frontend
+    container_name: CLIENT
+    networks:
+      - app-network
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
+
+  # Backend
+  SERVER:
+    build:
+      context: ./SERVER 
+      dockerfile: Dockerfile
+    image: hardarmyyy/backend
+    container_name: SERVER
+    networks:
+      - app-network
+    ports:
+      - "4080:4080"
+    depends_on:
+      - database
+    environment:
+      - MONGODB_URI=mongodb://database:27017/PICK-N-PAY 
+
+  # MongoDB
+  database:
+    image: "mongo"
+    container_name: mongo
+    networks:
+      - app-network
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db  # For persisting data
+

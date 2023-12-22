@@ -1,41 +1,40 @@
-const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const JWT = require('jsonwebtoken')
 const otpGenerator = require('otp-generator')
-const {addMinutes, isAfter} = require('date-fns')
 require('dotenv').config()
+const {sendMail} = require('../Utilities/sendEmail')
 const User = require('../models/UserModel')
 const Cart = require('../models/CartModel')
 const Otp = require('../models/OtpModel')
 const {
-    createVerifyEmailToken,
-    createOtpToken, 
     createResetPasswordToken, 
     createAccessToken, 
-    createRefreshToken
-} = require('../Utilities/signJWT'); 
+    createRefreshToken,
+    createVerifyEmailToken
+} = require('../Utilities/signJWT');
+const {registerGoogleSheets} = require('../Utilities/googleSheets')  
 
 
 
 const signUp = async (req, res) => {
-        const {username, email, password, usertype} = req.body
+        const {username, email, password, userRole} = req.body 
 
     try {
-        if (!username || !email || !password || !usertype) return res.status(400).json({error: 'All fields are required'}) 
+        if (!username || !email || !password || !userRole) return res.status(400).json({error: true, message: 'All fields are required'}) 
 
         //check username duplicate
         const registeredUsername = await User.findOne({username: username})
 
         if (registeredUsername) return res.json({
             error: true, 
-            message: 'Username already registered! kindly choose a different username'
+            message: 'Username already registered!'
         })
         // check email duplicate
         const registeredEmail = await User.findOne({email: email})
 
         if (registeredEmail) return res.json({
             error: true, 
-            message: 'Email already registered! kindly choose a different Email'
+            message: 'Email already registered!'
         })
         
         // hash the user password
@@ -46,34 +45,49 @@ const signUp = async (req, res) => {
         const user = new User({
             username: username, 
             email: email, 
-            password: hashPassword,
+            password: hashPassword,  
             roles: {
-                    buyer: usertype === 'buyer' ? 'buyer' : null,
-                    seller: usertype === 'seller' ? 'seller' : null,
-                    admin: usertype === 'admin' ? 'admin' : null
+                    buyer: userRole === 'buyer' ? 'buyer' : null,
+                    seller: userRole === 'seller' ? 'seller' : null,
+                    admin: userRole === 'admin' ? 'admin' : null
                 }
-            })
+            })          
 
-        // Save the new user to the database
+        // Save the new user to googlesheets and to the database
         await user.save()
+        registerGoogleSheets(userRole, username, email)
 
-        const emailToken = createVerifyEmailToken(user._id)
-        // You can send a verification email using a library like Nodemailer here
+        // Remove any existing OTP for the user in the database before generating a new OTP.
+        await Otp.deleteOne({userId: user._id})
+
+        // Generate a new OTP.
+        const signupOtp = otpGenerator.generate(6, {digits: true, upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false})
+
+        // Hash the created OTP before saving.
+        const hashedOtp = await bcrypt.hash(signupOtp, salt)
+
+        // Create and save the OTP.
+        const newSignupOtp = new Otp({userId: user._id, otp: hashedOtp})
+        await newSignupOtp.save() 
+
+        // send a verification email otp using a library like Nodemailer here
+        const emailToken = createVerifyEmailToken(user)
+        const verifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?email=${email}&token=${emailToken}`;
+        await sendMail(username, signupOtp, email, verifyEmailUrl, 'Email Verification OTP', 'verificationEmail.pug')  
 
         // Check if there is a session cart for unregistered users
-    
         const sessionCart = req.session.cart;
         if (sessionCart) {
             // Associate the session cart with the newly registered user
             const newCart = new Cart({
-                buyerId: user._id, 
+                buyer: user._id, 
                 myCart: sessionCart.myCart,
                 numberOfProducts: sessionCart.numberOfProducts,
                 subTotal: sessionCart.subTotal, 
                 shippingCost: sessionCart.shippingCost, 
                 vat: sessionCart.vat, 
                 total: sessionCart.total
-            }) 
+            })   
 
             await newCart.save()
 
@@ -83,8 +97,7 @@ const signUp = async (req, res) => {
 
         res.status(200).json({
             success: true, 
-            message: `Verification email has been sent to ${user.email} successfully`, 
-            token: emailToken 
+            message: `Account created successfully`
         })
     }
     catch (err) {
@@ -92,34 +105,81 @@ const signUp = async (req, res) => {
     }
 }
 
-const emailVerification = async (req, res) =>  {
-        const {email} = req.query
-    try {
-        if (!email) return res.status(404).json({
-            error: true, 
-            message: "Invalid token"
-        });
+const verifyEmailToken = async (req, res) => {
+    const { token, email } = req.query;
 
+    try {
         JWT.verify(
-            email, 
+            token, 
             process.env.VERIFY_EMAIL_TOKEN_SECRET,
             async (err, decoded) => {
-                if (err) return res.sendStatus(403)
+                if (err) return res.json({
+                    error: true,
+                    message: 'Invalid token'
+                })
+                
+                const existingUser = await User.findOne({email: decoded.email})
+                if(existingUser.email !== email) return res.json({
+                    error: true,
+                    message: 'Invalid email address'
+                })
+                
+                return res.json({
+                    success: true,
+                    message: 'Email token is valid',
+                    email: decoded.email,
+                    emailToken: token
+                })
+        })
+    } catch (err) {
+        res.status(500).json({error: 'Internal server error', message: err.message})
+    }
+};
 
-                const isVerified = await User.findById({_id: decoded.userId})
-                if (!isVerified)  return res.json({
+const emailVerification = async (req, res) =>  {
+        const {signupOtp} = req.body
+        const {token} = req.query  
+    try {
+        
+        if (!signupOtp) return res.json({
+            error: true,
+            message: 'OTP is required!'
+        }) 
+
+        JWT.verify( 
+            token, 
+            process.env.VERIFY_EMAIL_TOKEN_SECRET,
+            async (err, decoded) => {
+                if (err) return res.json({
                     error: true, 
-                    message: 'user not found'
+                    message: 'The link is invalid or expired'
                 })
 
-                isVerified.verified = true
-                await isVerified.save()
+                const existingUser = await User.findById({_id: decoded.userId})
+                if (existingUser.verified) return res.json({
+                    error: true,
+                    message: 'Your Email is verfied already'
+                })
 
+                const unverifiedOtp = await Otp.findOne({userId: decoded.userId})  
+        
+                // compare otp before verifying email
+                const isValidOtp = await bcrypt.compare(signupOtp, unverifiedOtp.otp)
+                if (!isValidOtp) return res.json({
+                    error: true, 
+                    message: 'Invalid OTP. Try again' 
+                })
+        
+                existingUser.verified = true
+                await existingUser.save()
+        
+                await Otp.findByIdAndDelete({_id: unverifiedOtp._id})
+        
                 res.status(200).json({
                     success: true, 
-                    message: `Congratulations ${isVerified.username}, your email has been verified`
+                    message: `Email verification was successfull`
                 })
-            })
+        })
     }
     catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
@@ -127,6 +187,8 @@ const emailVerification = async (req, res) =>  {
 }
 
 const signIn = async (req, res) => {
+        const cookies = req.cookies
+        const refreshToken = cookies.refresh;
         const {username, password} = req.body;
     try {
         if (!username || !password) return res.status(404).json({
@@ -136,205 +198,78 @@ const signIn = async (req, res) => {
 
         // check if user exists;
         const existingUser = await User.findOne({username: username})
-        if (!existingUser) return res.status(404).json({
+        if (!existingUser) return res.status(200).json({
             error: true, 
-            message: 'Incorrect username or password'
+            message: 'Username does not exist'
         })
 
         // Verify the user's password.
         const isPasswordValid = await bcrypt.compare(password, existingUser.password)
-        if (!isPasswordValid) return res.status(404).json({
+        if (!isPasswordValid) return res.status(200).json({
             error: true, 
             message: 'Incorrect password'
         })
 
         // Check if the user has verified their email account.
-        if (!existingUser.verified) return res.status(404).json({
+        if (!existingUser.verified) return res.status(200).json({
             error: true, 
             message: "Please verify your email and try again"
         })
 
-        // Remove any existing OTP for the user in the database before generating a new OTP.
-        await Otp.deleteOne({userId: existingUser._id})
+        let newRefreshTokenArray = !cookies?.refresh ? existingUser.token : existingUser.token.filter((rt) => rt !== cookies.refresh)
 
-        // Generate a new OTP.
-        const otp = otpGenerator.generate(6, {digits: true, upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false})
+        // create a new accessToken for the user
+        const accessToken = createAccessToken(existingUser)
+        // create a new refreshToken for the user
+        const newRefreshToken = createRefreshToken(existingUser._id)
+        
+        // update and save the existing user with a refresh token that can always be cross references when a user needs to login
+        existingUser.token = [...newRefreshTokenArray, newRefreshToken]
+        await existingUser.save()
 
-        // Hash the created OTP before saving.
-        const salt = await bcrypt.genSalt(Number(process.env.SALT))
-        const hashedOtp = await bcrypt.hash(otp, salt)
+        // Check if there is a session cart for existing user before login
+        const sessionCart = req.session.cart;
+        if (sessionCart) {
+            // Associate the session cart with the existing user
+            let existingCart = await Cart.findOne({buyer: existingUser._id})
+            if (existingCart) {
+                existingCart.myCart = [...existingCart.myCart, ...sessionCart.myCart]
+                existingCart.numberOfProducts += sessionCart.numberOfProducts
+                existingCart.subTotal += sessionCart.subTotal
 
-        // Create and save the OTP.
-        const newOtp = new Otp({userId: existingUser._id, otp: hashedOtp})
-        await newOtp.save() 
+                const shippingCost = existingCart.subTotal === 0 ? 0 : existingCart.subTotal > 500 ? 80 : 50;
+                const VAT = existingCart.subTotal > 500 ? (7.5 / 100 ) * existingCart.subTotal : (5 / 100 ) * existingCart.subTotal;
+        
+                existingCart.shippingCost = shippingCost;
+                existingCart.vat = VAT.toFixed(2);
+                existingCart.total = (existingCart.subTotal + existingCart.shippingCost + existingCart.vat).toFixed(2);
+                await existingCart.save()
+            }
+            else {
+                // create a new cart for the existing user
+                const newCart = new Cart({
+                    buyer: existingUser._id, 
+                    myCart: sessionCart.myCart,
+                    numberOfProducts: sessionCart.numberOfProducts,
+                    subTotal: sessionCart.subTotal, 
+                    shippingCost: sessionCart.shippingCost, 
+                    vat: sessionCart.vat, 
+                    total: sessionCart.total
+                })
+    
+                await newCart.save()
+            }
+            // Clear the session cart after associating with the existing user
+            delete req.session.cart;
+        }
 
-        // Create a token to confirm the OTP.
-        const otpToken = createOtpToken(existingUser._id)
-
-        // You can send an OTP verification email using a library like Nodemailer here.
-        return res.status(200).json({
+        // expiry: 24 hours // secure: true // sameSite: "None" cross-site cookie (after production)) 
+        res.cookie('refresh', newRefreshToken,  { httpOnly: true, sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
+        res.status(200).json({
             success: true, 
-            message: `${otp} has been sent to ${existingUser.username} successfully`, 
-            token: otpToken
-        });   
-    }
-    catch (err) {
-        res.status(500).json({error: 'Internal server error', message: err.message})
-    }
-}
-
-const otpVerification = async (req, res) => {
-            const cookies = req.cookies
-            const refreshToken = cookies.refresh;
-            const {verify} = req.query
-            const {otp} = req.body
-    try {   
-        if (!verify) return res.status(404).json({
-            error: true, 
-            message: "Invalid token"
-        });
-
-        JWT.verify(
-            verify, 
-            process.env.OTP_TOKEN_SECRET,
-            async (err, decoded) => {
-                if (err) return res.sendStatus(403)
-
-                const unverifiedOtp = await Otp.findOne({userId: decoded.userId})
-                const existingUser = await User.findById({_id: decoded.userId})
-
-                if (!unverifiedOtp) return res.status(404).json({
-                    error: true,
-                    message: 'Invalid! kindly send otp to login'
-                })
-
-                if (!otp) return res.status(404).json({
-                    error: true, 
-                    message: 'Otp is required'
-                })
-
-                // confirm otp before sign in
-                const isValidOtp = await bcrypt.compare(otp, unverifiedOtp.otp)
-
-                if (!isValidOtp) return res.status(404).json({
-                    error: true, 
-                    message: 'Invalid otp'
-                })
-
-                // check if otp is still valid and not expired before sign in
-                const otpCreatedAt = unverifiedOtp.createdAt
-                const checkIsValid = addMinutes(otpCreatedAt, 1)
-                const currentTime = new Date()
-                if (isAfter(currentTime, checkIsValid)) {
-                        // delete otp from the database
-                        await Otp.deleteOne({userId: unverifiedOtp.userId})
-                        return res.status(404).json({
-                            error: true, 
-                            message: 'Otp has expired. Kindly resend otp to login'
-                        })
-                } 
-                
-                // delete otp from the database
-                await Otp.deleteOne({userId: unverifiedOtp.userId})
-
-                let newRefreshTokenArray = !cookies?.refresh ? existingUser.token : existingUser.token.filter((rt) => rt !== cookies.refresh)
-
-                // create a new accessToken for the user
-                const accessToken = createAccessToken(existingUser)
-                // create a new refreshToken for the user
-                const newRefreshToken = createRefreshToken(existingUser._id)
-                
-                // update and save the existing user with a refresh token that can always be cross references when a user needs to login
-                existingUser.token = [...newRefreshTokenArray, newRefreshToken]
-                await existingUser.save()
-
-                // Check if there is a session cart for existing user before login
-                const sessionCart = req.session.cart;
-                if (sessionCart) {
-                    // Associate the session cart with the existing user
-                    let existingCart = await Cart.findOne({buyerId: existingUser._id})
-                    if (existingCart) {
-                        existingCart.myCart = [...existingCart.myCart, ...sessionCart.myCart]
-                        existingCart.numberOfProducts += sessionCart.numberOfProducts
-                        existingCart.subTotal += sessionCart.subTotal
-
-                        const shippingCost = existingCart.subTotal === 0 ? 0 : existingCart.subTotal > 500 ? 80 : 50;
-                        const VAT = existingCart.subTotal > 500 ? (7.5 / 100 ) * existingCart.subTotal : (5 / 100 ) * existingCart.subTotal;
-                
-                        existingCart.shippingCost = shippingCost;
-                        existingCart.vat = VAT.toFixed(2);
-                        existingCart.total = (existingCart.subTotal + existingCart.shippingCost + existingCart.vat).toFixed(2);
-                        await existingCart.save()
-                    }
-                    else {
-                        // create a new cart for the existing user
-                        const newCart = new Cart({
-                            buyerId: existingUser._id, 
-                            myCart: sessionCart.myCart,
-                            numberOfProducts: sessionCart.numberOfProducts,
-                            subTotal: sessionCart.subTotal, 
-                            shippingCost: sessionCart.shippingCost, 
-                            vat: sessionCart.vat, 
-                            total: sessionCart.total
-                        })
-            
-                        await newCart.save()
-                    }
-                    // Clear the session cart after associating with the existing user
-                    delete req.session.cart;
-                }
-
-                // expiry: 24 hours // secure: true // sameSite: "None" cross-site cookie (after production)) 
-                res.cookie('refresh', newRefreshToken,  { httpOnly: true, sameSite: "None", maxAge: 24 * 60 * 60 * 1000 })
-                res.status(200).json({
-                    success: true, 
-                    message: `${existingUser.username} successfully logged in`, 
-                    token: accessToken
-                })
-            })
-    }
-    catch (err) {
-        res.status(500).json({error: 'Internal server error', message: err.message})
-    }
-}
-
-const resendOtpVerification = async (req, res) => {
-        const {verify} = req.query
-
-    try {   
-        if (!verify) return res.status(404).json({
-            error: true, 
-            message: "Invalid token"
-        });
-
-        JWT.verify(
-            verify, 
-            process.env.OTP_TOKEN_SECRET,
-            async (err, decoded) => {
-
-                if (err) return res.sendStatus(403)
-
-                const unverifiedOtp = await Otp.findOne({userId: decoded.userId})
-                // remove existing user otp in the database before generating a new otp
-                if (unverifiedOtp) {
-                    await Otp.deleteOne({userId: unverifiedOtp.userId})
-                }
-
-                const existingUser = await User.findById({_id: decoded.userId})
-                    // create a new user otp
-                const otp = otpGenerator.generate(6, {digits: true, upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false});
-                // hash the new otp before saving to databse
-                const salt = await bcrypt.genSalt(Number(process.env.SALT))
-                const hashedOtp = await bcrypt.hash(otp, salt)
-                // create and save the otp
-                const newOtp = new Otp({userId: existingUser._id, otp: hashedOtp})
-                await newOtp.save() 
-
-                res.status(200).json({
-                    success: true, 
-                    message: `${otp} has been re-sent to ${existingUser.username} successfully`
-                })
-            })
+            message: `Login Success`, 
+            token: accessToken
+        })
     }
     catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
@@ -347,22 +282,26 @@ const forgotPassword = async (req, res) => {
     try {
         if (!email) return res.status(404).json({
             error: true, 
-            message: 'Please enter your registered email address'
+            message: 'Please enter email address'
         })
 
         const existinguser = await User.findOne({email: email})
         if (!existinguser) return res.json({
             error: true, 
-            message: 'Email is not registered. Kindly enter your registered email address'
+            message: 'Kindly enter your registered email address'
         })
 
         // create a token to reset password 
-        const resetToken = createResetPasswordToken(existinguser._id)
-        // can perform other logic like using nodemailer to send email reset link for user password reset
+        const resetToken = createResetPasswordToken(existinguser)
+
+        // send a reset password email using a library like Nodemailer here
+        const resetPasswordUrl = `${process.env.FRONTEND_URL}/reset-password?email=${email}&token=${resetToken}`;
+        await sendMail(existinguser.username, '', email, resetPasswordUrl, 'RESET PASSWORD', 'resetEmail.pug')
+
         res.status(200).json({
             success: true, 
-            message: `Reset link has been sent to your email address ${existinguser.email}`,
-            resetToken: resetToken
+            message: `Reset link sent successfully`,
+            email: `${existinguser.email}`
         })
     }
     catch (err) {
@@ -370,21 +309,56 @@ const forgotPassword = async (req, res) => {
     }
 }
 
+const verifyResetToken = async (req, res) => {
+    const { token, email } = req.query;
+
+    try {
+        JWT.verify(
+            token, 
+            process.env.RESET_PASSWORD_TOKEN_SECRET,
+            async (err, decoded) => {
+                if (err) return res.json({
+                    error: true,
+                    message: 'Invalid token'
+                })
+                
+                const existingUser = await User.findOne({email: decoded.email})
+                if(existingUser.email !== email) return res.json({
+                    error: true,
+                    message: 'Invalid email address'
+                })
+                
+                return res.json({
+                    success: true,
+                    message: 'Reset token is valid',
+                    email: decoded.email,
+                    emailToken: token
+                })
+        })
+    } catch (err) {
+        res.status(500).json({error: 'Internal server error', message: err.message})
+    }
+};
+
 const resetPassword = async (req, res) => {
         const {token} = req.query
         const {password, confirmPassword} = req.body
 
     try {   
-        if (!token) return res.status(404).json({
+
+        if (!password || !confirmPassword) return res.json({
             error: true, 
-            message: 'Invalid token request'
+            message: 'All fields are required'
         })
 
         JWT.verify(
             token, 
             process.env.RESET_PASSWORD_TOKEN_SECRET,
             async (err, decoded) => {
-                if (err) return res.sendStatus(403)
+                if (err) return res.json({
+                    error: true, 
+                    message: 'The link is invalid or expired'
+                }) 
 
                 const existingUser = await User.findById({_id: decoded.userId})
                 if (!existingUser) return res.json({
@@ -392,12 +366,8 @@ const resetPassword = async (req, res) => {
                     message: 'User not found'
                 })
                 
-                if (!password || !confirmPassword) return res.status(404).json({
-                    error: true, 
-                    message: 'All fields are required'
-                })
                 // compare if the user password match
-                if (password !== confirmPassword) return res.status(404).json({
+                if (password !== confirmPassword) return res.json({
                     error: true, 
                     message: 'Password does not match'
                 })
@@ -412,10 +382,9 @@ const resetPassword = async (req, res) => {
 
                 res.status(200).json({
                     success: true, 
-                    message: `${existingUser.username}, your password has been updated successfully`
+                    message: `Password reset was successfull`
                 })
             })
-        
     }
     catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
@@ -472,7 +441,7 @@ const refreshToken = async (req, res) => {
                 await currentUser.save()
 
                 // send a newRefreshToken cookie to the client 
-                res.cookie('refresh', newRefreshToken,  { httpOnly: true, sameSite: "None",  maxAge: 24 * 60 * 60 * 1000 })
+                res.cookie('refresh', newRefreshToken,  { httpOnly: true, sameSite: "None", secure: true,  maxAge: 24 * 60 * 60 * 1000 })
 
                 // create a new access token for the current user
                 const accessToken = createAccessToken(currentUser)
@@ -528,11 +497,11 @@ const logout = async (req, res) => {
 
 module.exports = {
     signUp,
+    verifyEmailToken,
     emailVerification,
     signIn,
-    otpVerification,
-    resendOtpVerification,
     forgotPassword,
+    verifyResetToken,
     resetPassword,
     refreshToken,
     logout

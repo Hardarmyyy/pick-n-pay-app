@@ -1,0 +1,137 @@
+.signUpContainer {
+    width: 500px;
+    margin: 20px auto 20px;
+}
+
+.signUpformHeader {
+    width: 500px;
+    margin: 20px auto;
+} 
+
+.signUpformHeader > h2 {
+    color: #132A63;
+    font-family: 'Jost', sans-serif;
+    font-size: 34px;
+}
+
+.signUpformHeader > p, .linkToLogin > p {
+    color: #333333;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.registerForm input {
+    border: none;
+    width: 100%;
+    height: 40px;
+    padding: 10px;
+    border-radius: 5px;
+    outline: 1px solid #DDDDDD;
+}
+
+.registerForm input:focus {
+    outline: 2px solid #132A63;
+}
+
+.registerForm input.invalid {
+    outline: 2px solid crimson;
+} 
+
+form .userSelect {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.userSelect label {
+    color: #132A63;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    cursor: pointer;
+    margin: 0px 30px;
+}
+
+.userSelect input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #FFFFFF;
+    margin: 0px 10px;
+    font: inherit;
+    color: currentColor;
+    width: 1.15em;
+    height: 1.15em;
+    border-radius: 50%;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+}
+
+.userSelect input[type="radio"]::before {
+    content: "";
+    width: 0.8em;
+    height: 0.8em;
+    border-radius: 50%;
+    transform: scale(0);
+    box-shadow: inset 1em 1em #333333;
+}
+
+.userSelect input[type="radio"]:checked::before {
+    transform: scale(1);
+}
+
+form div.button, 
+.linkToLogin {
+    text-align: center;
+    margin: 15px auto;
+}
+
+.linkToLogin a {
+    text-decoration: none;
+}
+
+.registerForm div:nth-child(1)
+.registerForm div:nth-child(2),
+.registerForm div:nth-child(3),
+.registerForm div:nth-child(4) {
+    position: relative;
+}
+
+.registerForm .userRole {
+    font-size: 14px;
+    position: absolute;
+    bottom: 30%;
+    color: crimson;
+}
+
+.registerForm .username {
+    font-size: 14px;
+    position: absolute;
+    bottom: -18%;
+}
+
+.registerForm .email {
+    font-size: 14px;
+    position: absolute;
+    bottom: -21%;
+}
+
+.registerForm .pass {
+    font-size: 14px;
+    position: absolute;
+    bottom: -20%;
+}
+
+.registerForm .passwordToggle {
+    color: #333333;
+    font-size: 18px;
+    position: absolute;
+    cursor: pointer;
+    bottom: 33%;
+    right: 32%;
+    transform: translate(-50%, -50%);
+}

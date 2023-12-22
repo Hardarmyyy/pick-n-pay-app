@@ -3,7 +3,6 @@ const User = require('../models/UserModel');
 const ShippingAddress = require('../models/ShippingAddressModel');
 const Order = require('../models/OrderModel');
 const Cart = require('../models/CartModel');
-const Store = require('../models/StoreModel');
 const Product = require('../models/ProductsModel');
 const {format} = require('date-fns');
 
@@ -21,30 +20,48 @@ const createOrder = async (req, res) => {
         })
 
         // find the shipping Address
-        const shippingAddress = await ShippingAddress.findOne({buyerId: existingUser._id})
-        const existingShippingAddress =  shippingAddress.myShippingAddresses.find((sa) => sa._id.equals(shippingAddressId))
+        const shippingAddress = await ShippingAddress.aggregate([
+            {
+                $match: {
+                    "buyer": existingUser._id
+                }
+            },
+            {
+                $project: {
+                    fullName: "$fullName",
+                    email: "$email",
+                    phoneNumber: "$phoneNumber",
+                    streetAddress: "$streetAddress",
+                    city: "$city",
+                    state: "$state",
+                    createdAt: "$createdAt"
+                }
+            }
+        ])
+
+        const existingShippingAddress =  shippingAddress.find((sa) => sa._id.equals(shippingAddressId))
         if (!existingShippingAddress) return res.status(404).json({
             error: true,
             message: 'Shipping address does not exist'
         })
 
         // find the cart products
-        let cart = await Cart.findOne({buyerId: existingUser._id })
+        let cart = await Cart.findOne({buyer: existingUser._id })
         if (!cart || cart.myCart.length == 0) return res.status(404).json({
             error: true,
             message: 'Kindly add products to cart to continue'
         })
     
         const allCartItems = await Promise.all(cart.myCart.map( async(product) => {
-            const seller = await User.findById({_id: product.sellerId})
-            return { productId: product.productId, sellerName: seller.username, ...product}
+            const seller = await User.findById({_id: product.seller})
+            return { product: product.product, sellerName: seller.username, ...product}
         }))
 
         // create a new orderInformation;
         const newOrderInformation = { 
             orderItems: [...allCartItems],
             orderQuantity: cart.numberOfProducts,
-            shippingAddress: {...existingShippingAddress},
+            shippingAddress: existingShippingAddress,
             paymentMethod: paymentMethod,
             subTotal: cart.subTotal,
             shippingCost: cart.shippingCost,
@@ -54,14 +71,11 @@ const createOrder = async (req, res) => {
 
         const newOrder = new Order({ buyer: existingUser._id, ...newOrderInformation })
 
-        // update the store and products by decrementing the quantity order for each item from the countInStock
+        // update the products by decrementing the quantity order for each item from the countInStock
         await Promise.all(cart.myCart.map( async(product) => {
-            let store = await Store.findOne({sellerId: product.sellerId})
-            let storeItem = store.myStore.find((item) => item._id.equals(product.productId))
-            storeItem.countInStock -= product.quantity
-            await store.save();
+            let item = await Product.findOne({seller: product.seller})
 
-            await Product.findByIdAndUpdate({_id: product.productId}, {countInStock: storeItem.countInStock})
+            await Product.findByIdAndUpdate({_id: product.product}, {countInStock: item.countInStock - product.quantity})
             return;
         }))
 
@@ -97,6 +111,14 @@ const getOrdersForBuyers = async (req, res) => {
             {
                 $match: {
                     "buyer": existingUser._id
+                }
+            },
+            {
+                $lookup: {
+                    from: 'shippingaddresses',
+                    localField: 'shippingAddress',
+                    foreignField: '_id',
+                    as: 'shippingAddress'
                 }
             },
             {
@@ -183,7 +205,7 @@ const getOrdersForSellers = async (req, res) => {
             const sellerOrderItems = orderItems.filter(item => item.sellerName === existingUser.username);
             const formattedOrderDate = format(order.createdAt, 'yyyy-MM-dd hh:mm:ss a') 
             const buyerName = await User.findById({_id: order.buyer})
-            const sellerOrderTotalQuantity = sellerOrderItems.reduce((prev, item) => prev + (item.price * item.quantity), 0)
+            const sellerOrderTotal = sellerOrderItems.reduce((prev, item) => prev + (item.price * item.quantity), 0)
 
             return {
                 orderId: order._id,
@@ -195,7 +217,7 @@ const getOrdersForSellers = async (req, res) => {
                 isShipped: order.isShipped,
                 isDelivered: order.isDelivered,
                 orderDate: formattedOrderDate,
-                orderTotal: sellerOrderTotalQuantity.toFixed(2),
+                orderTotal: sellerOrderTotal.toFixed(2),
             };
         }))
 
@@ -225,6 +247,23 @@ const getAllOrdersForAdmin = async (req, res) => {
 
         let allOrders = await Order.aggregate([
             {
+                $project: {
+                    buyer: '$buyer',
+                    orderItems: '$orderItems',
+                    orderQuantity: '$orderQuantity',
+                    shippingAddress: '$shippingAddress',
+                    paymentMethod: '$paymentMethod',
+                    isPending: '$isPending',
+                    isShipped: '$isShipped',
+                    isDelivered: '$isDelivered',
+                    subTotal: '$subTotal',
+                    shippingCost: '$shippingCost',
+                    vat: '$vat',
+                    orderTotal: '$orderTotal',
+                    createdAt: '$createdAt',
+                }
+            },
+            {
                 $sort: {
                     createdAt: -1
                 }
@@ -243,18 +282,8 @@ const getAllOrdersForAdmin = async (req, res) => {
                 const existingUser = await User.findById({_id: ord.buyer})
                 return {
                     orderId: ord._id,
+                    ...ord,
                     buyer: existingUser.username,
-                    orderItems: [...ord.orderItems], 
-                    orderQuantity: ord.orderQuantity, 
-                    shippingAddress: ord.shippingAddress, 
-                    paymentMethod: ord.paymentMethod, 
-                    isPending: ord.isPending,
-                    isShipped: ord.isShipped,
-                    isDelivered: ord.isDelivered,
-                    subTotal: ord.subTotal,
-                    shippingCost: ord.shippingCost,
-                    vat: ord.vat,
-                    orderTotal: ord.orderTotal, 
                     orderDate: formattedOrderDate
                 }
         }))
@@ -332,7 +361,7 @@ const updateOrderStatusForAdmin = async (req, res) => {
 }
 
 
-module.exports = {
+module.exports = { 
     createOrder,
     getOrdersForBuyers,
     getOrdersForSellers,

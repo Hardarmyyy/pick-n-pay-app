@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 // create a product schema  
 
-const productSchema = new mongoose.Schema({ 
-    sellerId: {
-        type: String,
-        required: true,
-        index: false,
+const productSchema = new mongoose.Schema({   
+    seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
     title: {
         type: String,

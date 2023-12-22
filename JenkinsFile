@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_COMPOSE_VERSION = '3.7'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build and Push Docker Images') {
+            steps {
+                bat "docker-compose -f docker-compose-build.yaml build"
+                bat "docker-compose -f docker-compose-build.yaml push"
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                bat "docker stack deploy -c docker-compose.yaml pickNpay"
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'build/**', allowEmptyArchive: true
+            }
+        }
+    }
+
+    post {
+
+        always {
+            bat "docker image prune -f"
+        }
+
+        success {
+            echo 'Build successful! Artifacts archived.'
+        }
+
+        failure {
+            echo 'Build failed. Check the logs for details.'
+        }
+    }
+}

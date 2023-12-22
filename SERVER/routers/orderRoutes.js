@@ -12,4 +12,4 @@ routers.get('/all-orders', isAllowedRole(adminRole), getAllOrdersForAdmin);
 routers.get('/order/:orderId', isAllowedRole(adminRole), getSingleOrderForAdmin);
 routers.patch('/update-order/:orderId', isAllowedRole(adminRole), updateOrderStatusForAdmin);
 
-module.exports = routers;     
+module.exports = routers;    

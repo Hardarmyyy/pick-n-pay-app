@@ -1,0 +1,19 @@
+.notFound {
+    width: 500px;
+    text-align: center;
+    margin: 80px auto;
+}
+
+.notFound h2 {
+    font-weight: bolder;
+}
+
+.notFound p {
+    font-family: 'Montserrat', sans-serif;
+    color: #333333;
+    margin-top: 40px;
+}
+
+.notFound a {
+    text-decoration: none;
+}

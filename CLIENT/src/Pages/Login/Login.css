@@ -1,0 +1,22 @@
+.loginError, .loginMessage {
+    font-size: 14px;
+    font-style: italic;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    position: absolute;
+    top: 21%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.loginError {
+    color: #ef6f65;
+}
+
+.loginMessage {
+    color: #65c25e;
+}
+
+
+
+

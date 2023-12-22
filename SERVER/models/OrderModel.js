@@ -9,7 +9,7 @@ const orderSchema = new mongoose.Schema({
         },
         orderItems: [
             {
-                productId: {
+                product: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'Product',
                     required: true,
@@ -42,27 +42,9 @@ const orderSchema = new mongoose.Schema({
             default: 0
         },
         shippingAddress: {
-            firstName: {
-                type: String
-            },
-            lastName: {
-                type: String
-            },
-            email: {
-                type: String
-            },
-            phoneNumber: {
-                type: Number
-            },
-            streetAddress: {
-                type: String
-            },
-            city: {
-                type: String
-            },
-            state: {
-                type: String
-            } 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'ShippingAddress',
+            required: true
         },
         paymentMethod: {
             type: String,
@@ -97,4 +79,4 @@ const orderSchema = new mongoose.Schema({
         }
     }, { timestamps: {createdAt: true, updatedAt: true} });
 
-module.exports = mongoose.model("Order", orderSchema);
+module.exports = mongoose.model("Order", orderSchema); 

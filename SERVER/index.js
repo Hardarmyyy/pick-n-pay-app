@@ -12,7 +12,6 @@ const {checkAuth} = require('./Middleware/checkAuth');
 const {credentails} = require('./Middleware/credentials');
 const {corsOptions} = require('./Utilities/corsOptions');
 
-
 const authRoutes = require('./routers/authRoutes')
 const publicRoutes = require('./routers/publicRoutes')
 const userRoutes = require('./routers/userRoutes');
@@ -58,6 +57,7 @@ mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlPars
                 maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
                 secure: process.env.NODE_ENV === 'production',
                 httpOnly: true, 
+                secure: true,
             }, 
         })
     );
@@ -82,12 +82,9 @@ mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlPars
     // middleware for cookies
     app.use(cookieParser());
 
-
-
     app.use('/api/v1', authRoutes)
     app.use('/api/v1', publicRoutes)
     app.use('/api/v1', cartRoutes) 
-    
 
     app.use(checkAuth) // user authentication middleware
     app.use('/api/v1', userRoutes) 
@@ -95,7 +92,7 @@ mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlPars
     app.use('/api/v1', productRoutes) 
     app.use('/api/v1', favouritesRoutes) 
     app.use('/api/v1', shippingAddressRoutes) 
-    app.use('/api/v1', orderRoutes) 
+    app.use('/api/v1', orderRoutes)  
 
 
     // listen to server;

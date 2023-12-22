@@ -1,0 +1,12 @@
+.expiredLinkContent {
+    text-align: center;
+    margin: 40px auto 40px;
+    font-size: 18px;
+    color: #333333;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.bi-exclamation-triangle {
+    margin-bottom: 16px; 
+}

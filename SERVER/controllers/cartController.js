@@ -1,7 +1,6 @@
 const mongoose = require('mongoose'); 
 const User = require('../models/UserModel');
 const Cart = require('../models/CartModel');
-const Store = require('../models/StoreModel')
 const Product = require('../models/ProductsModel');
 
 
@@ -17,7 +16,6 @@ const addProductToCart = async (req, res) => {
         })
 
         const exisitingProduct = await Product.findById({_id: id})
-
         if (!exisitingProduct) return res.status(404).json({ 
             error: true, 
             message: "product does not exist" 
@@ -30,8 +28,8 @@ const addProductToCart = async (req, res) => {
         })
         
         const newCartProduct = { 
-            productId: exisitingProduct._id, 
-            sellerId: exisitingProduct.sellerId, 
+            product: exisitingProduct._id, 
+            seller: exisitingProduct.seller, 
             title: exisitingProduct.title, 
             price: exisitingProduct.price, 
             description: exisitingProduct.description, 
@@ -46,7 +44,7 @@ const addProductToCart = async (req, res) => {
 
             // Example: Assume you have a session-based cart
             let sessionCart = req.session.cart || { myCart: [], numberOfProducts: 0, subTotal: 0, shippingCost: 0, vat: 0, total: 0 };
-            const existingCartProduct = sessionCart.myCart.find((item) => item.productId === id);
+            const existingCartProduct = sessionCart.myCart.find((item) => item.product === id);
 
             if (existingCartProduct) return res.status(404).json({
                 error: true,
@@ -57,7 +55,7 @@ const addProductToCart = async (req, res) => {
 
             // update the sessioncart properties before saving
             sessionCart.numberOfProducts = +sessionCart.numberOfProducts +  newCartProduct.quantity;
-            sessionCart.subTotal = +sessionCart.subTotal + newCartProduct.price;
+            sessionCart.subTotal = +sessionCart.subTotal.toFixed(2) + newCartProduct.price;
             const shippingCost = sessionCart.subTotal > 500 ? 80 : 50;
             const VAT = sessionCart.subTotal > 500 ? (7.5 / 100 ) * sessionCart.subTotal : (5 / 100 ) * sessionCart.subTotal;
     
@@ -76,40 +74,39 @@ const addProductToCart = async (req, res) => {
         }
 
         // check and validate if the user has an existing cart;
-        const user = await User.findOne({username: username})
-
-        if (!user) return res.status(404).json({
+        const existingUser = await User.findOne({username: username})
+        if (!existingUser) return res.status(404).json({
             error: true,
             message: "User not found"
         });
 
         // Check if the user has an existing cart
-        cart = await Cart.findOne({buyerId: user._id })
+        cart = await Cart.findOne({buyer: existingUser._id })
 
         if (!cart) { // create a new cart for the user(buyer) if the user does not have an existing cart
                 
-                cart = new Cart({ buyerId: user._id, myCart: [newCartProduct] })
+            cart = new Cart({ buyer: existingUser._id, myCart: [newCartProduct] })
 
-                // update the cart properties before saving 
-                cart.numberOfProducts += newCartProduct.quantity;
-                cart.subTotal += newCartProduct.price;
-                const shippingCost = cart.subTotal > 500 ? 80 : 50;
-                const VAT = cart.subTotal > 500 ? (7.5 / 100 ) * cart.subTotal : (5 / 100 ) * cart.subTotal;
-        
-                cart.shippingCost = shippingCost;
-                cart.vat = VAT.toFixed(2);
-                cart.total = (cart.subTotal + cart.shippingCost + cart.vat).toFixed(2);
-                await cart.save()
-        
-                return res.status(201).json({
-                    success: true, 
-                    message: 'New cart has been created and new product is added to cart successfully', 
-                    newCart: cart
-                })
+            // update the cart properties before saving 
+            cart.numberOfProducts += newCartProduct.quantity;
+            cart.subTotal += newCartProduct.price;
+            const shippingCost = cart.subTotal > 500 ? 80 : 50;
+            const VAT = cart.subTotal > 500 ? (7.5 / 100 ) * cart.subTotal : (5 / 100 ) * cart.subTotal;
+    
+            cart.shippingCost = shippingCost;
+            cart.vat = VAT.toFixed(2);
+            cart.total = (cart.subTotal + cart.shippingCost + cart.vat).toFixed(2);
+            await cart.save()
+    
+            return res.status(201).json({
+                success: true, 
+                message: 'New cart has been created and new product is added to cart successfully', 
+                newCart: cart
+            })
         }
 
         // check if the product is already existing in the cart 
-        const existingCartProduct = cart.myCart.find((item) => item.productId === id)
+        const existingCartProduct = cart.myCart.find((item) => item.product === id)
         if (existingCartProduct) return res.status(404).json({ 
             error: true, 
             message: "product is existing in the cart already" 
@@ -119,7 +116,7 @@ const addProductToCart = async (req, res) => {
         
         // update the cart properties before saving
         cart.numberOfProducts += newCartProduct.quantity;
-        cart.subTotal += newCartProduct.price;
+        cart.subTotal = +cart.subTotal.toFixed(2) + newCartProduct.price;
         const shippingCost = cart.subTotal > 500 ? 80 : 50;
         const VAT = cart.subTotal > 500 ? (7.5 / 100 ) * cart.subTotal : (5 / 100 ) * cart.subTotal;
 
@@ -137,7 +134,7 @@ const addProductToCart = async (req, res) => {
     catch (err) {    
         res.status(500).json({error: 'Internal server error', message: err.message})
     }
-};
+}
 
 const fetchCartProducts =  async(req, res) => {
         const { username } = req.query;
@@ -147,9 +144,7 @@ const fetchCartProducts =  async(req, res) => {
         if (!username) { // If no username is provided, assume it's an unregistered user
 
             let sessionCart = req.session.cart;
-
             if (!sessionCart) {
-
                 sessionCart = { 
                     myCart: [], 
                     numberOfProducts: 0,
@@ -179,23 +174,20 @@ const fetchCartProducts =  async(req, res) => {
                 message: 'Cart products fetched successfully for unregistered user', 
                 existingCart: sessionCart
             })
-
         }
         
-        const user = await User.findOne({username: username})
-        
-        if (!user) return res.status(404).json({ 
+        const existingUser = await User.findOne({username: username})
+        if (!existingUser) return res.status(404).json({
             error: true, 
             message: "Sorry! The user does not exist" 
         })
         
         // check if the user(buyer) has an existing cart;
-        let cart = await Cart.findOne({buyerId: user._id})
+        let cart = await Cart.findOne({buyer: existingUser._id})
 
         if (!cart) {
             // create a new cart for the user (buyer)
-            const newCart = await new Cart({ buyerId: user._id, myCart: [] })
-
+            const newCart = await new Cart({ buyer: existingUser._id, myCart: [] })
             await newCart.save()
 
             return res.status(404).json({ 
@@ -233,7 +225,6 @@ const addQuantity =  async (req, res) => {
         })
 
         const existingProduct = await Product.findById({_id: id})
-
         if (!existingProduct) return res.status(404).json({ 
             error: true, 
             message: "product does not exist" 
@@ -248,34 +239,12 @@ const addQuantity =  async (req, res) => {
         if (!username) { // If no username is provided, assume it's an unregistered user
             let sessionCart = req.session.cart;
 
-            if (!sessionCart) {
-
-                sessionCart = { 
-                    myCart: [], 
-                    numberOfProducts: 0,
-                    subTotal: 0, 
-                    shippingCost: 0, 
-                    vat: 0, 
-                    total: 0 
-                };
-
-                req.session.cart = sessionCart;
-    
-                return res.status(201).json({
-                    success: true,
-                    message: "The unregistered user does not have any product in the cart to update its quantity",
-                    product: existingProduct,
-                    existingCart: sessionCart,
-                });
-            }
-
             //check if the product is existing in the unregistered user cart
-            let existingSessionCartProduct = sessionCart.myCart.find((item) => item.productId === id)
-
+            let existingSessionCartProduct = sessionCart.myCart.find((item) => item.product === id)
             if (!existingSessionCartProduct) return res.status(404).json({ 
                 error: true, 
                 message: "Sorry! The product does not exist this unregistered user cart",
-                product: existingProduct,
+                product: existingProduct._id,
                 existingCart: sessionCart 
             })
 
@@ -304,43 +273,27 @@ const addQuantity =  async (req, res) => {
 
             return res.status(201).json({ 
                 success: true, 
-                message: `${existingSessionCartProduct.title} quantity has been updated successfully for unregistered user` , 
-                existingCart: sessionCart
+                message: `The quantity of product with the id ${id} has been updated successfully for unregistered user` , 
+                updatedCart: sessionCart
             })
-
         }
         
         // check and validate if the user(buyer) has an existing cart;
-        const user = await User.findOne({username: username})
-
-        if (!user) return res.status(404).json({ 
+        const existingUser = await User.findOne({username: username})
+        if (!existingUser) return res.status(404).json({ 
             error: true, 
             message: "Sorry! The user does not exist" 
         })
     
         // check if the user(buyer) has an existing cart
-        let cart = await Cart.findOne({buyerId: user._id})
-
-        if (!cart) {
-            // create a new cart for the user (buyer)
-            const newCart = await new Cart({ buyerId: user._id, myCart: [] })
-
-            await newCart.save()
-
-            return res.status(404).json({ 
-                error: true, 
-                message: 'The user does not have any product in the cart to update its quantity', 
-                emptyCart: newCart 
-            })
-        }
+        let cart = await Cart.findOne({buyer: existingUser._id})
 
         //check if the product is existing in the user(buyer) cart
-        let existingCartProduct = cart.myCart.find((item) => item.productId === id)
-
+        let existingCartProduct = cart.myCart.find((item) => item.product.equals(id))
         if (!existingCartProduct) return res.status(404).json({ 
             error: true, 
             message: "Sorry! The product does not exist this user cart",
-            product: existingProduct,
+            product: existingProduct._id,
             existingCart: cart
         })
 
@@ -353,17 +306,6 @@ const addQuantity =  async (req, res) => {
         }
         
         existingCartProduct.quantity ++;
-
-        // update the store and products by decrementing the quantity order for each item from the countInStock
-        await Promise.all(cart.myCart.map( async(product) => {
-            let store = await Store.findOne({sellerId: product.sellerId})
-            let storeItem = store.myStore.find((item) => item._id.equals(product.productId))
-            storeItem.countInStock -= product.quantity
-
-            let item = await Product.findById({_id: product.productId})
-            item.countInStock =  storeItem.countInStock
-            return;
-        }))
 
         // update the cart properties before saving 
         cart.numberOfProducts ++;
@@ -378,11 +320,9 @@ const addQuantity =  async (req, res) => {
 
         return res.status(201).json({ 
             success: true,
-            message: `${existingCartProduct.title} quantity has been updated successfully`,
-            updatedCartProduct: existingCartProduct,
+            message: `The quantity of product with the id of ${id} has been updated successfully`,
             updatedCart: cart
         })
-        
     } 
     catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
@@ -400,7 +340,6 @@ const decrementQuantity = async (req, res) => {
         })
 
         const existingProduct = await Product.findById({_id: id})
-
         if (!existingProduct) return res.status(404).json({ 
             error: true, 
             message: "product does not exist" 
@@ -409,34 +348,13 @@ const decrementQuantity = async (req, res) => {
         if (!username) { // If no username is provided, assume it's an unregistered user
             let sessionCart = req.session.cart;
 
-            if (!sessionCart) {
-
-                sessionCart = { 
-                    myCart: [], 
-                    numberOfProducts: 0,
-                    subTotal: 0, 
-                    shippingCost: 0, 
-                    vat: 0, 
-                    total: 0 
-                };
-
-                req.session.cart = sessionCart;
-    
-                return res.status(201).json({
-                    success: true,
-                    message: "The unregistered user does not have any product in it cart to update its quantity",
-                    product: existingProduct,
-                    existingCart: sessionCart,
-                });
-            }
-
             //check if the product is existing in the unregistered user cart
-            let existingSessionCartProduct = sessionCart.myCart.find((item) => item.productId === id)
+            let existingSessionCartProduct = sessionCart.myCart.find((item) => item.product === id)
 
             if (!existingSessionCartProduct) return res.status(404).json({ 
                 error: true, 
                 message: "Sorry! The product does not exist this unregistered user cart",
-                product: existingProduct,
+                product: id,
                 existingCart: sessionCart 
             })
 
@@ -462,42 +380,30 @@ const decrementQuantity = async (req, res) => {
 
             return res.status(201).json({ 
                 success: true, 
-                message: `${existingSessionCartProduct.title} quantity has been updated successfully for unregistered user`, 
-                existingCart: sessionCart
+                message: `The quantity of product id ${id} has been updated successfully for unregistered user`, 
+                updatedCart: sessionCart
             })
 
         }
         
         // check and validate if the user(buyer) has an existing cart;
-        const user = await User.findOne({username: username})
+        const existingUser = await User.findOne({username: username})
 
-        if (!user) return res.status(404).json({ 
+        if (!existingUser) return res.status(404).json({ 
             error: true, 
             message: "Sorry! The user does not exist" 
         })
     
         // check if the user(buyer) has an existing cart
-        let cart = await Cart.findOne({buyerId: user._id})
-        if (!cart) {
-            // create a new cart for the user (buyer)
-            const newCart = await new Cart({ buyerId: user._id, myCart: [] })
-
-            await newCart.save()
-
-            return res.status(404).json({ 
-                error: true, 
-                message: 'The user does not have any product in the cart to update its quantity', 
-                emptyCart: newCart 
-            })
-        }
-
+        let cart = await Cart.findOne({buyer: existingUser._id})
+        
         //check if the product is existing in the user(buyer) cart
-        let existingCartProduct = cart.myCart.find((item) => item.productId === id)
+        let existingCartProduct = cart.myCart.find((item) => item.product.equals(id))
 
         if (!existingCartProduct) return res.status(404).json({ 
             error: true, 
             message: "Sorry! The product does not exist this user cart",
-            product: existingProduct,
+            product: id,
             existingCart: cart
         })
 
@@ -521,8 +427,7 @@ const decrementQuantity = async (req, res) => {
 
         return res.status(201).json({ 
             success: true,
-            message: `${existingCartProduct.title} quantity has been updated successfully`,
-            updatedCartProduct: existingCartProduct,
+            message: `The quantity of product id ${id} has been updated successfully`,
             updatedCart: cart
         })
     } 
@@ -542,7 +447,6 @@ const deleteProductFromCart =  async(req, res) => {
         })
 
         const existingProduct = await Product.findById({_id: id})
-
         if (!existingProduct) return res.status(404).json({ 
             error: true, 
             message: "product does not exist" 
@@ -552,39 +456,18 @@ const deleteProductFromCart =  async(req, res) => {
 
             let sessionCart = req.session.cart;
 
-            if (!sessionCart) {
-
-                sessionCart = { 
-                    myCart: [], 
-                    numberOfProducts: 0,
-                    subTotal: 0, 
-                    shippingCost: 0, 
-                    vat: 0, 
-                    total: 0 
-                };
-
-                req.session.cart = sessionCart;
-    
-                return res.status(201).json({
-                    success: true,
-                    message: "The unregistered user does not have any product in the cart for deletion",
-                    product: existingProduct,
-                    existingCart: sessionCart,
-                });
-            }
-
             //check if the product is existing in the unregistered user cart
-            let existingSessionCartProduct = sessionCart.myCart.find((item) => item.productId === id)
+            let existingSessionCartProduct = sessionCart.myCart.find((item) => item.product === id)
 
             if (!existingSessionCartProduct) return res.status(404).json({ 
                 error: true, 
                 message: "Sorry! The product does not exist this unregisteredUser cart",
-                product: existingProduct,
+                product: id,
                 existingCart: sessionCart
             })
 
             // Delete the product from the cart
-            sessionCart.myCart = sessionCart.myCart.filter((item) => item.productId !== id);
+            sessionCart.myCart = sessionCart.myCart.filter((item) => item.product !== id);
 
             // update the cart properties before saving 
             sessionCart.numberOfProducts -= existingSessionCartProduct.quantity
@@ -607,37 +490,26 @@ const deleteProductFromCart =  async(req, res) => {
         }
         
         // check and validate if the user(buyer) has an existing cart;
-        const user = await User.findOne({username: username})
+        const existingUser = await User.findOne({username: username})
+        if (!existingUser) return res.status(404).json({
+            success: true, 
+            message: `User does not exist`, 
+        })
     
         // check if the user(buyer) has an existing cart
-        let cart = await Cart.findOne({buyerId: user._id})
-
-        if (!cart) {
-            // create a new cart for the user (buyer)
-            const newCart = await new Cart({ buyerId: user._id, myCart: [] })
-
-            await newCart.save()
-
-            return res.status(404).json({ 
-                error: true, 
-                message: 'The user does not have any product in the cart for deletion', 
-                product: existingProduct,
-                emptyCart: newCart 
-            })
-        }
+        let cart = await Cart.findOne({buyer: existingUser._id})
 
         //check if the product is existing in the user(buyer) cart
-        let existingCartProduct = cart.myCart.find((item) => item.productId === id)
-
+        let existingCartProduct = cart.myCart.find((item) => item.product.equals(id))
         if (!existingCartProduct) return res.status(404).json({ 
             error: true, 
             message: "Sorry! The product does not exist this user cart",
-            product: existingProduct,
+            product: id,
             existingCart: cart
         })
 
         // delete the product from the cart
-        await Cart.findOneAndUpdate({_id: cart._id}, {$pull: {myCart: {productId: id} }} )
+        await Cart.findOneAndUpdate({_id: cart._id}, {$pull: {myCart: {product: id} }} )
         
         // update the cart properties
         cart.numberOfProducts -= existingCartProduct.quantity
@@ -670,34 +542,7 @@ const emptyCartProducts = async(req, res) => {
 
             let sessionCart = req.session.cart;
 
-            if (!sessionCart) {
-
-                sessionCart = { 
-                    myCart: [], 
-                    numberOfProducts: 0,
-                    subTotal: 0, 
-                    shippingCost: 0, 
-                    vat: 0, 
-                    total: 0 
-                };
-
-                req.session.cart = sessionCart;
-    
-                return res.status(201).json({
-                    success: true,
-                    message: "The unregistered user does not have any product in the cart for emptying",
-                    existingCart: sessionCart,
-                });
-            }
-
-            if (sessionCart.myCart.length === 0) return res.status(201).json({
-                success: true,
-                message: "There is not product in the cart to be emptied for the unregistered user",
-                existingCart: sessionCart,
-            });
-
-            // Empty all the products from the cart
-            // Update the session cart properties before sending the response
+            // Empty all the products from the cart and update the properties of session cart;
             sessionCart.myCart = [];
             sessionCart.numberOfProducts = 0,
             sessionCart.subTotal = 0;
@@ -713,39 +558,16 @@ const emptyCartProducts = async(req, res) => {
                 message: 'Products emptied from cart successfully for unregistered user', 
                 emptyCart: sessionCart
             })
-
         }
 
-        const user = await User.findOne({username: username})
-        
-        if (!user) return res.status(404).json({ 
+        const existingUser = await User.findOne({username: username})
+        if (!existingUser) return res.status(404).json({ 
             error: true, 
             message: "Sorry! The user does not exist"
         })
         
         // check if the user(buyer) has an existing cart;
-        let cart = await Cart.findOne({buyerId: user._id})
-
-        if (!cart) {
-            // create a new cart for the user (buyer)
-            const newCart = await new Cart({ buyerId: user._id, myCart: [] })
-
-            await newCart.save()
-
-            return res.status(404).json({ 
-                error: true, 
-                message: 'The user does not have any product in the cart for emptying', 
-                emptyCart: newCart 
-            })
-        }
-
-        else if (cart.myCart.length == 0) return res.status(201).json({
-            success: true, 
-            message: 'The cart is empty with no existing products', 
-            emptyCart: cart
-        });
-        
-
+        let cart = await Cart.findOne({buyer: existingUser._id})
         const emptiedCart = await Cart.findByIdAndUpdate({_id: cart._id}, {$set: {myCart: [], numberOfProducts: 0, subTotal: 0, shippingCost: 0, vat: 0, total: 0}})
 
         return res.status(201).json({
@@ -753,7 +575,6 @@ const emptyCartProducts = async(req, res) => {
             message: 'Products has been emptied from cart',
             emptyCart: emptiedCart
         })
-
     } 
     catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
@@ -767,4 +588,4 @@ module.exports = {
     decrementQuantity,
     deleteProductFromCart,
     emptyCartProducts
-} 
+}  

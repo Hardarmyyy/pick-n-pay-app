@@ -2,34 +2,59 @@ const mongoose = require('mongoose')
 const {format} = require('date-fns')
 const bcrypt = require('bcrypt')
 const User = require('../models/UserModel')
-const Cart = require('../models/CartModel')
-const Store = require('../models/StoreModel')
-const Favourites = require('../models/FavouritesModel')
 const Product = require('../models/ProductsModel')
+const ShippingAddress = require('../models/ShippingAddressModel')
+const Cart = require('../models/CartModel')
+const Favourites = require('../models/FavouritesModel')
+const Order = require('../models/OrderModel')
 
 
-//get all users
-const getAllUsers = async (req, res) => {
+
+const getAllUsers = async (req, res) => { 
         const {id} = req.params
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403)
+
     try {
-        const allUsers = await User.find({}).sort({createdAt: -1}).lean()
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
+            error: true, 
+            message: "The user ID is invalid!" 
+        })
+
+        const allUsers = await User.aggregate([
+            {
+                $project: {
+                    _id: 0,
+                    userId: "$_id",
+                    userRole: "$roles",
+                    username: "$username",
+                    email: "$email",
+                    createdAt: "$createdAt",
+                    updatedAt: "$updatedAt"
+                }
+            },
+            {
+                $sort: {
+                    createdAt: -1
+                }
+            }
+        ])
+
         const allusersFormatedDate = await Promise.all(allUsers.map( async (u) => {
             const createdTime = format(u.createdAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the created datetime
             const updatedTime = format(u.updatedAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the updated datetime
             return {...u, createdAt: createdTime, updatedAt: updatedTime}
         }))
 
-        if (!allusersFormatedDate.length) return res.json({
+        if (!allUsers.length) return res.json({
             error: true, 
             message: 'The user list is empty', 
-            user: allusersFormatedDate
+            user: allUsers
         })
 
         res.status(200).json({ 
             success: true, 
-            message: 'Total users fetched successfully', 
-            user: allusersFormatedDate
+            message: 'All users fetched successfully', 
+            user: allusersFormatedDate,
+            totalNumberOfRegisteredUsers: allusersFormatedDate.length
         })
     }
     catch (err) {
@@ -37,7 +62,114 @@ const getAllUsers = async (req, res) => {
     }
 }
 
-//get a user
+const allSellers = async (req, res) => {
+        const {id} = req.params
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
+            error: true, 
+            message: "The user ID is invalid!" 
+        })
+
+        const allSellers = await User.aggregate([
+            {
+                $unwind: "$roles.seller"
+            },
+            {
+                $sort: {
+                    createdAt: -1
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    userId: "$_id",
+                    userRole: "$roles",
+                    username: "$username",
+                    email: "$email",
+                    createdAt: "$createdAt",
+                    updatedAt: "$updatedAt"
+                }
+            }
+        ])
+        const allSellersFormatedDate = await Promise.all(allSellers.map( async (u) => {
+            const createdTime = format(u.createdAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the created datetime
+            const updatedTime = format(u.updatedAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the updated datetime
+            return {...u, createdAt: createdTime, updatedAt: updatedTime}
+        }))
+
+        if (!allSellers.length) return res.json({
+            error: true, 
+            message: 'The sellers list is empty', 
+            user: allSellers
+        })
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'All sellers fetched successfully', 
+            user: allSellersFormatedDate,
+            totalNumberOfRegisteredSellers: allSellersFormatedDate.length
+        })
+    }
+    catch(err) {
+        res.status(500).json({error: 'Internal server error', message: err.message}) 
+    }
+}
+
+const allBuyers = async (req, res) => {
+    const {id} = req.params
+
+try {
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
+        error: true, 
+        message: "The user ID is invalid!" 
+    })
+
+    const allBuyers = await User.aggregate([
+        {
+            $unwind: "$roles.buyer"
+        },
+        {
+            $sort: {
+                createdAt: -1
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                userId: "$_id",
+                userRole: "$roles",
+                username: "$username",
+                email: "$email",
+                createdAt: "$createdAt",
+                updatedAt: "$updatedAt"
+            }
+        }
+    ])
+    const allBuyersFormatedDate = await Promise.all(allBuyers.map( async (u) => {
+        const createdTime = format(u.createdAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the created datetime
+        const updatedTime = format(u.updatedAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the updated datetime
+        return {...u, createdAt: createdTime, updatedAt: updatedTime}
+    }))
+
+    if (!allBuyers.length) return res.json({
+        error: true, 
+        message: 'The buyers list is empty', 
+        user: allBuyers
+    })
+
+    res.status(200).json({ 
+        success: true, 
+        message: 'All buyers fetched successfully', 
+        user: allBuyersFormatedDate,
+        totalNumberOfRegisteredBuyers: allBuyersFormatedDate.length
+    })
+}
+catch(err) {
+    res.status(500).json({error: 'Internal server error', message: err.message}) 
+}
+}
+
 const getSingleUser = async (req, res) => {
         const {id} = req.params
 
@@ -48,25 +180,20 @@ const getSingleUser = async (req, res) => {
         })
 
         const user = await User.findById({_id: id})
-        if (!user) return res.json({
+
+        if (!user) return res.status(404).json({
             error: true, 
-            message: 'User not found'
-        });
+            message: "User not found!" 
+        })
 
-        const createdTime = format(user.createdAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the created datetime
-        const updatedTime = format(user.updatedAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the updated datetime
+        const createdTime = format(user.createdAt, 'yyyy-MM-dd hh:mm:ss a')
+        const updatedTime = format(user.updatedAt, 'yyyy-MM-dd hh:mm:ss a')
 
-        const singleUserFormatedDate = {
-            _id: user._id, 
-            username: user.username, 
+        const singleUserFormatedDate = { 
+            userid: user._id,
+            roles: user.roles,
+            username: user.username,
             email: user.email, 
-            userRole: user.roles,
-            verified: user.verified, 
-            cart: user.cart,
-            favourites: user.favourites, 
-            myOrders: user.myOrders, 
-            store: user.store, 
-            customerOrders: user.customerOrders,
             createdAt: createdTime, 
             updatedAt: updatedTime
         }
@@ -76,14 +203,12 @@ const getSingleUser = async (req, res) => {
             message: 'single user retrieved successfully', 
             user: singleUserFormatedDate
         });
-
     }
     catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
-//delete a user
 const deleteUser = async (req, res) => {
         const {id} = req.params
 
@@ -93,265 +218,112 @@ const deleteUser = async (req, res) => {
             message: "The user ID is invalid!"
         })
 
-        const user = await User.findById({_id: id})
-        if (!user) return res.json({
+        const existingUser = await User.findById({_id: id})
+        if (!existingUser) return res.json({
             error: true, 
             message: 'User not found'
         });
 
-        // check if the user has an existing products in the cart, favorites or store
-        const existingCart = await Cart.findOne({buyerId: id})
-        const existingFavourites = await Favourites.findOne({buyerId: id})
-        const existingStore = await Store.findOne({sellerId: id})
+        //check if the user (seller) have existing products
+        const existingProducts = await Product.aggregate([
+            {
+                $match: {
+                    'seller': existingUser._id
+                }
+            }
+        ])
 
-        if (existingCart && existingFavourites && existingStore) { // if the user has an exisiting cart, favourites and store with products;
-            // empty the cart and return the products back to the shelf
-            await Promise.all(existingCart.myCart.map( async(product) => {
+        //check if the user (buyer) have existing addresses
+        const existingAddresses = await ShippingAddress.aggregate([
+            {
+                $match: {
+                    'buyer': existingUser._id
+                }
+            }
+        ])
 
-                // update the product quantity by adding the quantity to the countInStock in the store
-                let store = await Store.findOne({sellerId: product.sellerId})
-                let existingStoreProducts = store.myStore.find((item) => item._id.equals(product.productId))
-                existingStoreProducts.countInStock += product.quantity 
+        //check if the user (buyer) have existing cart
+        const existingCart = await Cart.findOne({buyer: existingUser._id})
 
-                // update the product quantity by adding the quantity to the countInStock
-                const allProduct = await Product.find({})
-                await Promise.all(allProduct.map( async(pro) => {
-                    if (pro._id.equals(product.productId)) {
-                        await Product.findByIdAndUpdate({_id: product.productId}, {countInStock: pro.countInStock + product.quantity})
-                    }
-                })) 
-                
-                await store.save()
+        //check if the user (buyer) have existing favoruites
+        const existingFavourites = await Favourites.aggregate([
+            {
+                $match: {
+                    'buyer': existingUser._id
+                }
+            }
+        ])
 
-                return {productId: product.productId, sellerId: product.sellerId, title: product.title, price: product.price, description: product.description, category: product.category, quantity: product.quantity}
-            }))
-            
-            // delete the cart
-            const deletedCart = await Cart.findByIdAndDelete({_id: existingCart._id})
-            // delete the favourites
-            const deletedFavourites = await Favourites.findOneAndDelete({buyerId: user._id})
+        //check if the user (buyer) have order history
+        const existingOrder = await Order.aggregate([
+            {
+                $match: {
+                    'buyer': existingUser._id
+                }
+            }
+        ])
 
-            // delete the products from the user(seller) store
-            const existingStoreProducts = await Promise.all(existingStore.myStore.map(  async(item) => {
-                const deleteExisitngProduct = await Product.findByIdAndDelete({_id: item._id})
-                return {deletedStoreItems: deleteExisitngProduct}
-            }))
-
-            // delete the store
-            const deletedStore = await Store.findOneAndDelete({sellerId: id})
-
-            const deletedUser = await User.findByIdAndDelete({_id: id})
-
-            return res.status(200).json({
-                success: 'true', 
-                message: 'User with cart, favourites and store has been deleted successfully',
-                deletedCart: deletedCart,
-                deletedFavourites: deletedFavourites,
-                deletedStoreProducts: existingStoreProducts, 
-                deletedStore: deletedStore, 
-                deletedUser: deletedUser
-            })
-        }
-
-        else if (existingFavourites && existingStore) { // if the user has an exisiting favourites and store with products;
-
-            // delete the favourites
-            const deletedFavourites = await Favourites.findOneAndDelete({buyerId: user._id})
-
-            // delete the products from the user(seller) store
-            const existingStoreProducts = await Promise.all(existingStore.myStore.map(  async(item) => {
-                const deleteExisitngProduct = await Product.findByIdAndDelete({_id: item._id})
-                return {deletedStoreItems: deleteExisitngProduct}
-            }))
-
-            // delete the store
-            const deletedStore = await Store.findOneAndDelete({sellerId: id})
-
-            const deletedUser = await User.findByIdAndDelete({_id: id})
-
-            return res.status(200).json({
-                success: 'true', 
-                message: 'User with favourites and store has been deleted successfully',
-                deletedFavourites: deletedFavourites,
-                deletedStoreProducts: existingStoreProducts, 
-                deletedStore: deletedStore, 
-                deletedUser: deletedUser
-            })
-        }
-
-        else if (existingCart && existingStore) { // if the user has an exisiting cart and store with products;
-            // empty the cart and return the products back to the shelf
-            await Promise.all(existingCart.myCart.map( async(product) => {
-
-                // update the product quantity by adding the quantity to the countInStock in the store
-                let store = await Store.findOne({sellerId: product.sellerId})
-                let existingStoreProducts = store.myStore.find((item) => item._id.equals(product.productId))
-                existingStoreProducts.countInStock += product.quantity 
-
-                // update the product quantity by adding the quantity to the countInStock
-                const allProduct = await Product.find({})
-                await Promise.all(allProduct.map( async(pro) => {
-                    if (pro._id.equals(product.productId)) {
-                        await Product.findByIdAndUpdate({_id: product.productId}, {countInStock: pro.countInStock + product.quantity})
-                    }
-                })) 
-                
-                await store.save()
-
-                return {productId: product.productId, sellerId: product.sellerId, title: product.title, price: product.price, description: product.description, category: product.category, quantity: product.quantity}
-            }))
-            
-            // delete the cart
-            const deletedCart = await Cart.findByIdAndDelete({_id: existingCart._id})
-
-            // delete the products from the user(seller) store
-            const existingStoreProducts = await Promise.all(existingStore.myStore.map(  async(item) => {
-                const deleteExisitngProduct = await Product.findByIdAndDelete({_id: item._id})
-                return {deletedStoreItems: deleteExisitngProduct}
-            }))
-
-            // delete the store
-            const deletedStore = await Store.findOneAndDelete({sellerId: id})
-
-            const deletedUser = await User.findByIdAndDelete({_id: id})
-
-            return res.status(200).json({
-                success: 'true', 
-                message: 'User with existing cart and store has been deleted successfully',
-                deletedCart: deletedCart,
-                deletedStoreProducts: existingStoreProducts, 
-                deletedStore: deletedStore, 
-                deletedUser: deletedUser
-            })
-        }
-        
-        else if (existingCart && existingFavourites) { // if the user(buyer) has an exisiting cart and favourites with products;
-
-            // empty the cart and return the products back to the shelf
-            await Promise.all(existingCart.myCart.map( async(product) => {
-
-                // update the product quantity by adding the quantity to the countInStock in the store
-                let store = await Store.findOne({sellerId: product.sellerId})
-                let existingStoreProducts = store.myStore.find((item) => item._id.equals(product.productId))
-                existingStoreProducts.countInStock += product.quantity 
-
-                // update the product quantity by adding the quantity to the countInStock
-                const allProduct = await Product.find({})
-                await Promise.all(allProduct.map( async(pro) => {
-                    if (pro._id.equals(product.productId)) {
-                        await Product.findByIdAndUpdate({_id: product.productId}, {countInStock: pro.countInStock + product.quantity})
-                    }
-                })) 
-                
-                await store.save()
-
-                return {productId: product.productId, sellerId: product.sellerId, title: product.title, price: product.price, description: product.description, category: product.category, quantity: product.quantity}
-            }))
-            
-            // delete the cart
-            const deletedCart = await Cart.findByIdAndDelete({_id: existingCart._id})
-            // delete the favourites
-            const deletedFavourites = await Favourites.findOneAndDelete({buyerId: user._id})
-            //delete the user
-            const deletedUser = await User.findByIdAndDelete({_id: id})
-
-            return res.status(200).json({
-                success: 'true', 
-                message: 'User with cart and favourites has been deleted successfully', 
-                deletedCart: deletedCart,
-                deletedFavourites: deletedFavourites,
-                deletedUser: deletedUser
-            })
-        }
-
-        else if (existingFavourites) { // if the user(buyer) has an exisiting favourites with products;
-
-            // delete the favourites
-            const deletedFavourites = await Favourites.findOneAndDelete({buyerId: user._id})
-            //delete the user
-            const deletedUser = await User.findByIdAndDelete({_id: id})
-
-            return res.status(200).json({
-                success: 'true', 
-                message: 'User with favourites has been deleted successfully', 
-                deletedFavourites: deletedFavourites,
-                deletedUser: deletedUser
-            })
-        }
-
-        else if (existingCart) { // if the user(buyer) has an exisiting cart with products;
-
-            // empty the cart and return the products back to the shelf
-            await Promise.all(existingCart.myCart.map( async(product) => {
-
-                // update the product quantity by adding the quantity to the countInStock in the store
-                let store = await Store.findOne({sellerId: product.sellerId})
-                let existingStoreProducts = store.myStore.find((item) => item._id.equals(product.productId))
-                existingStoreProducts.countInStock += product.quantity 
-
-                // update the product quantity by adding the quantity to the countInStock
-                const allProduct = await Product.find({})
-                await Promise.all(allProduct.map( async(pro) => {
-                    if (pro._id.equals(product.productId)) {
-                        await Product.findByIdAndUpdate({_id: product.productId}, {countInStock: pro.countInStock + product.quantity})
-                    }
-                })) 
-                
-                await store.save()
-
-                return {productId: product.productId, sellerId: product.sellerId, title: product.title, price: product.price, description: product.description, category: product.category, quantity: product.quantity}
-            }))
-            
-            // delete the cart
-            const deletedCart = await Cart.findByIdAndDelete({_id: existingCart._id})
-            
-            //delete the user
-            const deletedUser = await User.findByIdAndDelete({_id: id})
-
-            return res.status(200).json({
-                success: 'true', 
-                message: 'User with cart has been deleted successfully', 
-                deletedCart: deletedCart,
-                deletedUser: deletedUser
-            })
-        }
-    
-        else if (existingStore) { // if the user(seller) has an exisiting store with products;
-            // delete the products from the user(seller) store
-            const existingStoreProducts = await Promise.all(existingStore.myStore.map(  async(item) => {
-                const deleteExisitngProduct = await Product.findByIdAndDelete({_id: item._id})
-                return {deletedStoreItems: deleteExisitngProduct}
-            }))
-
-            // delete the shop
-            const deletedStore = await Store.findOneAndDelete({sellerId: id})
-
-            const deletedUser = await User.findByIdAndDelete({_id: id})
-
-            return res.status(200).json({
-                success: 'true', 
-                message: 'User with existing store has been deleted successfully', 
-                deletedStoreProducts: existingStoreProducts, 
-                deletedStore: deletedStore, 
-                deletedUser: deletedUser
-            })
-        }
-        
-        else if (!existingCart && !existingFavourites && !existingStore) {
+        if (!existingCart && !existingFavourites.length && !existingProducts.length && !existingAddresses.length && !existingOrder.length) {
             const deletedUser = await User.findByIdAndDelete({_id: id})
             return res.status(200).json({
                 success: 'true', 
-                message: 'User without a cart, favourites and store has been deleted successfully', 
+                message: 'User has been deleted successfully',
                 deletedUser: deletedUser
             })
         } 
+
+        else if (existingAddresses && (existingCart || existingFavourites) && existingOrder)  { // if the user(buyer) have exisiting addresses, cart, orderhistory, etc;
+            // Delete the address and the user concurrently
+            const existingUserAddress = await Promise.all(existingAddresses.map(  async(address) => {
+                const deleteExisitngAddress = await ShippingAddress.findByIdAndDelete({_id: address._id})
+                return {deleteExisitngAddress}
+            }))
+
+            // delete the cart
+            const deletedCart = await Cart.findByIdAndDelete({_id: existingCart._id})
+
+            // Delete the favourites list and the user concurrently
+            const existingUserFavourites = await Promise.all(existingFavourites.map(  async(fav) => {
+                const deleteExistingFavourites = await Favourites.findByIdAndDelete({_id: fav._id})
+                return {deleteExistingFavourites}
+            }))
+
+            // Delete the order list and the user concurrently
+            const existingUserOrder = await Promise.all(existingOrder.map(  async(ord) => {
+                const deleteExistingOrders = await Order.findByIdAndDelete({_id: ord._id})
+                return {deleteExistingOrders}
+            }))
+
+            const deletedUser = await User.findByIdAndDelete({_id: id})
+
+            return res.status(200).json({
+                success: 'true', 
+                message: 'User with existing cart, address and order history has been deleted successfully', 
+                deletedUser: deletedUser
+            })
+        }
+
+        else if (existingProducts) { // if the user(seller) have exisiting products;
+            // Delete the products and the user concurrently
+            const existingStoreProducts = await Promise.all(existingProducts.map(  async(item) => {
+                const deleteExisitngProduct = await Product.findByIdAndDelete({_id: item._id})
+                return {deleteExisitngProduct}
+            }))
+
+            const deletedUser = await User.findByIdAndDelete({_id: id})
+
+            return res.status(200).json({
+                success: 'true', 
+                message: 'User with existing products has been deleted successfully', 
+                deletedUser: deletedUser
+            })
+        }
 	} 
     catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
     }
 }
 
-//update a user password
 const updatePassword = async (req, res) => {
             const {id} = req.params
             const {currentPassword, newPassword, confirmPassword} = req.body
@@ -407,7 +379,6 @@ const updatePassword = async (req, res) => {
     }
 } 
 
-//update a user info
 const updateUser = async (req, res) => {
         const {id} = req.params
         const {username, email } = req.body;
@@ -460,7 +431,6 @@ const updateUser = async (req, res) => {
     }
 }
 
-// switch userRole to seller
 const switchToSellerRole = async (req, res) => {
         const {id} = req.params
     try {
@@ -503,7 +473,6 @@ const switchToSellerRole = async (req, res) => {
     }
 }
 
-// switch userRole to buyer
 const switchToBuyerRole = async (req, res) => {
         const {id} = req.params
     try {
@@ -547,6 +516,8 @@ const switchToBuyerRole = async (req, res) => {
 
 module.exports = {
     getAllUsers,
+    allSellers,
+    allBuyers,
     getSingleUser,
     deleteUser,
     updatePassword,
