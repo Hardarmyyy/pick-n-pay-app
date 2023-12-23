@@ -1859,3 +1859,17 @@
 2023-12-21 08:24:59 PM	 ac2596ff-f226-4ef2-8f1a-feef83c36d25	 /api/v1/signup	POST	http://localhost:5173
 2023-12-21 08:25:41 PM	 bef10d1c-4574-4da8-a652-7556f6ab0b91	 /api/v1/signup	OPTIONS	http://localhost:5173
 2023-12-21 08:25:42 PM	 5164c84b-3465-4bc7-8a49-ae071fd5fc16	 /api/v1/signup	POST	http://localhost:5173
+2023-12-23 04:04:59 PM	 ef16a759-9894-4db1-b7bb-dc3af7875f05	 /api/v1/forgot	OPTIONS	http://localhost:5173
+2023-12-23 04:06:21 PM	 c3e9d142-2a91-4dad-8566-2765b9ab3498	 /api/v1/forgot	POST	http://localhost:5173
+2023-12-23 04:08:23 PM	 058e95a9-e1ae-49ee-860d-81356fbdd388	 /api/v1/forgot	POST	http://localhost:5173
+2023-12-23 04:08:20 PM	 02f6b76b-9d94-4124-a1ce-75df758e61d8	 /api/v1/forgot	OPTIONS	http://localhost:5173
+2023-12-23 04:08:27 PM	 99b725aa-fa9f-4445-914e-cb3a1c96d013	 /api/v1/forgot	POST	http://localhost:5173
+2023-12-23 04:08:30 PM	 35966e33-26c7-4f65-8c89-2ddd4e7c9a43	 /api/v1/forgot	OPTIONS	http://localhost:5173
+2023-12-23 04:08:30 PM	 917dbe07-97ef-4491-9dd9-3fa3cd45ea75	 /api/v1/forgot	POST	http://localhost:5173
+2023-12-23 04:08:32 PM	 e97d104a-6343-4945-86d5-f50627d0a74e	 /api/v1/forgot	POST	http://localhost:5173
+2023-12-23 04:08:34 PM	 703cd40d-6143-45eb-83fe-707bc1036cbb	 /api/v1/forgot	POST	http://localhost:5173
+2023-12-23 04:08:40 PM	 3ef71829-1a89-4e9e-9de7-666a001a9883	 /api/v1/forgot	OPTIONS	http://localhost:5173
+2023-12-23 04:08:40 PM	 bf7958e9-8e93-4424-8738-1dd733d8b60a	 /api/v1/forgot	POST	http://localhost:5173
+2023-12-23 04:08:42 PM	 45d8381a-10b3-4ce9-8e54-00e331a2fa3c	 /api/v1/forgot	POST	http://localhost:5173
+2023-12-23 04:08:44 PM	 c0ceb3e5-04a7-4eaa-b716-0dec1c5b40ce	 /api/v1/forgot	POST	http://localhost:5173
+2023-12-23 04:11:05 PM	 db39fbda-dd57-41ee-8bc9-8a944407112f	 /api/v1/forgot	OPTIONS	https://pick-n-pay-app.vercel.app

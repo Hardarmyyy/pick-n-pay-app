@@ -1,8 +1,8 @@
 const allowedOrigins = [
     'https://www.google.com', 
-    'http://127.0.0.1:5500', 
     'http://localhost:4080/', 
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'https://pick-n-pay-app.vercel.app'
 ] // last 2 should be removed after development
 
 module.exports = {
