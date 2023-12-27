@@ -46,7 +46,7 @@ mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlPars
     .then(() => {
     
     // Define a cronjob to send request to the server, preventing it from cold start
-    const serverUrl = 'https://pick-n-pay-app-backend.vercel.app/api/v1/all-products'
+    const serverUrl = 'https://pick-n-pay-app-backend.vercel.app/api/all-products'
     cron.schedule('* * * * * *', async () => {
         try {
             // send request to the server every 30seconds to keep it active
@@ -97,17 +97,17 @@ mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlPars
     // middleware for cookies
     app.use(cookieParser());
 
-    app.use('/api/v1', authRoutes)
-    app.use('/api/v1', publicRoutes)
-    app.use('/api/v1', cartRoutes) 
+    app.use('/api', authRoutes)
+    app.use('/api', publicRoutes)
+    app.use('/api', cartRoutes) 
 
     app.use(checkAuth) // user authentication middleware
-    app.use('/api/v1', userRoutes) 
-    app.use('/api/v1', categoryRoutes) 
-    app.use('/api/v1', productRoutes) 
-    app.use('/api/v1', favouritesRoutes) 
-    app.use('/api/v1', shippingAddressRoutes) 
-    app.use('/api/v1', orderRoutes)  
+    app.use('/api', userRoutes) 
+    app.use('/api', categoryRoutes) 
+    app.use('/api', productRoutes) 
+    app.use('/api', favouritesRoutes) 
+    app.use('/api', shippingAddressRoutes) 
+    app.use('/api', orderRoutes)  
 
 
     // listen to server;
