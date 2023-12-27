@@ -46,7 +46,7 @@ mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlPars
     .then(() => {
     
     // Define a cronjob to send request to the server, preventing it from cold start
-    const serverUrl = 'http://localhost:4050'
+    const serverUrl = 'https://pick-n-pay-app-backend.vercel.app/api/v1/all-products'
     cron.schedule('* * * * * *', async () => {
         try {
             // send request to the server every 30seconds to keep it active
