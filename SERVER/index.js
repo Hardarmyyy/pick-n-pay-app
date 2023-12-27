@@ -11,6 +11,8 @@ const {logger} = require('./middleware/logEvents');
 const {checkAuth} = require('./Middleware/checkAuth');
 const {credentails} = require('./Middleware/credentials');
 const {corsOptions} = require('./Utilities/corsOptions');
+const cron = require('node-cron'); // added node-cron to do a cronjob of sending request every 30seconds to keep server active without cold start
+const axios = require('axios');
 
 const authRoutes = require('./routers/authRoutes')
 const publicRoutes = require('./routers/publicRoutes')
@@ -42,6 +44,19 @@ store.on('error', function(error) {
 //  The { useUnifiedTopology: true, useNewUrlParser: true } options passed to the mongoose.connect method are used to ensure that the latest recommended options are used when establishing a connection to the MongoDB server.
 mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlParser: true})
     .then(() => {
+    
+    // Define a cronjob to send request to the server, preventing it from cold start
+    const serverUrl = 'http://localhost:4050'
+    cron.schedule('* * * * * *', async () => {
+        try {
+            // send request to the server every 30seconds to keep it active
+            const response = await axios.get(serverUrl);
+            console.log(`pinged ${serverUrl} at ${new Date().toLocaleTimeString()}`);
+        } 
+        catch (error) {
+            console.error(`Error pinging ${serverUrl}: ${error.message}`)
+        }
+    });
 
     // Custom logger middleware
     app.use(logger);
