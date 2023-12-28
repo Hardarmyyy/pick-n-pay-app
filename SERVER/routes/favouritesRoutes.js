@@ -1,11 +1,11 @@
 const express = require('express');
-const routers = express.Router();
+const routes = express.Router();
 const {addAndRemoveFromFavourites, fetchBuyerFavouritesProducts} = require('../controllers/favouritesController')
 const {isAllowedRole} = require('../middleware/checkAllowedRole')
 const {buyerRole} = require('../Utilities/allowedRoles')
 
 
-routers.post('/toggle-favourites/:id', isAllowedRole(buyerRole), addAndRemoveFromFavourites);
-routers.get('/all-favourites/:userId', isAllowedRole(buyerRole), fetchBuyerFavouritesProducts);
+routes.post('/toggle-favourites/:id', isAllowedRole(buyerRole), addAndRemoveFromFavourites);
+routes.get('/all-favourites/:userId', isAllowedRole(buyerRole), fetchBuyerFavouritesProducts);
 
-module.exports = routers; 
+module.exports = routes; 

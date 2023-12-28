@@ -14,15 +14,15 @@ const {corsOptions} = require('./Utilities/corsOptions');
 const cron = require('node-cron'); // added node-cron to do a cronjob of sending request every 30seconds to keep server active without cold start
 const axios = require('axios');
 
-const authRoutes = require('./routers/authRoutes')
-const publicRoutes = require('./routers/publicRoutes')
-const userRoutes = require('./routers/userRoutes');
-const categoryRoutes = require('./routers/categoryRoutes')
-const productRoutes = require('./routers/productRoutes')
-const cartRoutes = require('./routers/cartRoutes')
-const favouritesRoutes = require('./routers/favouritesRoutes')
-const shippingAddressRoutes = require('./routers/shippingAddressRoutes')
-const orderRoutes = require('./routers/orderRoutes.js')
+const authRoutes = require('./routes/authRoutes')
+const publicRoutes = require('./routes/publicRoutes')
+const userRoutes = require('./routes/userRoutes');
+const categoryRoutes = require('./routes/categoryRoutes')
+const productRoutes = require('./routes/productRoutes')
+const cartRoutes = require('./routes/cartRoutes')
+const favouritesRoutes = require('./routes/favouritesRoutes')
+const shippingAddressRoutes = require('./routes/shippingAddressRoutes')
+const orderRoutes = require('./routes/orderRoutes.js')
 
 
 const store = new MongoStore(
