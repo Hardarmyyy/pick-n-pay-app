@@ -1,8 +1,9 @@
 const express = require('express');
 const routes = express.Router();
-const { signUp, verifyEmailToken, emailVerification, signIn, forgotPassword, verifyResetToken, resetPassword, refreshToken, logout} = require('../controllers/authController')
+const { test, signUp, verifyEmailToken, emailVerification, signIn, forgotPassword, verifyResetToken, resetPassword, refreshToken, logout} = require('../controllers/authController')
 
 // auth routes
+routes.get('/', test)
 routes.post('/signup', signUp);
 routes.get('/verify-email-token', verifyEmailToken);
 routes.post('/verify', emailVerification);

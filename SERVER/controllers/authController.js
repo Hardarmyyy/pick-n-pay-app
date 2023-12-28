@@ -16,6 +16,10 @@ const {registerGoogleSheets} = require('../Utilities/googleSheets')
 
 
 
+const test = async (req, res) => {
+    res.json({message: "TESTING PICKNPAY BACKEND SERVER"})
+}
+
 const signUp = async (req, res) => {
         const {username, email, password, userRole} = req.body 
 
@@ -496,6 +500,7 @@ const logout = async (req, res) => {
 
 
 module.exports = {
+    test,
     signUp,
     verifyEmailToken,
     emailVerification,
