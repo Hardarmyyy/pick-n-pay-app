@@ -27,7 +27,7 @@ const orderRoutes = require('./routers/orderRoutes.js')
 
 const store = new MongoStore(
     {
-        mongoUrl: process.env.MONGO_URI,
+        mongoUrl: process.env.MONGODB_URI,
         collection: 'mySessions',
         autoRemove: 'native', // Enable automatic removal of expired sessions
     }, 
@@ -42,11 +42,11 @@ store.on('error', function(error) {
 });
 
 //  The { useUnifiedTopology: true, useNewUrlParser: true } options passed to the mongoose.connect method are used to ensure that the latest recommended options are used when establishing a connection to the MongoDB server.
-mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlParser: true})
+mongoose.connect(process.env.MONGODB_URI, {useUnifiedTopology: true, useNewUrlParser: true})
     .then(() => {
     
     // Define a cronjob to send request to the server, preventing it from cold start
-    const serverUrl = 'https://pick-n-pay-app-backend.vercel.app/api/all-products'
+    const serverUrl = 'https://pick-n-pay-app-backend.vercel.app/api/'
     cron.schedule('* * * * * *', async () => {
         try {
             // send request to the server every 30seconds to keep it active

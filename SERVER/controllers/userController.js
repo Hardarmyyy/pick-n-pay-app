@@ -9,6 +9,9 @@ const Favourites = require('../models/FavouritesModel')
 const Order = require('../models/OrderModel')
 
 
+const test = async (req, res) => {
+    res.json({message: "TESTING PICKNPAY BACKEND SERVER"})
+}
 
 const getAllUsers = async (req, res) => { 
         const {id} = req.params
@@ -515,6 +518,7 @@ const switchToBuyerRole = async (req, res) => {
 
 
 module.exports = {
+    test,
     getAllUsers,
     allSellers,
     allBuyers,
