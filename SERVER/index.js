@@ -11,8 +11,7 @@ const {logger} = require('./middleware/logEvents');
 const {checkAuth} = require('./Middleware/checkAuth');
 const {credentails} = require('./Middleware/credentials');
 const {corsOptions} = require('./Utilities/corsOptions');
-const cron = require('node-cron'); // added node-cron to do a cronjob of sending request every 30seconds to keep server active without cold start
-const axios = require('axios');
+
 
 const authRoutes = require('./routes/authRoutes')
 const publicRoutes = require('./routes/publicRoutes')
@@ -44,19 +43,6 @@ store.on('error', function(error) {
 //  The { useUnifiedTopology: true, useNewUrlParser: true } options passed to the mongoose.connect method are used to ensure that the latest recommended options are used when establishing a connection to the MongoDB server.
 mongoose.connect(process.env.MONGODB_URI, {useUnifiedTopology: true, useNewUrlParser: true})
     .then(() => {
-    
-    // Define a cronjob to send request to the server, preventing it from cold start
-    const serverUrl = 'https://pick-n-pay-app-backend.vercel.app/api/'
-    cron.schedule('*/30 * * * * *', async () => {
-        try {
-            // send request to the server every 30seconds to keep it active
-            const response = await axios.get(serverUrl);
-            console.log(`pinged ${serverUrl} at ${new Date().toLocaleTimeString()}`);
-        } 
-        catch (error) {
-            console.error(`Error pinging ${serverUrl}: ${error.message}`)
-        }
-    });
 
     // Custom logger middleware
     app.use(logger);
@@ -97,17 +83,17 @@ mongoose.connect(process.env.MONGODB_URI, {useUnifiedTopology: true, useNewUrlPa
     // middleware for cookies
     app.use(cookieParser());
 
-    app.use('/api', authRoutes)
-    app.use('/api', publicRoutes)
-    app.use('/api', cartRoutes) 
+    app.use('/api/v1', authRoutes)
+    app.use('/api/v1', publicRoutes)
+    app.use('/api/v1', cartRoutes) 
 
     app.use(checkAuth) // user authentication middleware
-    app.use('/api', userRoutes) 
-    app.use('/api', categoryRoutes) 
-    app.use('/api', productRoutes) 
-    app.use('/api', favouritesRoutes) 
-    app.use('/api', shippingAddressRoutes) 
-    app.use('/api', orderRoutes)  
+    app.use('/api/v1', userRoutes) 
+    app.use('/api/v1', categoryRoutes) 
+    app.use('/api/v1', productRoutes) 
+    app.use('/api/v1', favouritesRoutes) 
+    app.use('/api/v1', shippingAddressRoutes) 
+    app.use('/api/v1', orderRoutes)  
 
 
     // listen to server;

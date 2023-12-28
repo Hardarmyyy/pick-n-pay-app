@@ -1,3 +1,4 @@
 2023-12-28 05:16:05 PM	 6176293d-5224-4742-a9e3-e360d8f72eec	 /api/	GET	undefined
 2023-12-28 05:30:27 PM	 a9db5d83-3454-4322-b1f5-a553b00aa8f5	 /api/	GET	undefined
 2023-12-28 06:02:54 PM	 53c2132b-3d81-4ee1-b18c-7c8a3345569c	 /api/	GET	undefined
+2023-12-28 06:22:05 PM	 7980e63c-6a69-466b-9f8d-03c7bdb15d3c	 /api/v1/all-products	GET	undefined
