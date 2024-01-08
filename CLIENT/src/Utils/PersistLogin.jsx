@@ -30,7 +30,7 @@ const PersistLogin = () => {
     return (
         <>
             {isLoading 
-                ? <p> Loading ..... </p>
+                ? <h1 className="loader"> Loading ..... </h1>
                 : <Outlet></Outlet>
             }
         </>

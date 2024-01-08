@@ -1,6 +1,9 @@
 .expiredLinkContent {
     text-align: center;
-    margin: 40px auto 40px;
+    transform: translate(-50%, -50%);
+    top: 40%;
+    left: 50%;
+    position: absolute;
     font-size: 18px;
     color: #333333;
     font-weight: bold;

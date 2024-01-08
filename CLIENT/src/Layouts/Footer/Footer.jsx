@@ -6,7 +6,7 @@ import Button from '../../component/Button'
 import { FaFacebookF } from "react-icons/fa"
 import { FaTwitter } from "react-icons/fa"
 import { FaLinkedinIn } from "react-icons/fa"
-import UseValidateForgotPasswordForm from '../../Hooks/UseValidateForgotPasswordForm'
+import UseValidateForgotPasswordForm from '../../Hooks/Auth/ForgotPassword/UseValidateForgotPasswordForm'
 import './Footer.css'
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -75,9 +75,9 @@ return (
             closeOnClick
             rtl={false}/>
     
-    <section className='footer'>
+    <footer className='footer'>
 
-        <div className='footerTop'>
+        <section className='footerTop'>
 
             <div className='logo'>
                 
@@ -122,9 +122,9 @@ return (
 
             </div>
 
-        </div>
+        </section>
 
-        <div className='footerBottom'>
+        <section className='footerBottom'>
 
             <div className='updates'>
 
@@ -163,9 +163,9 @@ return (
 
             <p> &copy; 2023 PickNPay. All rights reserved </p>
 
-        </div>
+        </section>
 
-    </section>
+    </footer>
 </>
 
 )

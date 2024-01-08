@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {toast} from 'react-toastify'
-import {LOGIN, REGISTERUSERS, VERIFYEMAILTOKEN, VERIFYEMAIL, FORGOTPASSWORD, VERIFYRESETTOKEN, RESETPASSWORD, REFRESH} from '../Services/authApi'
+import {LOGIN, REGISTERUSERS, VERIFYEMAILTOKEN, VERIFYEMAIL, FORGOTPASSWORD, VERIFYRESETTOKEN, RESETPASSWORD, REFRESH, LOGOUT} from '../Services/authApi'
 import { decodeToken } from "../Utils/DecodeJwt";
 
 export const initialState = {
     status: 'idle',
     isValid: false,
-    // accessToken: null,
-    // user: null,
+    accessToken: null,
+    user: null,
 }
 
 
@@ -59,11 +59,18 @@ export const authSlice = createSlice({
                 .addCase(LOGIN.fulfilled, (state, action) => {
                     const {success, error} = action.payload;
                     state.status = 'success'
+                    const message = action.payload.message
                     if (success) {
-                        state.loginSuccess = action.payload.message
+                        toast.success(message, {
+                            toastStyle: { background: 'green', color: 'white' }
+                        })
+                        state.accessToken = action.payload.token
+                        state.user = decodeToken(action.payload.token)
                     }
                     else if (error) {
-                        state.loginError = action.payload.message
+                        toast.error(message, {
+                            toastStyle: { background: 'red', color: 'white' }
+                        })
                     }
                 })  
                 .addCase(FORGOTPASSWORD.fulfilled, (state, action) => {
@@ -103,22 +110,22 @@ export const authSlice = createSlice({
                         })
                     }
                 }) 
-                // .addCase(REFRESH.fulfilled, (state, action) => {
-                //     const {success} = action.payload;
-                //     state.status = 'success'
-                //     if (success) {
-                //         state.accessToken = action.payload.token
-                //         state.user = decodeToken(action.payload.token) // decode the access token to get the current user information
-                //     }
-                // }) 
-                // .addCase(LOGOUT.fulfilled, (state, action) => {
-                //     const {success} = action.payload;
-                //     state.status = 'success'
-                //     if (success) {
-                //         state.user = null
-                //         state.accessToken = null
-                //     }
-                // }) 
+                .addCase(REFRESH.fulfilled, (state, action) => {
+                    const {success} = action.payload;
+                    state.status = 'success'
+                    if (success) {
+                        state.accessToken = action.payload.token
+                        state.user = decodeToken(action.payload.token) // decode the access token to get the current user information
+                    }
+                }) 
+                .addCase(LOGOUT.fulfilled, (state, action) => {
+                    const {success} = action.payload;
+                    state.status = 'success'
+                    if (success) {
+                        state.user = null
+                        state.accessToken = null
+                    }
+                }) 
                 .addMatcher(
                     (action) => action.type.endsWith('/pending'),
                     (state) => {

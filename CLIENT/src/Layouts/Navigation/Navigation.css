@@ -2,9 +2,10 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     border-bottom: 1px solid #E9EBF0;
     margin-bottom: 20px;
-    position: relative;
+    position: relative
 }
 
 .search {
@@ -13,6 +14,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-top: 20px;
+    position: relative;
 }
 
 .searchResult {
@@ -54,25 +57,22 @@
     display: flex;
     flex-direction: row;
     align-content: center;
-    position: absolute;
-    top: 35%;
-    left: 25%;
 }
 
 .searchIcon, .clearIcon {
     position: absolute;
     font-size: 18px;
     color: #333333;
-    top: 30%;
+    top: 50%;
     cursor: pointer;
 }
 
 .searchIcon {
-    left: 2%;
+    left: 6%;
 }
 
 .clearIcon {
-    right: 16%;
+    right: 6%;
 }
 
 .search .searchproduct {
@@ -95,15 +95,14 @@
 
 .search .searchproduct:focus,
 .search .categoryInput:focus {
-    border: 1px solid #DDDDDD;
-    outline: none;
+    outline: 1px solid #DDDDDD;
 }
 
 .userProfile {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    align-content: center;
+    align-items: center;
+    padding: 20px 40px 0px 0px;
 }
 
 .userProfile .account {
@@ -118,12 +117,11 @@
     padding: 10px 10px;
     border-radius: 5px;
     height: 40px;
-    position: absolute;
-    right: 10%; 
+    opacity: 0.9; 
 }
 
 .userProfile .account:hover {
-    opacity: 0.9; 
+    opacity: 1; 
 }
 
 .userProfile .account .userIcon {
@@ -138,19 +136,22 @@
     cursor: pointer;
     align-content: center;
     justify-content: center;
+    opacity: 0.8;
 }
 
 .userProfile .cartCounter:hover {
-    opacity: 0.8;
+    opacity: 1;
 }
 
 .userProfile .cart {
     font-size: 34px;
     color: #333333;
-    margin-left: 25px;
+    margin-left: 35px;
     cursor: pointer;
-    position: absolute;
-    right: 6%;
+}
+
+.userProfile.seller {
+    margin-right: 70px
 }
 
 .userProfile .counter {
@@ -159,10 +160,11 @@
     color: #FFFFFF;
     cursor: pointer; 
     position: absolute;
-    right: 5.2%;
+    right: 3%;
     top: 16%;
     background-color: crimson;
     border: 2px solid #FFFFFF;
     border-radius: 50%;
     padding: 4px 8px ;
 }
+

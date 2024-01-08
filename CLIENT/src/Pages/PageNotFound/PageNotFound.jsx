@@ -1,6 +1,6 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
-import Logo from '../../Layouts/Logo/Logo'
+import Navigation from '../../Layouts/Navigation/Navigation'
 import './PageNotFound.css'
 
 
@@ -9,7 +9,7 @@ const PageNotFound = () => {
 return (
 
 <>
-    <Logo></Logo>
+    <Navigation></Navigation>
 
     <section className='notFound'>
         

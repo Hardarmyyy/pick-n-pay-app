@@ -18,9 +18,21 @@ const {registerGoogleSheets} = require('../Utilities/googleSheets')
 
 
 const signUp = async (req, res) => {
+        const cookies = req.cookies
+        const refreshToken = cookies.refresh;
         const {username, email, password, userRole} = req.body 
 
     try {
+
+        if (refreshToken) {
+            res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
+            // check if the existing user has a refresh token;
+            const existingUser = await User.findOne({token: refreshToken});
+            const newRefreshTokenArray = existingUser.token.filter((rt) => rt !== refreshToken)
+            existingUser.token = [...newRefreshTokenArray];
+            await existingUser.save()
+        }
+
         if (!username || !email || !password || !userRole) return res.status(400).json({error: true, message: 'All fields are required'}) 
 
         //check username duplicate
@@ -107,9 +119,21 @@ const signUp = async (req, res) => {
 }
 
 const verifyEmailToken = async (req, res) => {
+    const cookies = req.cookies;
+    const refreshToken = cookies?.refresh
     const { token, email } = req.query;
 
     try {
+
+        if (refreshToken) {
+            res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
+            // check if the existing user has a refresh token;
+            const existingUser = await User.findOne({token: refreshToken});
+            const newRefreshTokenArray = existingUser.token.filter((rt) => rt !== refreshToken)
+            existingUser.token = [...newRefreshTokenArray];
+            await existingUser.save()
+        }
+
         JWT.verify(
             token, 
             process.env.VERIFY_EMAIL_TOKEN_SECRET,
@@ -138,9 +162,20 @@ const verifyEmailToken = async (req, res) => {
 };
 
 const emailVerification = async (req, res) =>  {
+        const cookies = req.cookies;
+        const refreshToken = cookies?.refresh
         const {signupOtp} = req.body
         const {token} = req.query  
     try {
+
+        if (refreshToken) {
+            res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
+            // check if the existing user has a refresh token;
+            const existingUser = await User.findOne({token: refreshToken});
+            const newRefreshTokenArray = existingUser.token.filter((rt) => rt !== refreshToken)
+            existingUser.token = [...newRefreshTokenArray];
+            await existingUser.save()
+        }
         
         if (!signupOtp) return res.json({
             error: true,
@@ -191,7 +226,18 @@ const signIn = async (req, res) => {
         const cookies = req.cookies
         const refreshToken = cookies.refresh;
         const {username, password} = req.body;
+
     try {
+
+        if (refreshToken) {
+            res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
+            // check if the existing user has a refresh token;
+            const existingUser = await User.findOne({token: refreshToken});
+            const newRefreshTokenArray = existingUser.token.filter((rt) => rt !== refreshToken)
+            existingUser.token = [...newRefreshTokenArray];
+            await existingUser.save()
+        }
+
         if (!username || !password) return res.status(404).json({
             error: true, 
             message: 'All fields are required'
@@ -201,7 +247,7 @@ const signIn = async (req, res) => {
         const existingUser = await User.findOne({username: username})
         if (!existingUser) return res.status(200).json({
             error: true, 
-            message: 'Username does not exist'
+            message: 'Invalid username'
         })
 
         // Verify the user's password.
@@ -264,7 +310,6 @@ const signIn = async (req, res) => {
             delete req.session.cart;
         }
 
-        // expiry: 24 hours // secure: true // sameSite: "None" cross-site cookie (after production)) 
         res.cookie('refresh', newRefreshToken,  { httpOnly: true, sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
         res.status(200).json({
             success: true, 
@@ -278,9 +323,20 @@ const signIn = async (req, res) => {
 }
 
 const forgotPassword = async (req, res) => {
+        const cookies = req.cookies
+        const refreshToken = cookies?.refresh
         const {email} = req.body
 
     try {
+        if (refreshToken) {
+            res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
+            // check if the existing user has a refresh token;
+            const existingUser = await User.findOne({token: refreshToken});
+            const newRefreshTokenArray = existingUser.token.filter((rt) => rt !== refreshToken)
+            existingUser.token = [...newRefreshTokenArray];
+            await existingUser.save()
+        }
+
         if (!email) return res.status(404).json({
             error: true, 
             message: 'Please enter email address'
@@ -311,9 +367,21 @@ const forgotPassword = async (req, res) => {
 }
 
 const verifyResetToken = async (req, res) => {
+    const cookies = req.cookies;
+    const refreshToken = cookies?.refresh
     const { token, email } = req.query;
 
     try {
+
+        if (refreshToken) {
+            res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
+            // check if the existing user has a refresh token;
+            const existingUser = await User.findOne({token: refreshToken});
+            const newRefreshTokenArray = existingUser.token.filter((rt) => rt !== refreshToken)
+            existingUser.token = [...newRefreshTokenArray];
+            await existingUser.save()
+        }
+
         JWT.verify(
             token, 
             process.env.RESET_PASSWORD_TOKEN_SECRET,
@@ -342,10 +410,21 @@ const verifyResetToken = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
+        const cookies = req.cookies;
+        const refreshToken = cookies?.refresh
         const {token} = req.query
         const {password, confirmPassword} = req.body
 
     try {   
+
+        if (refreshToken) {
+            res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
+            // check if the existing user has a refresh token;
+            const existingUser = await User.findOne({token: refreshToken});
+            const newRefreshTokenArray = existingUser.token.filter((rt) => rt !== refreshToken)
+            existingUser.token = [...newRefreshTokenArray];
+            await existingUser.save()
+        }
 
         if (!password || !confirmPassword) return res.json({
             error: true, 
@@ -470,19 +549,17 @@ const logout = async (req, res) => {
         const existingUser = await User.findOne({token: refreshToken})
         if (!existingUser) {
             // clear the refresh cookie
-            // expiry: 24 hours // secure: true (after production))
             res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 }) 
             return res.sendStatus(204)
         }
         
-         // remove the refresh token from the user database
+        // remove the refresh token from the user database
         const newRefreshTokenArray = existingUser.token.filter((rt) => rt !== refreshToken)
 
         existingUser.token = [...newRefreshTokenArray];
         await existingUser.save()
 
         // clear the refresh cookie
-        // expiry: 24 hours // secure: true // sameSite: "None" cross-site cookie (after production))  
         res.clearCookie('refresh', refreshToken, { httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 }) 
 
         res.status(200).json({

@@ -55,13 +55,16 @@ const FORGOTPASSWORD = createAsyncThunk('auth/forgot', async (email, { rejectWit
     }
 })
 
-const LOGIN = createAsyncThunk('auth/signin', async (regUser) => { // regUser will be the body of the post request;
+const LOGIN = createAsyncThunk('auth/signin', async (regUser, { rejectWithValue }) => { // regUser will be the body of the post request;
     try {
         const response = await axiosInstance.post('/login', regUser)
         return response.data
     }
     catch (err) {
-        return err.message
+        if (!err.response) {
+            return rejectWithValue({ error: "Unable to connect to the server" });
+        }
+        return rejectWithValue(err.response.data);
     }
 })
 
@@ -78,13 +81,16 @@ const VERIFYRESETTOKEN = createAsyncThunk('auth/verify-reset-token', async ({tok
     }
 })
 
-const RESETPASSWORD = createAsyncThunk('auth/reset', async ({user, token}) => { // token will be the query parameter AND user will be the body of the post request; 
+const RESETPASSWORD = createAsyncThunk('auth/reset', async ({user, token}, { rejectWithValue }) => { // token will be the query parameter AND user will be the body of the post request; 
     try {
         const response = await axiosInstance.post(`/reset?token=${token}`, user)
         return response.data
     }
     catch (err) {
-        return err.message
+        if (!err.response) {
+            return rejectWithValue({ error: "Unable to connect to the server" });
+        }
+        return rejectWithValue(err.response.data);
     }
 })
 
@@ -98,15 +104,15 @@ const REFRESH = createAsyncThunk('auth/refresh', async () => {
     }
 })
 
-// const LOGOUT = createAsyncThunk('auth/logout', async () => { 
-//     try {
-//         const response = await axiosInstance.get('/logout')
-//         return response.data
-//     }
-//     catch (err) {
-//         return err.message
-//     }
-// })
+const LOGOUT = createAsyncThunk('auth/logout', async () => { 
+    try {
+        const response = await axiosInstance.get('/logout')
+        return response.data
+    }
+    catch (err) {
+        return err.message
+    }
+})
 
 export {
     REGISTERUSERS, 
@@ -117,5 +123,5 @@ export {
     VERIFYRESETTOKEN,
     RESETPASSWORD,
     REFRESH,
-    //LOGOUT
+    LOGOUT
 }  

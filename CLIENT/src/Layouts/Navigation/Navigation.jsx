@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Logo from '../Logo/Logo'
 import UserProfile from '../../component/UserProfileCard/UserProfile'
@@ -11,6 +12,8 @@ import './Navigation.css'
 
 
 const Navigation = () => {
+
+const user = useSelector((state) => state.auth.user)
 
 // define a state to show and hide the useProfile card;
 const [active, setActive] = useState(false)   
@@ -43,75 +46,93 @@ const handleClearResult = () => {
 return (
 
 <> 
-    <nav className='navigation'> 
 
-        <div>
+    <header className='navigation'> 
 
-            <Logo></Logo>
+        <Logo></Logo>
 
-            <div className='search'>
+        <nav className='search'>
 
-                <form className='searchForm'>
+            <form className='searchForm'>
 
-                    <BiSearch className='searchIcon'></BiSearch>
+                <BiSearch className='searchIcon'></BiSearch>
 
-                    <input type='text' placeholder='search for products or brands' name='searchWord' value={word} onChange={handleSearch} className='searchproduct'/>
+                <input type='text' placeholder='search for products or brands' name='searchWord' value={word} onChange={handleSearch} className='searchproduct'/>
 
-                    {clearResult && <MdOutlineClear onClick={handleClearResult} className='clearIcon'></MdOutlineClear>}
+                {clearResult && <MdOutlineClear onClick={handleClearResult} className='clearIcon'></MdOutlineClear>}
 
-                </form>
+            </form>
 
-                {searchResult.length > 0 &&
-                    <div className='searchResult'>
-                        {searchResult.map((item, index) => 
-                            <Link to={`/products/${item}`} key={index}> {item }</Link>
-                        )}
-                    </div>
-                } 
+            {searchResult.length > 0 &&
+                <div className='searchResult'>
+                    {searchResult.map((item, index) => 
+                        <Link to={`/products/${item}`} key={index}> {item }</Link>
+                    )}
+                </div>
+            } 
 
-            </div>
+        </nav>
 
-        </div>
-
-        {/* {username === null ?  
-
-            <div className='userProfile'> 
+        {!user && 
+        
+            <nav className='userProfile'> 
 
                 <div  className='account' onClick={() => setActive(!active)}> 
+
                     <BiUserCircle className='userIcon'></BiUserCircle>
                     <span> Account {active ? <IoIosArrowUp></IoIosArrowUp> : <IoIosArrowDown></IoIosArrowDown> } </span> 
+
                 </div>
 
                 <div className='cartCounter'>
-                    <Link to='/checkout'> <BsCart3 className='cart'></BsCart3> </Link>
-                    {cartCounter > 0 && <p className='counter'> {cartCounter} </p>}
+                    <Link to='/checkout'> 
+                        <BsCart3 className='cart'></BsCart3> 
+                        <p className='counter'> 0 </p>
+                    </Link>
                 </div>
 
-            </div>
-        
-        : 
+            </nav>
+        }
 
-            <div className='userProfile' > 
+        {user && user.userRole[0] === 'buyer' && 
+            <nav className='userProfile'> 
 
                 <div  className='account' onClick={() => setActive(!active)}> 
+
                     <BiUserCircle className='userIcon'></BiUserCircle>
                     <span> Account {active ? <IoIosArrowUp></IoIosArrowUp> : <IoIosArrowDown></IoIosArrowDown> } </span> 
-                </div>
-                {usertype === 'buyer' ? 
-                    <Link to='/checkout'>
-                        <div className='cartCounter'>
-                            <BsCart3 className='cart'></BsCart3> 
-                            {cartCounter > 0 && <p className='counter'> {cartCounter} </p>}
-                        </div>
-                    </Link>
-                : null}
-            </div>
 
-        } */}
+                </div>
+
+                <div className='cartCounter'>
+                    <Link to='/checkout'> 
+                        <BsCart3 className='cart'></BsCart3> 
+                        <p className='counter'> 10 </p>
+                    </Link>
+                </div>
+
+            </nav>
+        }
+
+        {user && user.userRole[0] === 'seller' && 
+
+            <nav className='userProfile seller'> 
+
+                <div  className='account' onClick={() => setActive(!active)}> 
+
+                    <BiUserCircle className='userIcon'></BiUserCircle>
+                    <span> Account {active ? <IoIosArrowUp></IoIosArrowUp> : <IoIosArrowDown></IoIosArrowDown> } </span> 
+
+                </div>
+
+            </nav>
+        }   
 
         {active ? <UserProfile></UserProfile> : null}
 
-    </nav>
+
+    </header>
+    
 </>
 )
 }
