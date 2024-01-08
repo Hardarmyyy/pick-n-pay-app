@@ -11,17 +11,17 @@ import './UserProfile.css'
 
 const UserProfile = () => {
 
-const {handleLogout} = UseLogout()
+const {handleLogout} = UseLogout();
 
 
 const handleSignOut = async () => {
     await handleLogout()
 }
 
-const accessToken = useSelector((state) => state.auth.accessToken)
-const user = useSelector((state) => state.auth.user)
-
-
+const accessToken = useSelector((state) => state.auth.accessToken);
+const user = useSelector((state) => state.auth.user);
+const seller = user && user.userRole[0] === 'seller';
+const buyer = user && user.userRole[0] === 'buyer';
 
 return (
 
@@ -42,30 +42,22 @@ return (
 
         </div>
         
-        {!user && 
-            <div className='userInfo'>
-                <Link to='/profile'> <BiUserCircle className='Icon'></BiUserCircle> My Account </Link> 
-                <Link to='/orders'> <BsBox2 className='Icon'></BsBox2> Orders </Link> 
-                <Link to='/favourites'> <BsBagHeart className='Icon'></BsBagHeart> Wishlist <span> 0 </span></Link>
-            </div>
-        }
-        
-        {user &&
-            <div className='userInfo'>
+        <div className='userInfo'>
 
-                <p className='user'> Hi {user.username} </p>
+            {user && <p className='user'> Hi {user.username} </p> }
 
-                <Link to='/profile'> <BiUserCircle className='Icon'></BiUserCircle> My Account </Link>
+            <Link to='/profile'> <BiUserCircle className='Icon'></BiUserCircle> My Account </Link>
+            
+            <Link to='/orders'> <BsBox2 className='Icon'></BsBox2> Orders </Link>
+            
+            {seller 
+                ? <Link to='/shop'> <RxDashboard className='Icon'></RxDashboard> Shop </Link> 
+                    :
+                        <Link to='/favourites'> <BsBagHeart className='Icon'></BsBagHeart> Wishlist {buyer ? <span> 10 </span> : null}</Link> 
                 
-                <Link to='/orders'> <BsBox2 className='Icon'></BsBox2> Orders </Link>
-                
-                {user.userRole[0] === 'buyer'
-                ? <Link to='/favourites'> <BsBagHeart className='Icon'></BsBagHeart> Wishlist <span> 10 </span></Link> 
-                    : <Link to='/shop'> <RxDashboard className='Icon'></RxDashboard> Shop </Link> 
-                }
-                
-            </div>
-        }
+            }
+            
+        </div>
 
     </section> 
 </>
