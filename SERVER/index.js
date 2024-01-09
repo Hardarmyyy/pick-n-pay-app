@@ -1,10 +1,9 @@
 const path = require('path');
-const mongoose = require('mongoose');
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const {connectDb, store} = require('./Utilities/db.js')
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const {logger} = require('./middleware/logEvents');
@@ -24,25 +23,8 @@ const shippingAddressRoutes = require('./routes/shippingAddressRoutes')
 const orderRoutes = require('./routes/orderRoutes.js')
 
 
-const store = new MongoStore(
-    {
-        mongoUrl: process.env.MONGODB_URI,
-        collection: 'mySessions',
-        autoRemove: 'native', // Enable automatic removal of expired sessions
-    }, 
-    function(error) {
-        console.log(error);
-    }
-);
-
-// Catch errors
-store.on('error', function(error) {
-    console.log(error);
-});
-
-//  The { useUnifiedTopology: true, useNewUrlParser: true } options passed to the mongoose.connect method are used to ensure that the latest recommended options are used when establishing a connection to the MongoDB server.
-mongoose.connect(process.env.MONGODB_URI, {useUnifiedTopology: true, useNewUrlParser: true})
-    .then(() => {
+connectDb()
+.then(() => {
 
     // Custom logger middleware
     app.use(logger);
