@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom"
+import {useSelector } from 'react-redux'
 import './Categories.css'
 
 
 const Categories = () => {
+
+const allCategories = useSelector((state) => state?.category.allCategories)
 
 
 return (
@@ -12,11 +15,11 @@ return (
 
         <div className='productCategories'>
 
-            {/* {availableProductCategory.map((type, index) => 
-                <Link to={`/category/${type}`} key={index}> 
-                    <p>  {type}  </p> 
+            {allCategories.map((category, index) => 
+                <Link to={`/category/${category.categoryName}`} key={index}> 
+                    <p>  {category.categoryName}  </p> 
                 </Link>
-            )} */}
+            )}
 
         </div>  
 

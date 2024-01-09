@@ -94,7 +94,7 @@ return (
                     <div className='cartCounter'>
                         <Link to='/checkout'> 
                             <BsCart3 className='cart'></BsCart3> 
-                            <p className='counter'> {buyer ? 10 : 0 } </p>
+                            {buyer ? <p className='counter'>  10 </p>  : null }
                         </Link>
                     </div>
             }

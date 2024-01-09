@@ -13,6 +13,10 @@ import  store  from './App/store.jsx'
 import { injectStore } from './Services/userApi.jsx'
 injectStore(store) // inject store is used to provide the store for the axios private in the usersAPI;
 
+//fetch all categories when application is loaded
+import {FETCHALLCATEGORIES} from './Services/categoryApi.jsx'
+store.dispatch(FETCHALLCATEGORIES())
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>

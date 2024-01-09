@@ -20,22 +20,6 @@ import FavouritesLayout from '../Pages/Favourites/FavouritesLayout.jsx'
 import Checkout from '../Pages/CartProducts/CartProduct.jsx'
 
 
-
-// import OrderCompleteLayout from '../Components/Pages/Checkout/OrderCompleteModal/OrderCompleteLayout'
-// import ProductDetail from '../Components/Pages/ProductDetailsLayout/ProductDetail/ProductDetail'
-// import ProductListings from '../Components/Pages/ProductListings/ProductListings'
-// import Details from '../Components/Pages/ProductDetailsLayout/Details/Details'
-// import ProductDetailsLayout from '../Components/Pages/ProductDetailsLayout/ProductDetailsLayout'
-// import Store from '../Components/Pages/Shops/SellerStore/Store'
-// import ProductForm from '../Components/Pages/Shops/ProductForm/ProductForm'
-// import SuccessForm from '../Components/Pages/Shops/ProductForm/SuccessForm/SuccessForm'
-// import EditProductForm from '../Components/Pages/Shops/ProductForm/EditProductForm/EditProductForm'
-// import ProfileLayout from '../Components/Pages/Profile/ProfileLayout'
-// import EditProfile from '../Components/Pages/Profile/EditProfile/EditProfile'
-// import ChangePassword from '../Components/Pages/Profile/ChangePassword/ChangePassword'
-// import OrderDetails from '../Components/Pages/Orders/OrderDetailsModal/OrderDetails'
-
-
 export const router = createBrowserRouter(
     createRoutesFromElements(
     <Route element={<App></App>}> 

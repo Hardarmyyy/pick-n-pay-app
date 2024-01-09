@@ -77,7 +77,7 @@ const handleLogin = async () => {
             if (response.payload.success) {
                 setTimeout(() => {
                     navigate(from, {replace : true});
-                }, 5000)
+                }, 2500)
                 setRegUser({
                     username: '',
                     password: ''
