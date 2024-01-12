@@ -40,17 +40,16 @@ return (
     <>
         <Logo></Logo>
         
-        {isValid && 
+        <ToastContainer 
+            position='top-right'
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}/>
 
+        {isValid &&
             <>
-
-                <ToastContainer 
-                    position='top-right'
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}/>
 
                 <ResetPasswordForm
                     status={status}
@@ -68,16 +67,10 @@ return (
                 {openModal && <SuccessModal message={modalMessage}></SuccessModal>}
 
             </>
-
         }
 
-        {!isValid && status === 'success' &&
+        {!isValid && status === 'failed' && <ExpiredLink></ExpiredLink>}
 
-            <>
-                <ExpiredLink></ExpiredLink>
-            </> 
-
-        }
     </>
 )
 }

@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, isPending, isFulfilled, isRejected } from "@reduxjs/toolkit";
 import {FETCHALLCATEGORIES} from "../Services/categoryApi";
 
 
@@ -16,22 +16,26 @@ export const categorySlice = createSlice({
     extraReducers (builder) {
         builder 
                 .addCase(FETCHALLCATEGORIES.fulfilled, (state, action) => { 
-                    const {success, error} = action.payload;
-                    state.status = 'success'
                     const categories = action.payload.categories
-                    if (success) {
+                    if (categories) {
                         const sortedCategories = categories.sort((a, b) => a.categoryName > b.categoryName ? 1 : -1);
-                        state.allCategories = [...sortedCategories]
+                        state.allCategories = state.allCategories.concat(sortedCategories)
                     }
                 })
                 .addMatcher(
-                    (action) => action.type.endsWith('/pending'),
+                    isFulfilled(FETCHALLCATEGORIES),
+                    (state) => {
+                    state.status = 'success'
+                }
+                )
+                .addMatcher(
+                    isPending(FETCHALLCATEGORIES),
                     (state) => {
                     state.status = 'Loading.......';
                 }
                 )
                 .addMatcher(
-                    (action) => action.type.endsWith('/rejected'),
+                    isRejected(FETCHALLCATEGORIES),
                     (state, action) => {
                         state.status = 'failed';
                         const message = action.payload.error

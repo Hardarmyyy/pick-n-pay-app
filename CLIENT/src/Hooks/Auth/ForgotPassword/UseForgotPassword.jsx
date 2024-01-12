@@ -56,7 +56,7 @@ const handleForgotPassword = async () => {
         setIsSubmitting(true); 
         await dispatch(FORGOTPASSWORD(user))
         .then((response) => {
-            if (response.payload.success) {
+            if (response.payload.message) {
                 setUser({
                     email: ''
                 })

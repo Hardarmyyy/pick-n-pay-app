@@ -74,7 +74,7 @@ const handleLogin = async () => {
 
         await await dispatch(LOGIN(regUser))
         .then((response) => {
-            if (response.payload.success) {
+            if (response.payload.message) {
                 setTimeout(() => {
                     navigate(from, {replace : true});
                 }, 2500)

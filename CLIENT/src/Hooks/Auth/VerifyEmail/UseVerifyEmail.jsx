@@ -103,10 +103,10 @@ const handleVerifyEmail = async () => {
 
         await dispatch(VERIFYEMAIL({token, Otp})) // pass the signupOtp as the request body and the email as the request query parameter
         .then((response) => {
-            if (response.payload.success) {
+            if (response.payload.message) {
                 setTimeout(() => {
                     hanldeOpenModal()
-                }, 5000)
+                }, 2500)
             }
         })
         .catch((err) => {

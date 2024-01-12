@@ -6,6 +6,7 @@ import Logo from '../../../Layouts/Logo/Logo'
 import VerifyEmailForm from './VerifyEmailForm/VerifyEmailForm'
 import SuccessModal from '../../../Layouts/SuccessModal/SuccessModal'
 import ExpiredLink from '../../../component/ExpiredLink/ExpiredLink'
+import Verified from '../../../component/Verified/Verified'
 import UseVerifyEmail from '../../../Hooks/Auth/VerifyEmail/UseVerifyEmail'
 import 'react-toastify/dist/ReactToastify.css';
 import './VerifyEmail.css' 
@@ -14,6 +15,7 @@ import './VerifyEmail.css'
 const VerifyEmail = () => {
 
 const isValid = useSelector((state) => state?.auth.isValid)
+const isVerified = useSelector((state) => state?.auth.isVerified)
 const status = useSelector((state) => state.auth.status)
 
 // Retrieve the query params from the current page;
@@ -43,17 +45,20 @@ return (
 
     <Logo></Logo>
 
-    {isValid &&
+    <ToastContainer 
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}/>
 
+    {isVerified && <Verified></Verified>}
+
+    {!isValid && status === 'failed' && <ExpiredLink></ExpiredLink> }
+
+    {isValid && 
         <>
-            <ToastContainer 
-                position='top-right'
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}/>
-
             <VerifyEmailForm 
                 status={status}
                 signupOtp={signupOtp} 
@@ -64,19 +69,9 @@ return (
                 handleChange={handleChange} 
                 submitForm={handleFormSubmit}>
             </VerifyEmailForm>
-
             {openModal && <SuccessModal message={modalMessage}></SuccessModal>}
-        </>
-
+        </>           
     }
-
-    {!isValid && status === 'success' &&
-        <>
-            <ExpiredLink></ExpiredLink>
-        </> 
-
-    }
-
 </>
 
 )

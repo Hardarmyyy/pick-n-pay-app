@@ -13,10 +13,10 @@ const user = useSelector((state) => state.auth?.user)
 return (
 
     user?.userRole.find(role => allowedRoles?.includes(role))
-    ? <Outlet></Outlet>
-    : user 
-        ? <Navigate to='/unauthorized' state={{from: location}} replace></Navigate>
-        : <Navigate to='/login' state={{from: location}} replace></Navigate> 
+        ? <Outlet></Outlet>
+            : user 
+                ? <Navigate to='/unauthorized' state={{from: location}} replace></Navigate>
+                    : <Navigate to='/login' state={{from: location}} replace></Navigate> 
 
 )
 }

@@ -84,10 +84,10 @@ const handleResetPassword = async () => {
         
         await  dispatch(RESETPASSWORD({user, token}))
         .then((response) => {
-            if (response.payload.success) {
+            if (response.payload.message) {
                 setTimeout(() => {
                     handleOpenModal()
-                }, 5000)
+                }, 2500)
                 setUser({
                     password: '',
                     confirmPassword: '',

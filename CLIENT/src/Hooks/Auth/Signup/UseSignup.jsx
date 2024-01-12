@@ -98,10 +98,10 @@ const handleSignup = async () => {
         setIsSubmitting(true); // Disable the signup button
         await dispatch(REGISTERUSERS(newUser))
         .then((response) => {
-            if (response.payload.success) {
+            if (response.payload.message) {
                 setTimeout(() => {
                     handleOpenModal()
-                }, 5000)
+                }, 2500)
                 setNewUser({
                     userRole: '',
                     username: '',
