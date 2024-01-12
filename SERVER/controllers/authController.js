@@ -33,22 +33,16 @@ const signUp = async (req, res) => {
             await existingUser.save()
         }
 
-        if (!username || !email || !password || !userRole) return res.status(400).json({error: true, message: 'All fields are required'}) 
+        if (!username || !email || !password || !userRole) return res.status(400).json({error: 'All fields are required'}) 
 
         //check username duplicate
         const registeredUsername = await User.findOne({username: username})
 
-        if (registeredUsername) return res.json({
-            error: true, 
-            message: 'Username already registered!'
-        })
+        if (registeredUsername) return res.status(409).json({error: 'Username already registered!'})
         // check email duplicate
         const registeredEmail = await User.findOne({email: email})
 
-        if (registeredEmail) return res.json({
-            error: true, 
-            message: 'Email already registered!'
-        })
+        if (registeredEmail) return res.status(409).json({error: 'Email already registered!'})
         
         // hash the user password
         const salt = await bcrypt.genSalt(Number(process.env.SALT))  
@@ -108,9 +102,10 @@ const signUp = async (req, res) => {
             delete req.session.cart;
         }
 
-        res.status(200).json({
-            success: true, 
-            message: `Account created successfully`
+        return res.status(201).json({
+            message: `Account created successfully`,
+            url: verifyEmailUrl,
+            otp: signupOtp
         })
     }
     catch (err) {
@@ -138,28 +133,23 @@ const verifyEmailToken = async (req, res) => {
             token, 
             process.env.VERIFY_EMAIL_TOKEN_SECRET,
             async (err, decoded) => {
-                if (err) return res.json({
-                    error: true,
-                    message: 'Invalid token'
-                })
+                if (err) return res.sendStatus(401)
                 
                 const existingUser = await User.findOne({email: decoded.email})
-                if(existingUser.email !== email) return res.json({
-                    error: true,
-                    message: 'Invalid email address'
-                })
+                if(existingUser.email !== email) return res.sendStatus(403)
+
+                if (existingUser.verified) return res.status(200).json({verified: true})
                 
-                return res.json({
-                    success: true,
-                    message: 'Email token is valid',
-                    email: decoded.email,
-                    emailToken: token
+                return res.status(200).json({
+                    message: 'Email and token is valid',
+                    email: email,
+                    token: token
                 })
         })
     } catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
     }
-};
+}
 
 const emailVerification = async (req, res) =>  {
         const cookies = req.cookies;
@@ -177,43 +167,29 @@ const emailVerification = async (req, res) =>  {
             await existingUser.save()
         }
         
-        if (!signupOtp) return res.json({
-            error: true,
-            message: 'OTP is required!'
-        }) 
+        if (!signupOtp) return res.status(400).json({error: 'OTP is required!'}) 
 
         JWT.verify( 
             token, 
             process.env.VERIFY_EMAIL_TOKEN_SECRET,
             async (err, decoded) => {
-                if (err) return res.json({
-                    error: true, 
-                    message: 'The link is invalid or expired'
-                })
-
-                const existingUser = await User.findById({_id: decoded.userId})
-                if (existingUser.verified) return res.json({
-                    error: true,
-                    message: 'Your Email is verfied already'
-                })
+                if (err) return res.sendStatus(401)
 
                 const unverifiedOtp = await Otp.findOne({userId: decoded.userId})  
         
                 // compare otp before verifying email
                 const isValidOtp = await bcrypt.compare(signupOtp, unverifiedOtp.otp)
-                if (!isValidOtp) return res.json({
-                    error: true, 
-                    message: 'Invalid OTP. Try again' 
-                })
-        
+                if (!isValidOtp) return res.status(400).json({error: 'Invalid OTP. Try again' })
+                
+                const existingUser = await User.findOne({email: decoded.email})
                 existingUser.verified = true
                 await existingUser.save()
         
                 await Otp.findByIdAndDelete({_id: unverifiedOtp._id})
         
-                res.status(200).json({
-                    success: true, 
-                    message: `Email verification was successfull`
+                return res.status(200).json({
+                    message: `Email verification was successfull`,
+                    verified: existingUser.verified
                 })
         })
     }
@@ -238,30 +214,18 @@ const signIn = async (req, res) => {
             await existingUser.save()
         }
 
-        if (!username || !password) return res.status(404).json({
-            error: true, 
-            message: 'All fields are required'
-        })
+        if (!username || !password) return res.status(400).json({error: 'All fields are required'})
 
         // check if user exists;
         const existingUser = await User.findOne({username: username})
-        if (!existingUser) return res.status(200).json({
-            error: true, 
-            message: 'Invalid username'
-        })
+        if (!existingUser) return res.status(400).json({error:'Invalid username'})
 
         // Verify the user's password.
         const isPasswordValid = await bcrypt.compare(password, existingUser.password)
-        if (!isPasswordValid) return res.status(200).json({
-            error: true, 
-            message: 'Incorrect password'
-        })
+        if (!isPasswordValid) return res.status(400).json({error: 'Incorrect password'})
 
         // Check if the user has verified their email account.
-        if (!existingUser.verified) return res.status(200).json({
-            error: true, 
-            message: "Please verify your email and try again"
-        })
+        if (!existingUser.verified) return res.status(403).json({error: "Please verify your email and try again"})
 
         let newRefreshTokenArray = !cookies?.refresh ? existingUser.token : existingUser.token.filter((rt) => rt !== cookies.refresh)
 
@@ -311,8 +275,7 @@ const signIn = async (req, res) => {
         }
 
         res.cookie('refresh', newRefreshToken,  { httpOnly: true, sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
-        res.status(200).json({
-            success: true, 
+        return res.status(200).json({
             message: `Login Success`, 
             token: accessToken
         })
@@ -337,16 +300,10 @@ const forgotPassword = async (req, res) => {
             await existingUser.save()
         }
 
-        if (!email) return res.status(404).json({
-            error: true, 
-            message: 'Please enter email address'
-        })
+        if (!email) return res.status(400).json({error: 'Please enter email address'})
 
         const existinguser = await User.findOne({email: email})
-        if (!existinguser) return res.json({
-            error: true, 
-            message: 'Kindly enter your registered email address'
-        })
+        if (!existinguser) return res.status(400).json({error: 'Kindly enter your registered email address'})
 
         // create a token to reset password 
         const resetToken = createResetPasswordToken(existinguser)
@@ -355,10 +312,9 @@ const forgotPassword = async (req, res) => {
         const resetPasswordUrl = `${process.env.FRONTEND_URL}/reset-password?email=${email}&token=${resetToken}`;
         await sendMail(existinguser.username, '', email, resetPasswordUrl, 'RESET PASSWORD', 'resetEmail.pug')
 
-        res.status(200).json({
-            success: true, 
+        return res.status(200).json({
             message: `Reset link sent successfully`,
-            email: `${existinguser.email}`
+            url: `${resetPasswordUrl}`
         })
     }
     catch (err) {
@@ -386,28 +342,20 @@ const verifyResetToken = async (req, res) => {
             token, 
             process.env.RESET_PASSWORD_TOKEN_SECRET,
             async (err, decoded) => {
-                if (err) return res.json({
-                    error: true,
-                    message: 'Invalid token'
-                })
+                if (err) return res.sendStatus(401)
                 
                 const existingUser = await User.findOne({email: decoded.email})
-                if(existingUser.email !== email) return res.json({
-                    error: true,
-                    message: 'Invalid email address'
-                })
+                if(existingUser.email !== email) return res.sendStatus(403)
                 
                 return res.json({
-                    success: true,
                     message: 'Reset token is valid',
-                    email: decoded.email,
-                    emailToken: token
+                    resetToken: token
                 })
         })
     } catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
     }
-};
+}
 
 const resetPassword = async (req, res) => {
         const cookies = req.cookies;
@@ -415,8 +363,8 @@ const resetPassword = async (req, res) => {
         const {token} = req.query
         const {password, confirmPassword} = req.body
 
-    try {   
-
+    try {  
+        
         if (refreshToken) {
             res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
             // check if the existing user has a refresh token;
@@ -426,31 +374,18 @@ const resetPassword = async (req, res) => {
             await existingUser.save()
         }
 
-        if (!password || !confirmPassword) return res.json({
-            error: true, 
-            message: 'All fields are required'
-        })
+        if (!password || !confirmPassword) return res.status(400).json({error: 'All fields are required'})
 
         JWT.verify(
             token, 
             process.env.RESET_PASSWORD_TOKEN_SECRET,
             async (err, decoded) => {
-                if (err) return res.json({
-                    error: true, 
-                    message: 'The link is invalid or expired'
-                }) 
+                if (err) return res.sendStatus(401)
 
-                const existingUser = await User.findById({_id: decoded.userId})
-                if (!existingUser) return res.json({
-                    error: true, 
-                    message: 'User not found'
-                })
+                const existingUser = await User.findOne({email: decoded.email})
                 
                 // compare if the user password match
-                if (password !== confirmPassword) return res.json({
-                    error: true, 
-                    message: 'Password does not match'
-                })
+                if (password !== confirmPassword) return res.json({error: 'Password does not match'})
 
                 // hash the user password
                 const salt = await bcrypt.genSalt(Number(process.env.SALT))
@@ -461,7 +396,6 @@ const resetPassword = async (req, res) => {
                 await existingUser.save()
 
                 res.status(200).json({
-                    success: true, 
                     message: `Password reset was successfull`
                 })
             })
@@ -473,11 +407,11 @@ const resetPassword = async (req, res) => {
 
 const refreshToken = async (req, res) => {
         const cookies = req.cookies;
-        if (!cookies?.refresh) return res.sendStatus(401); 
+        const refreshToken = cookies.refresh;
 
     try {
-        const refreshToken = cookies.refresh
         
+        if (!refreshToken) return res.sendStatus(401); 
         // clear the current refreshToken;
         res.clearCookie('refresh', refreshToken, { httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 });
 
@@ -500,7 +434,6 @@ const refreshToken = async (req, res) => {
 
         const newRefreshTokenArray = existingUser.token.filter((rt) => rt !== refreshToken)
 
-        // verify the refresh token
         JWT.verify(
             refreshToken, 
             process.env.REFRESH_TOKEN_SECRET,
@@ -527,8 +460,7 @@ const refreshToken = async (req, res) => {
                 const accessToken = createAccessToken(currentUser)
 
                 res.status(200).json({
-                    success: true, 
-                    message: `${existingUser.username} refreshed a page`, 
+                    message: `Refresh user token`, 
                     token: accessToken
                 })
             })
@@ -540,11 +472,11 @@ const refreshToken = async (req, res) => {
 
 const logout = async (req, res) => {
         const cookies = req.cookies
-        if (!cookies?.refresh) return res.sendStatus(204) // No content 
+        const refreshToken = cookies.refresh
 
     try {
-        
-        const refreshToken = cookies.refresh
+        if (!refreshToken) return res.sendStatus(204) // No content 
+
         // check if the existing user has a refresh token
         const existingUser = await User.findOne({token: refreshToken})
         if (!existingUser) {
@@ -562,8 +494,7 @@ const logout = async (req, res) => {
         // clear the refresh cookie
         res.clearCookie('refresh', refreshToken, { httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 }) 
 
-        res.status(200).json({
-            success: true, 
+        return res.status(200).json({
             message: 'logout successfull'
         })
     }

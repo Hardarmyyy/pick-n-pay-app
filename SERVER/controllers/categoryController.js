@@ -8,28 +8,19 @@ const addCategory = async (req, res) => {
         const {categoryName} = req.body
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(userId)) return res.json({
-            error: true, 
-            message: 'Invalid id'
-        })
+        if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(403)
 
-        if (!categoryName) return res.status(404).json({ 
-            error: true, 
-            message: "All fields are required!" })
+        if (!categoryName) return res.status(400).json({message: "All fields are required!" })
         
         //check category duplicate
         const existingCategory = await Category.findOne({ categoryName: categoryName})
 
-        if (existingCategory) return res.send({ 
-            error: true, 
-            message: "Category name exists already"
-        })
+        if (existingCategory) return res.status(409).send({message: "Category name exists already"})
 
         const newCategory = new Category({categoryName: categoryName});
         await newCategory.save();
 
-        res.status(200).json({
-            success: true, 
+        res.status(201).json({
             message: "Category created successfully", 
             newCategory: newCategory
         })
@@ -43,7 +34,13 @@ const addCategory = async (req, res) => {
 const allCategories = async (req, res) => {
 
     try {
+
         const allCategory = await Category.find({}).sort({createdAt: -1}).lean();
+
+        if (!allCategory.length) return res.status(404).json({
+            message: 'There are no categories to show', 
+            categories: allProductCategories
+        })
 
         const allProductCategories = await Promise.all(allCategory.map( async (c) => {
             const createdTime = format(c.createdAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the created datetime
@@ -51,18 +48,10 @@ const allCategories = async (req, res) => {
             return {...c, createdAt: createdTime, updatedAt: updatedTime}
         }))
 
-        if (!allProductCategories.length) return res.json({
-            error: true, 
-            message: 'There are no categories to show', 
-            categories: allProductCategories
-        })
-
-        res.status(200).json({ 
-            success: true, 
+        return res.status(200).json({ 
             message: 'Categories fetched successfully', 
             categories: allProductCategories
         })
-
     }
     catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
@@ -75,38 +64,24 @@ const updateCategory = async (req, res) => {
         const {categoryName} = req.body
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.json({
-            error: true, 
-            message: 'Invalid id'
-        })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
-        if (!categoryName) return res.status(404).json({ 
-            error: true, 
-            message: "All fields are required!"
-        })
+        if (!categoryName) return res.status(400).json({message: "All fields are required!"})
         
         const existingCategory = await Category.findById({ _id: id })
 
-        if (!existingCategory) return res.json({ 
-            error: true, 
-            message: "category doesn't exist!" 
-        })
+        if (!existingCategory) return res.status(404).json({message: "category doesn't exist!" })
 
         //check for category name duplicate
         const registeredCategoryName = await Category.findOne({ categoryName: categoryName })
 
-        if (registeredCategoryName && registeredCategoryName?._id.toString() !== existingCategory._id.toString()) return res.json({
-            error: true, 
-            message: "Category name exists already" 
-        })
+        if (registeredCategoryName && registeredCategoryName?._id.toString() !== existingCategory._id.toString()) return res.status(409).json({message: "Category name exists already" })
 
         existingCategory.categoryName = categoryName
         await existingCategory.save()
         
         return res.status(200).json({
-            success: true, 
             message: `${existingCategory.categoryName} has been updated successfully`, 
-            editedCategory: existingCategory 
         })
 	} 
     catch (err) {
@@ -119,23 +94,12 @@ const deleteCategory = async (req, res) => {
         const {id} = req.params
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.json({
-            error: true, 
-            message: 'Invalid id'
-        })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
         
         const category = await Category.findOneAndDelete({ _id: id })
-        if (!category) return res.json({ 
-            error: true, 
-            message: "category doesn't exist!" 
-        })
+        if (!category) return res.status(404).json({message: "category doesn't exist!"})
         
-        return res.status(200).json({
-            success: true, 
-            message: `${category.categoryName} has been deleted successfully`, 
-            deletedCategory: category 
-        })
-        
+        return res.status(200).json({message: `${category.categoryName} has been deleted successfully`})
 	} 
     catch (err) {
 		res.status(500).json({error: 'Internal server error', message: err.message})
