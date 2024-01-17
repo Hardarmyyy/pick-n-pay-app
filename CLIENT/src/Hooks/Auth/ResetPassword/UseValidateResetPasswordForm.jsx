@@ -18,7 +18,7 @@ const validate = (value) => {
 
     for (const field in value) {
         if (field === 'password' && value[field].trim() === '') {
-            newErrors[field] = 'Password field is empty';
+            newErrors[field] = 'Password field is required';
             newInvalid[field] = true;
         }
         else if (field === 'password' && value[field].trim() !== '' && value[field].length < 8 ) {
@@ -38,7 +38,7 @@ const validate = (value) => {
             newInvalid[field] = true;
         }
         else if (field === 'confirmPassword' && value[field].trim() === '') {
-            newErrors[field] = 'Confirm password field is empty';
+            newErrors[field] = 'Confirm password field is required';
             newInvalid[field] = true;
         }
     }

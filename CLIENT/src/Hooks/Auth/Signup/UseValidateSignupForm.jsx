@@ -18,10 +18,10 @@ const UseValidateSignupForm = (value) => {
     
         for (const field in value) {
             if (field === 'userRole' && value[field].trim() === '') {
-                newErrors[field] = 'Kindly choose a user profile from below';
+                newErrors[field] = 'Kindly choose a user profile';
             }
             else if (field === 'username' && value[field].trim() === '') {
-                newErrors[field] = 'Username field is empty';
+                newErrors[field] = 'Username field is required';
                 newInvalid[field] = true;
             }
             else if (field === 'username' && value[field].trim() !== '' && value[field].length < 8) {
@@ -29,7 +29,7 @@ const UseValidateSignupForm = (value) => {
                 newInvalid[field] = true;
             }
             else if (field === 'email' && value[field].trim() === '') {
-                newErrors[field] = 'Email field is empty';
+                newErrors[field] = 'Email field is required';
                 newInvalid[field] = true;
             }
             else if ((field === 'email' && value[field].trim() !== '') && !(emailRegex.test(value[field].trim()))) {
@@ -37,7 +37,7 @@ const UseValidateSignupForm = (value) => {
                 newInvalid[field] = true;
             }
             else if (field === 'password' && value[field].trim() === '') {
-                newErrors[field] = 'Password field is empty';
+                newErrors[field] = 'Password field is required';
                 newInvalid[field] = true;
             }
             else if (field === 'password' && value[field].trim() !== '' && value[field].length < 8 ) {

@@ -5,7 +5,9 @@ const SuccessIcon = () => {
 
 return (
     <>
-        <div className="successIcon">&#10003;</div>
+        <div className=" w-24 h-24 rounded-full p-3 shadow-sm border-2 border-green-600 bg-white text-7xl text-green-600">
+            &#10003;
+        </div>
     </>
 )
 }

@@ -65,8 +65,8 @@ const handleChange = (e) => {
 }
 
 // define a function to open modal 
-const hanldeOpenModal = () => { 
-    setOpenModal(true);
+const handleOpenModal = () => { 
+    setOpenModal(!openModal);
 } 
 
 const handleCanSubmitOTP = (value) => {
@@ -137,7 +137,7 @@ useEffect(() => {
 }, [signupOtp])
 
 
-    return {signupOtp, invalid, error, handleChange, inputRefs, openModal, handleBackspace, handleVerifyEmail, handleVerifyEmailToken}
+    return {signupOtp, invalid, error, handleChange, inputRefs, openModal, handleOpenModal, handleBackspace, handleVerifyEmail, handleVerifyEmailToken}
 
 }
 

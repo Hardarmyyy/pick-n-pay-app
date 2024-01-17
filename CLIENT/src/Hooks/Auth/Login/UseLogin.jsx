@@ -65,7 +65,6 @@ const isLogin = handleCanLogin(regUser)
 const handleLogin = async () => {
 
     setError(errors)
-    setInvalid(invalids)
 
     if (isSubmitting) return; // Don't submit the form if it's already submitting
 

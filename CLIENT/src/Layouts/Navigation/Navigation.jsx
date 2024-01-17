@@ -7,7 +7,6 @@ import { BiUserCircle, BiSearch } from "react-icons/bi";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { BsCart3 } from "react-icons/bs";
 import { MdOutlineClear } from "react-icons/md";
-import './Navigation.css'
 
 
 
@@ -51,58 +50,58 @@ return (
 
 <> 
 
-    <header className='navigation'> 
+    <header className='min-w-full my-4 px-4 flex justify-between items-center border-b pb-4'> 
 
         <Logo></Logo>
 
         {showSearchBar && 
-            <nav className='search'>
 
-                <form className='searchForm'>
+            <form className='w-1/2 block relative'>
 
-                    <BiSearch className='searchIcon'></BiSearch>
+                <BiSearch className='absolute left-5 top-3 text-slate-500'></BiSearch>
 
-                    <input type='text' placeholder='search for products or brands' name='searchWord' value={word} onChange={handleSearch} className='searchproduct'/>
+                <input className='w-full px-5 py-2 bg-white border rounded-md text-sm text-my-primary font-Montserrat shadow-sm placeholder:italic placeholder:text-slate-400 focus:outline-none focus: border-slate-500' type='text' placeholder='search for products or brands' name='searchWord' value={word} onChange={handleSearch} maxLength={35}/>
 
-                    {clearResult && <MdOutlineClear onClick={handleClearResult} className='clearIcon'></MdOutlineClear>}
+                {clearResult && <MdOutlineClear onClick={handleClearResult} className=''></MdOutlineClear>}
 
-                </form>
+            </form>
 
-                {searchResult.length > 0 &&
-                    <div className='searchResult'>
-                        {searchResult.map((item, index) => 
-                            <Link to={`/products/${item}`} key={index}> {item }</Link>
-                        )}
-                    </div>
-                } 
+            // {/* {searchResult.length > 0 &&
+            //     <div className='searchResult'>
+            //         {searchResult.map((item, index) => 
+            //             <Link to={`/products/${item}`} key={index}> {item }</Link>
+            //         )}
+            //     </div>
+            // }  */}
 
-            </nav>
         }
 
-        <nav className={seller ? 'userProfile seller' : 'userProfile'}> 
+        <nav className={'flex justify-between items-center relative'}> 
 
-            <div  className='account' onClick={() => setActive(!active)}> 
+            <div  className='flex justify-between items-center cursor-pointer p-2 rounded-md mr-11 md:mr-5 lg:mr-7 xl:mr-9 bg-gray-200 hover:bg-gray-400' onClick={() => setActive(!active)}> 
 
-                <BiUserCircle className='userIcon'></BiUserCircle>
-                <span> Account {active ? <IoIosArrowUp></IoIosArrowUp> : <IoIosArrowDown></IoIosArrowDown> } </span> 
+                <BiUserCircle className='text-2xl text-my-primary mr-2'></BiUserCircle>
+                <div className='flex items-center text-sm'>
+                    <span className='mr-1 text-my-primary font-Montserrat'> Account </span> 
+                    {active ? <IoIosArrowUp></IoIosArrowUp> : <IoIosArrowDown></IoIosArrowDown> }
+                </div>
 
             </div>
+
+            {active && <UserProfile></UserProfile>}
 
             {seller 
                 ?  null 
                     : 
-                    <div className='cartCounter'>
+                    <div className='cursor-pointer relative'>
                         <Link to='/checkout'> 
-                            <BsCart3 className='cart'></BsCart3> 
-                            {buyer ? <p className='counter'>  10 </p>  : null }
+                            <p className='absolute left-2 -top-2 bg-crimson w-6 h-6 rounded-full text-center text-white font-Montserrat font-bold'>{buyer ?  10  : 5 }</p>
+                            <BsCart3 className='text-4xl text-gray-500 hover:text-my-primary'></BsCart3> 
                         </Link>
                     </div>
             }
 
         </nav>
-
-        {active ? <UserProfile></UserProfile> : null}
-
 
     </header>
     

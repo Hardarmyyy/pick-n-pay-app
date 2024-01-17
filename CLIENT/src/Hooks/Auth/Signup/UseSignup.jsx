@@ -35,7 +35,7 @@ const handleChange = (e) => {
     setNewUser((newUser) => {return {...newUser, [name]: name === 'userRole' ? value : value.replace(/\s/g, "")}})
     // validating form state;
     if (name === 'userRole') {
-        setError((error) => {return {...error, userRole: value ? '': 'Kindly choose a user profile' }})
+        setError((error) => {return {...error, userRole: value ? '': 'Kindly choose a user profile'}})
     }
     else if (name === 'username') {
         setError((error) => {return {...error, username: value ? '': 'Kindly enter username' }})
@@ -54,7 +54,7 @@ const handleChange = (e) => {
 
 // define a function to open modal 
 const handleOpenModal = () => { 
-    setOpenModal(true);
+    setOpenModal(!openModal);
 }
 
 // define a function to handle show password;
@@ -90,7 +90,6 @@ const isSave = handleCanSave(newUser)
 const handleSignup = async () => {
 
     setError(errors)
-    setInvalid(invalids)
 
     if (isSubmitting) return; // Don't submit the form if it's already submitting
 
@@ -126,7 +125,7 @@ useEffect(() => {
     handleCanSave(newUser)
 }, [newUser])
 
-    return {newUser, error, invalid, handleChange, openModal, showPassword, handleShowPassword, handleSignup}
+    return {newUser, error, invalid, handleChange, openModal, handleOpenModal, showPassword, handleShowPassword, handleSignup}
 }
 
 export default UseSignup

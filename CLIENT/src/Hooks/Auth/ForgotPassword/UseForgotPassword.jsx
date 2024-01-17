@@ -24,7 +24,7 @@ const handleChange = (e) => {
     setUser((user) => { return {...user, [name]: value.replace(/\s/g, "")} })
 
     if (name === 'email') {
-        setError((error) => { return {...error, email: value ? '' : 'Enter email address'}})
+        setError((error) => { return {...error, email: value ? '' : 'Kindly enter email address'}})
         setInvalid((invalid) => { return {...invalid, email: value ? false : true }})
     }
 }
@@ -47,7 +47,6 @@ const isSave = handleCanSave(user)
 const handleForgotPassword = async () => {
 
     setError(errors)
-    setInvalid(invalids)
 
     if (isSubmitting) return; // Don't submit the form if it's already submitting
     

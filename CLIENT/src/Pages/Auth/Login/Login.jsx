@@ -3,14 +3,13 @@ import { ToastContainer } from 'react-toastify'
 import Logo from '../../../Layouts/Logo/Logo'
 import LoginForm from './LoginForm/LoginForm'
 import UseLogin from '../../../Hooks/Auth/Login/UseLogin'
-import './Login.css'
 
 
 
 const Login = () => { 
 
 //import and use the useLogin hook
-const  {regUser, error, invalid, handleChange, showPassword, handleShowPassword, handleLogin} = UseLogin()
+const  {regUser, error, handleChange, showPassword, handleShowPassword, handleLogin} = UseLogin()
 
 // define a function to handle form submit
 const handleFormSubmit = async (e) => {
@@ -22,9 +21,6 @@ const handleFormSubmit = async (e) => {
 return (
 
 <>
-
-    <Logo></Logo>
-
     <ToastContainer 
         position='top-right'
         autoClose={2500}
@@ -33,10 +29,13 @@ return (
         closeOnClick
         rtl={false}/>
 
+    <div className='p-4'>
+        <Logo></Logo>
+    </div>
+
     <LoginForm
         regUser={regUser}
         error={error} 
-        invalid={invalid} 
         handleChange={handleChange} 
         submitForm={handleFormSubmit}
         showPassword={showPassword} 

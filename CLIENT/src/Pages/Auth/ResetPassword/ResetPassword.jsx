@@ -8,7 +8,6 @@ import ResetPasswordForm from './ResetPasswordForm/ResetPasswordForm'
 import ExpiredLink from '../../../component/ExpiredLink/ExpiredLink'
 import SuccessModal from '../../../Layouts/SuccessModal/SuccessModal'
 import 'react-toastify/dist/ReactToastify.css';
-import './ResetPassword.css'
 
 const ResetPassword = () => {
 
@@ -23,7 +22,7 @@ const email = searchParams?.get('email')
 
 const modalMessage = `Your password has been reset successfully`
 
-const {user, error, invalid, handleChange, handleVerifyResetToken, handleResetPassword, openModal, showPassword, handleShowPassword, showConfirmPassword, handleShowConfirmPassword} = UseResetPassword(email, token) 
+const {user, error, handleChange, handleVerifyResetToken, handleResetPassword, openModal, handleOpenModal, showPassword, handleShowPassword, showConfirmPassword, handleShowConfirmPassword} = UseResetPassword(email, token) 
 
 const handleSubmit = async(e) => {
     e.preventDefault()
@@ -38,8 +37,6 @@ useEffect(() => {
 return (
 
     <>
-        <Logo></Logo>
-        
         <ToastContainer 
             position='top-right'
             autoClose={5000}
@@ -48,13 +45,16 @@ return (
             closeOnClick
             rtl={false}/>
 
+        <div className='p-4'>
+            <Logo></Logo>
+        </div>
+
         {isValid &&
             <>
 
                 <ResetPasswordForm
                     status={status}
                     submitForm = {handleSubmit} 
-                    invalid={invalid}
                     error={error} 
                     handleChange={handleChange} 
                     user={user}
@@ -64,7 +64,7 @@ return (
                     handleShowConfirmPassword={handleShowConfirmPassword}>
                 </ResetPasswordForm>
 
-                {openModal && <SuccessModal message={modalMessage}></SuccessModal>}
+                {openModal && <SuccessModal handleOpenModal={handleOpenModal} message={modalMessage}></SuccessModal>}
 
             </>
         }

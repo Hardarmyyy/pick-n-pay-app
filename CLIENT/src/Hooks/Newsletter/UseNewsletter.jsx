@@ -11,20 +11,17 @@ const UseNewsletter = () => {
     })
     
     const [error, setError] = useState({})
-    const [invalid, setInvalid] = useState({})
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     
     const handleChange = (e) => {
         const {name, value} = e.target
-        setNewsLetter((newsLetter) => {return {...newsLetter, [name]: value.replace(/\s/g, "")}})
+        setNewsLetter((newsLetter) => {return {...newsLetter, [name]: name === 'name' ? value : value.replace(/\s/g, "")}})
     
         if (name === 'name') {
-            setInvalid((invalid) => { return {...invalid, name: value ? false : true }})
             setError((error) => { return {...error, name: value ? '' : null, multi: value ? '' : null }})
         }
         else if (name === 'email') {
-            setInvalid((invalid) => { return {...invalid, email: value ? false : true }})
             setError((error) => { return {...error, email: value ? '' : null, multi: value ? '' : null}})
         }
     } 
@@ -33,7 +30,7 @@ const UseNewsletter = () => {
     
     const handleCanSave = (value) => {
         const canSubmit = [
-            value.name && 
+            value.name.replace(/\s/g, "") && 
             emailRegex.test(value.email)
         ].every(Boolean) // enable the submit button 
     
@@ -41,16 +38,15 @@ const UseNewsletter = () => {
     }
     
     const isSave = handleCanSave(newsLetter)
-    const {errors, invalids} = UseValidateNewsLetterForm(newsLetter)
+    const {errors} = UseValidateNewsLetterForm(newsLetter)
 
     const handleSubmitNewsLetter = () => {
 
         if (!newsLetter.name && !newsLetter.email) {
-            return setError({multi: 'Name and Email is required'})
+            return setError({multi: 'Enter name and email'})
         }
 
         setError(errors)
-        setInvalid(invalids)
 
         if (isSubmitting) return;
 
@@ -71,7 +67,7 @@ const UseNewsletter = () => {
         handleCanSave(newsLetter)
     }, [newsLetter])
 
-  return {newsLetter, error, invalid, handleChange, handleSubmitNewsLetter}
+  return {newsLetter, error, handleChange, handleSubmitNewsLetter}
 }
 
 export default UseNewsletter
