@@ -9,21 +9,10 @@ export const injectStore = _store => {
     store = _store
 }
 
-const FETCHREGISTEREDUSERS = createAsyncThunk('users/fetchUser', async (id) => { 
+const SINGLEUSER = createAsyncThunk('users/singleUser', async (id) => { 
         const axiosPrivate = setupInterceptors(store);
     try {
-        const response = await axiosPrivate.get(`/all-users/${id}`)
-        return response.data
-    }
-    catch (err) {
-        return err.message
-    }
-}) 
-
-const SINGLEUSER = createAsyncThunk('users/singleUser', async (userId) => { 
-        const axiosPrivate = setupInterceptors(store);
-    try {
-        const response = await axiosPrivate.get(`/user/${userId}`)
+        const response = await axiosPrivate.get(`/user/${id}`)
         return response.data
     }
     catch (err) {
@@ -32,6 +21,5 @@ const SINGLEUSER = createAsyncThunk('users/singleUser', async (userId) => {
 }) 
 
 export {
-    FETCHREGISTEREDUSERS,
     SINGLEUSER
 }

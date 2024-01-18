@@ -12,6 +12,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Footer = () => {
 
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 // define a state to handle user email
 const [user, setUser] = useState({
     email: ''
@@ -21,18 +23,17 @@ const [error, setError] = useState({})
 const [invalid, setInvalid] = useState({})
 
 const handleChange = (e) => {
+    
     const {name, value} = e.target
     setUser((user) => { return {...user, [name]: value.replace(/\s/g, "")} })
 
     if (name === 'email') {
-        setError((error) => { return {...error, email: value ? '' : 'Enter email address'}})
+        setError((error) => { return {...error, email: value ? emailRegex.test(value) ? '' : 'Enter a valid email address' : 'Enter email address'}})
         setInvalid((invalid) => { return {...invalid, email: value ? false : true }})
     }
 }
 
 const {errors, invalids} = UseValidateForgotPasswordForm (user)
-
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const handleCanSave = (value) => {
     const canSubmit = Boolean(emailRegex.test(value.email)) // enable the submit button 
@@ -133,10 +134,10 @@ return (
                 <h6 className='font-Jost text-lg text-blue-950 font-bold text-center'> Get Update </h6>
                 <p className='text-sm text-center'> We're growing fast. Get daily update </p>
 
-                <form onSubmit={handleFormSubmit} className='relative'>
+                <form onSubmit={handleFormSubmit} className='w-full relative'>
                     <input 
                         type='text' 
-                        className='w-72 mt-3 p-2 border-2 rounded-md text-sm shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-900'
+                        className='w-72 mt-3 mr-2 p-2 border-2 rounded-md text-sm shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-900'
                         placeholder='Enter your email address' 
                         name='email' 
                         value={user.email} 
@@ -144,7 +145,7 @@ return (
                         maxLength={40}
                     />
 
-                    <button className='ml-3 py-2 px-4 rounded-md bg-blue-900 text-white hover:bg-blue-950'> Join now </button>
+                    <button className='py-2 px-4 rounded-md bg-blue-900 text-white hover:bg-blue-950'> Join </button>
 
                     {error && <p className='absolute left-0 text-crimson text-sm font-Montserrat'> {error.email} </p>}
 

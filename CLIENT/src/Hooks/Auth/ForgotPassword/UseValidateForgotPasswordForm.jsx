@@ -17,7 +17,7 @@ const UseValidateForgotPasswordForm = (value) => {
                 newInvalid[field] = true;
             }
             else if ((field === 'email' && value[field].trim() !== '') && !(emailRegex.test(value[field].trim()))) {
-                newErrors[field] = 'Kindly enter a valid email address';
+                newErrors[field] = 'Enter a valid email address';
                 newInvalid[field] = true;
             }
         }

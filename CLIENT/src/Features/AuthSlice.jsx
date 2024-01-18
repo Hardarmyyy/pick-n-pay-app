@@ -43,7 +43,8 @@ export const authSlice = createSlice({
                 })
                 .addCase(LOGIN.fulfilled, (state, action) => {
                     state.accessToken = action.payload.token
-                    state.user = decodeToken(action.payload.token)
+                    const decodedUser = decodeToken(action.payload.token)
+                    state.user = {userID: decodedUser.userId, userName: decodedUser.username, userRole: [...decodedUser.userRole]}
                     const message = action.payload.message
                     toast.success(message, {
                         toastStyle: { background: 'green', color: 'white' }
@@ -71,7 +72,8 @@ export const authSlice = createSlice({
                     const token = action.payload.token;
                     if (token) {
                         state.accessToken = token
-                        state.user = decodeToken(token) // decode the access token to get the current user information
+                        const decodedUser = decodeToken(action.payload.token)
+                        state.user = {userID: decodedUser.userId, userName: decodedUser.username, userRole: [...decodedUser.userRole]} // decode the access token to get the current user information
                     }
                 }) 
                 .addCase(LOGOUT.fulfilled, (state, action) => {

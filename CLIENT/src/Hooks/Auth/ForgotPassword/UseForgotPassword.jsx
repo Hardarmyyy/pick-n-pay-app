@@ -7,6 +7,7 @@ import UseValidateForgotPasswordForm from './UseValidateForgotPasswordForm'
 
 const UseForgotPassword = () => {
 
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const dispatch = useDispatch()
 
 // define a state to handle user email
@@ -24,7 +25,7 @@ const handleChange = (e) => {
     setUser((user) => { return {...user, [name]: value.replace(/\s/g, "")} })
 
     if (name === 'email') {
-        setError((error) => { return {...error, email: value ? '' : 'Kindly enter email address'}})
+        setError((error) => { return {...error, email: value ? emailRegex.test(value) ? '' : 'Enter a valid email address' : 'Enter email address'}})
         setInvalid((invalid) => { return {...invalid, email: value ? false : true }})
     }
 }
@@ -33,8 +34,6 @@ const handleChange = (e) => {
 const {errors, invalids} = UseValidateForgotPasswordForm(user)
 
 const [isSubmitting, setIsSubmitting] = useState(false);
-
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const handleCanSave = (value) => {
     const canSubmit = Boolean(emailRegex.test(value.email)) // enable the submit button 

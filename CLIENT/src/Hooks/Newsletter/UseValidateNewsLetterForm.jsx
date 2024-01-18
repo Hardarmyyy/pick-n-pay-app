@@ -6,8 +6,6 @@ const UseValidateNewsLetterForm = (value) => {
     const [errors, setError] = useState({})
     const [invalids, setInvalid] = useState({})
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
     const validate = (value) => {
 
         const newErrors = {};
@@ -21,10 +19,6 @@ const UseValidateNewsLetterForm = (value) => {
             }
             else if (field === 'email' && value[field].trim() === '') {
                 newErrors[field] = 'Email is required';
-                newInvalids[field] = true;
-            }
-            else if ((field === 'email' && value[field].trim() !== '') && !(emailRegex.test(value[field].trim()))) {
-                newErrors[field] = 'Enter a valid email address';
                 newInvalids[field] = true;
             }
         }

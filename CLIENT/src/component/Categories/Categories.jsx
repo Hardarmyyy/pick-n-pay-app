@@ -14,9 +14,9 @@ return (
 
         {allCategories.map((category) => 
             <ul>
-                <li key={category._id} className="md:text-sm lg:text-lg my-1 py-1 hover:bg-gray-400 rounded-sm">
-                    <Link to={`/category/${category.categoryName}`}> 
-                        {category.categoryName}
+                <li key={category.categoryID} className="md:text-sm lg:text-lg my-1 py-1 hover:bg-gray-400 rounded-sm">
+                    <Link to={`/category/${category.category}`}> 
+                        {category.category}
                     </Link>
                 </li>
             </ul>

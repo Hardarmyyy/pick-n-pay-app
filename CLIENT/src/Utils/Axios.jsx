@@ -13,13 +13,13 @@ export const axiosInstance = axios.create({
 // create a setupInterceptors for requests headers and authourization
 export const setupInterceptors = (store) => {
 
-    const axiosPrivate = axios.create({
-        baseURL: import.meta.env.VITE_API_URL,
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true,
-    });
+    // const axiosPrivate = axios.create({
+    //     baseURL: import.meta.env.VITE_API_URL,
+    //     headers: { 'Content-Type': 'application/json' },
+    //     withCredentials: true,
+    // });
 
-    axiosPrivate.interceptors.request.use(
+    axiosInstance.interceptors.request.use(
         (config) => {
         const accessToken = store.getState().auth.accessToken;
         if (!config.headers['Authorization']) {
@@ -32,7 +32,7 @@ export const setupInterceptors = (store) => {
         }
     );
 
-    axiosPrivate.interceptors.response.use(
+    axiosInstance.interceptors.response.use(
         (response) => {
         return response;
         },
@@ -44,7 +44,7 @@ export const setupInterceptors = (store) => {
             await store.dispatch(REFRESH());
             const newAccessToken = store.getState().auth.accessToken;
             originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-            return axiosPrivate(originalRequest);
+            return axiosInstance(originalRequest);
         }
         else if (error?.response && error?.response?.status === 403 && originalRequest?.sent) {
             window.location.replace('/login')
@@ -55,7 +55,7 @@ export const setupInterceptors = (store) => {
         }
     );
 
-    return axiosPrivate;
+    return axiosInstance;
 
 }
 

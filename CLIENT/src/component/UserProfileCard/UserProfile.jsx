@@ -45,7 +45,7 @@ return (
         
         <div className='block text-sm text-my-primary font-Montserrat'>
 
-            {user && <p className='my-1 font-medium'> Hi {user.username} </p> }
+            {user && <p className='my-1 font-medium'> Hi {user.userName} </p> }
 
             <Link to='/profile' className='flex justify-center rounded-sm mb-1 py-1 hover:bg-gray-400'> <BiUserCircle className='text-xl mr-2'></BiUserCircle> My Account </Link>
             

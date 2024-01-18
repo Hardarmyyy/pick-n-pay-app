@@ -7,6 +7,11 @@ import {toast} from 'react-toastify'
 
 const UseSignup = () => {
 
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const passwordRegexUpperCase = /^(?=.*[A-Z])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
+const passwordRegexNumber = /^(?=.*[0-9])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
+const passwordRegexSymbol = /^(?=.*[.!@#$%^&*])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
+
 const dispatch = useDispatch()
 
 // define state to manage form object data
@@ -42,11 +47,11 @@ const handleChange = (e) => {
         setInvalid((invalid) => {return {...invalid, username: value ? false : true}})
     }
     else if (name === 'email') {
-        setError((error) => {return {...error, email: value ? '': 'Kindly enter email address' }})
+        setError((error) => { return {...error, email: value ? emailRegex.test(value) ? '' : 'Enter a valid email address' : 'Enter email address'}})
         setInvalid((invalid) => {return {...invalid, email: value ? false : true}})
     }
     else if (name === 'password') {
-        setError((error) => {return {...error, password: value ? '': 'Kindly enter password' }})
+        setError((error) => {return {...error, password: value ? '' : 'Kindly enter password' }})
         setInvalid((invalid) => {return {...invalid, password: value ? false : true}})
     }
 
@@ -64,11 +69,6 @@ const handleShowPassword = () => {
 
 // import and use validatesignup hook to catch errors on the form object ;
 const {errors, invalids} = UseValidateSignupForm(newUser)
-
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const passwordRegexUpperCase = /^(?=.*[A-Z])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-const passwordRegexNumber = /^(?=.*[0-9])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-const passwordRegexSymbol = /^(?=.*[.!@#$%^&*])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
 
 const handleCanSave = (value) => {
     const canSave = [

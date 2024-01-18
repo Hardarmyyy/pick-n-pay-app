@@ -94,7 +94,7 @@ return (
                 ?  null 
                     : 
                     <div className='cursor-pointer relative'>
-                        <Link to='/checkout'> 
+                        <Link to='/cart'> 
                             <p className='absolute left-2 -top-2 bg-crimson w-6 h-6 rounded-full text-center text-white font-Montserrat font-bold'>{buyer ?  10  : 5 }</p>
                             <BsCart3 className='text-4xl text-gray-500 hover:text-my-primary'></BsCart3> 
                         </Link>

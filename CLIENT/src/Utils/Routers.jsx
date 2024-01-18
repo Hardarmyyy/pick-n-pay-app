@@ -5,19 +5,27 @@ import SignUp from '../Pages/Auth/SignUp/SignUp.jsx'
 import VerifyEmail from '../Pages/Auth/VerifyEmail/VerifyEmail.jsx'
 import ForgotPassword from '../Pages/Auth/ForgotPassword/ForgotPassword.jsx'
 import ResetPassword from '../Pages/Auth/ResetPassword/ResetPassword.jsx'
-import PageNotFound from '../Pages/PageNotFound/PageNotFound.jsx'
-import Unauthorized from '../Pages/Unauthorized/Unauthorized.jsx'
+
 
 import PersistLogin from './PersistLogin'
 import PrivateRoutes from './PrivateRoutes'
 import { admin, buyer, seller, registeredUser } from './AllowedRoles'
 
 import LandingPage from '../Pages/HomePage/LandingPage.jsx'
-import Profile from '../Pages/UserProfile/ProfileLayout.jsx'
+
+import ProfileLayout from '../Pages/UserProfile/ProfileLayout.jsx'
+import Profile from '../Pages/UserProfile/Profile/Profile.jsx'
+import UpdateProfile from '../Pages/UserProfile/UpdateProfile/UpdateProfile.jsx'
+import ChangePassword from '../Pages/UserProfile/ChangePassword/ChangePassword.jsx'
+
 import Orders from '../Pages/Orders/Orders.jsx'
 import ShopLayout from '../Pages/Shop/ShopLayout.jsx'
 import FavouritesLayout from '../Pages/Favourites/FavouritesLayout.jsx'
-import Checkout from '../Pages/CartProducts/CartProduct.jsx'
+import CartProduct from '../Pages/CartProducts/CartProduct.jsx' 
+import CheckoutLayout from '../Pages/Checkout/CheckoutLayout.jsx'
+
+import PageNotFound from '../Pages/PageNotFound/PageNotFound.jsx'
+import Unauthorized from '../Pages/Unauthorized/Unauthorized.jsx'
 
 
 export const router = createBrowserRouter(
@@ -33,18 +41,31 @@ export const router = createBrowserRouter(
         <Route element={<PersistLogin></PersistLogin>}>
 
             <Route path='/' element={<LandingPage></LandingPage>}></Route>
-            <Route path='/checkout' element={<Checkout></Checkout>}></Route>
+            <Route path='/cart' element={<CartProduct></CartProduct>}></Route>
 
             <Route element={<PrivateRoutes allowedRoles={registeredUser}></PrivateRoutes>}>
-                <Route path='/profile' element={<Profile></Profile>}></Route>
+
+                <Route path='/profile' element={<ProfileLayout></ProfileLayout>}>
+
+                    <Route index element={<Profile></Profile>}></Route>
+                    <Route path=':update-profile' element={<UpdateProfile></UpdateProfile>}></Route>
+                    <Route path=':update-password' element={<ChangePassword></ChangePassword>}></Route>
+
+                </Route>
+
                 <Route path='/orders' element={<Orders></Orders>}></Route>
 
                 <Route element={<PrivateRoutes allowedRoles={seller}></PrivateRoutes>}>
+
                     <Route path='/shop' element={<ShopLayout></ShopLayout>}></Route>
+
                 </Route>
 
                 <Route element={<PrivateRoutes allowedRoles={buyer}></PrivateRoutes>}>
+
                     <Route path='/favourites' element={<FavouritesLayout></FavouritesLayout>}></Route>
+                    <Route path='/checkout' element={<CheckoutLayout></CheckoutLayout>}></Route>
+
                 </Route>
 
             </Route>

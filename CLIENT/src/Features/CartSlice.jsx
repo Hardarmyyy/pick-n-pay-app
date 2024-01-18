@@ -1,42 +1,38 @@
 import { createSlice, isPending, isFulfilled, isRejected } from "@reduxjs/toolkit";
-import {FETCHALLCATEGORIES} from "../Services/categoryApi";
+import {FETCHCARTITEMS} from '../Services/cartApi'
 
 
 export const initialState = {
     status: 'idle',
-    allCategories: []
+    cartItems: []
 }
 
-export const categorySlice = createSlice({
-    name:'category',
+export const cartSlice = createSlice({
+    name:'cart',
     initialState,
     reducers: {
     
     },
     extraReducers (builder) {
         builder 
-                .addCase(FETCHALLCATEGORIES.fulfilled, (state, action) => { 
-                    const categories = action.payload.categories
-                    if (categories) {
-                        const sortedCategories = categories.sort((a, b) => a.categoryName > b.categoryName ? 1 : -1);
-                        const categoryData = sortedCategories.map((category) => {return {categoryID: category._id, category: category.categoryName} })
-                        state.allCategories = state.allCategories.concat(categoryData)
-                    }
+                .addCase(FETCHCARTITEMS.fulfilled, (state, action) => { 
+                    const cart = action.payload.cart
+                    
                 })
                 .addMatcher(
-                    isFulfilled(FETCHALLCATEGORIES),
+                    isFulfilled(FETCHCARTITEMS),
                     (state) => {
                     state.status = 'success'
                 }
                 )
                 .addMatcher(
-                    isPending(FETCHALLCATEGORIES),
+                    isPending(FETCHCARTITEMS),
                     (state) => {
                     state.status = 'Loading.......';
                 }
                 )
                 .addMatcher(
-                    isRejected(FETCHALLCATEGORIES),
+                    isRejected(FETCHCARTITEMS),
                     (state, action) => {
                         state.status = 'failed';
                         const message = action.payload.error
@@ -49,4 +45,4 @@ export const categorySlice = createSlice({
 })
 
 
-export default categorySlice.reducer
+export default cartSlice.reducer
