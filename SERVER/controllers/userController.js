@@ -14,10 +14,7 @@ const getAllUsers = async (req, res) => {
         const {id} = req.params
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
-            error: true, 
-            message: "The user ID is invalid!" 
-        })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const allUsers = await User.aggregate([
             {
@@ -44,17 +41,14 @@ const getAllUsers = async (req, res) => {
             return {...u, createdAt: createdTime, updatedAt: updatedTime}
         }))
 
-        if (!allUsers.length) return res.json({
-            error: true, 
-            message: 'The user list is empty', 
-            user: allUsers
+        if (!allUsers.length) return res.status(404).json({
+            error: 'The user list is empty', 
+            allUsers: allUsers
         })
 
         res.status(200).json({ 
-            success: true, 
             message: 'All users fetched successfully', 
-            user: allusersFormatedDate,
-            totalNumberOfRegisteredUsers: allusersFormatedDate.length
+            allUsers: allusersFormatedDate,
         })
     }
     catch (err) {
@@ -66,10 +60,7 @@ const allSellers = async (req, res) => {
         const {id} = req.params
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
-            error: true, 
-            message: "The user ID is invalid!" 
-        })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const allSellers = await User.aggregate([
             {
@@ -92,23 +83,21 @@ const allSellers = async (req, res) => {
                 }
             }
         ])
+
         const allSellersFormatedDate = await Promise.all(allSellers.map( async (u) => {
             const createdTime = format(u.createdAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the created datetime
             const updatedTime = format(u.updatedAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the updated datetime
             return {...u, createdAt: createdTime, updatedAt: updatedTime}
         }))
 
-        if (!allSellers.length) return res.json({
-            error: true, 
-            message: 'The sellers list is empty', 
-            user: allSellers
+        if (!allSellers.length) return res.status(404).json({
+            error:'The sellers list is empty', 
+            allSellers: allSellers
         })
 
         res.status(200).json({ 
-            success: true, 
             message: 'All sellers fetched successfully', 
-            user: allSellersFormatedDate,
-            totalNumberOfRegisteredSellers: allSellersFormatedDate.length
+            allSellers: allSellersFormatedDate,
         })
     }
     catch(err) {
@@ -120,10 +109,7 @@ const allBuyers = async (req, res) => {
     const {id} = req.params
 
 try {
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
-        error: true, 
-        message: "The user ID is invalid!" 
-    })
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
     const allBuyers = await User.aggregate([
         {
@@ -146,6 +132,7 @@ try {
             }
         }
     ])
+
     const allBuyersFormatedDate = await Promise.all(allBuyers.map( async (u) => {
         const createdTime = format(u.createdAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the created datetime
         const updatedTime = format(u.updatedAt, 'yyyy-MM-dd hh:mm:ss a') // formatting the updated datetime
@@ -153,16 +140,13 @@ try {
     }))
 
     if (!allBuyers.length) return res.json({
-        error: true, 
-        message: 'The buyers list is empty', 
-        user: allBuyers
+        error: 'The buyers list is empty', 
+        allBuyers: allBuyers
     })
 
     res.status(200).json({ 
-        success: true, 
         message: 'All buyers fetched successfully', 
-        user: allBuyersFormatedDate,
-        totalNumberOfRegisteredBuyers: allBuyersFormatedDate.length
+        allBuyers: allBuyersFormatedDate,
     })
 }
 catch(err) {
@@ -174,23 +158,17 @@ const getSingleUser = async (req, res) => {
         const {id} = req.params
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
-            error: true, 
-            message: "The user ID is invalid!" 
-        })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const user = await User.findById({_id: id})
 
-        if (!user) return res.status(404).json({
-            error: true, 
-            message: "User not found!" 
-        })
+        if (!user) return res.status(404).json({error: "User not found!"})
 
         const createdTime = format(user.createdAt, 'yyyy-MM-dd hh:mm:ss a')
         const updatedTime = format(user.updatedAt, 'yyyy-MM-dd hh:mm:ss a')
 
         const singleUserFormatedDate = { 
-            userid: user._id,
+            userId: user._id,
             roles: user.roles,
             username: user.username,
             email: user.email, 
@@ -199,7 +177,6 @@ const getSingleUser = async (req, res) => {
         }
 
         res.status(200).json({
-            success: true, 
             message: 'single user retrieved successfully', 
             user: singleUserFormatedDate
         });
@@ -213,16 +190,10 @@ const deleteUser = async (req, res) => {
         const {id} = req.params
 
 	try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({ 
-            error: true, 
-            message: "The user ID is invalid!"
-        })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const existingUser = await User.findById({_id: id})
-        if (!existingUser) return res.json({
-            error: true, 
-            message: 'User not found'
-        });
+        if (!existingUser) return res.json({error: 'User not found'});
 
         //check if the user (seller) have existing products
         const existingProducts = await Product.aggregate([
@@ -297,8 +268,7 @@ const deleteUser = async (req, res) => {
             const deletedUser = await User.findByIdAndDelete({_id: id})
 
             return res.status(200).json({
-                success: 'true', 
-                message: 'User with existing cart, address and order history has been deleted successfully', 
+                message: 'User deleted successfully', 
                 deletedUser: deletedUser
             })
         }
@@ -313,8 +283,7 @@ const deleteUser = async (req, res) => {
             const deletedUser = await User.findByIdAndDelete({_id: id})
 
             return res.status(200).json({
-                success: 'true', 
-                message: 'User with existing products has been deleted successfully', 
+                message: 'User deleted successfully', 
                 deletedUser: deletedUser
             })
         }
@@ -328,18 +297,12 @@ const updatePassword = async (req, res) => {
             const {id} = req.params
             const {currentPassword, newPassword, confirmPassword} = req.body
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
-            error: true, 
-            message: "The user ID is invalid!" 
-        })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const existingUser = await User.findById({_id: id})
-        if (!existingUser) return res.json({
-            error: true, 
-            message: 'User not found'
-        });
+        if (!existingUser) return res.json({error: 'User not found'});
 
-        if (!currentPassword || !newPassword || !confirmPassword) return res.status(404).json({
+        if (!currentPassword || !newPassword || !confirmPassword) return res.status(400).json({
             error: true, 
             message: "All fields are required!" 
         })
@@ -347,18 +310,11 @@ const updatePassword = async (req, res) => {
         // Check if the provided current password matches the user's password
         const isPasswordMatch = await bcrypt.compare(currentPassword, existingUser.password);
 
-        if (!isPasswordMatch) return res.status(401).json({
-            error: true, 
-            message: 'Incorrect current password' 
-        });
+        if (!isPasswordMatch) return res.status(401).json({error: 'Incorrect current password'});
 
         // check if the new password matches the confirm new password
-        if (newPassword !== confirmPassword) {
-            return res.status(401).json({
-                error: true, 
-                message:  'Password does not match'
-            });
-        }
+        if (newPassword !== confirmPassword) return res.status(400).json({error: 'Password does not match'});
+        
         
         // Hash the user new password
         const salt = await bcrypt.genSalt(Number(process.env.SALT));
@@ -369,8 +325,7 @@ const updatePassword = async (req, res) => {
         await existingUser.save()
 
         res.status(200).json({
-            success: true, 
-            message: `${existingUser.username}, your password has been updated successfully`,
+            message: `Password has been updated successfully`,
             updatedUser: existingUser
         })
 	} 
@@ -383,46 +338,30 @@ const updateUser = async (req, res) => {
         const {id} = req.params
         const {username, email } = req.body;
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
-            error: true, 
-            message: "The user ID is invalid!" 
-        })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
-        if (!username || !email) return res.status(400).json({ 
-            error: true, 
-            message: "All fields are required!"
-        })
+        if (!username || !email) return res.status(400).json({error: "All fields are required!"})
 
         const existingUser = await User.findById({_id: id})
-        if (!existingUser) return res.json({
-            error: true, 
-            message: 'User not found'
-        });
+        if (!existingUser) return res.status(404).json({error: 'User not found'});
         
         // check for username duplicate
         const registeredUsername = await User.findOne({ username: username });
 
-        if (registeredUsername && registeredUsername?._id.toString() !== existingUser._id.toString()) return res.status(409).json({
-            error: true, 
-            message: "Username is taken. Choose another one."
-        })
+        if (registeredUsername && registeredUsername?._id.toString() !== existingUser._id.toString()) return res.status(409).json({error: "Username is taken. Choose another one."})
         
         // check for email duplicate
         const registeredEmail = await User.findOne({ email: email });
 
-        if (registeredEmail && registeredEmail?._id.toString() !== existingUser._id.toString()) return res.status(409).json({ 
-            error: true, 
-            message: "Email is already in use. Choose another one."
-        })
+        if (registeredEmail && registeredEmail?._id.toString() !== existingUser._id.toString()) return res.status(409).json({error: "Email is already in use. Choose another one."})
 
         // if all the condition are passed; update the user information;
         existingUser.username = username,
         existingUser.email = email
-
         await existingUser.save()
-        res.status(201).json({
-            success: true,
-            message: `${existingUser.username}. Your profile has been updated successfully`,
+
+        res.status(200).json({
+            message: `Profile has been updated successfully`,
             updatedUser: existingUser
         })
     }
@@ -433,17 +372,12 @@ const updateUser = async (req, res) => {
 
 const switchToSellerRole = async (req, res) => {
         const {id} = req.params
+
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
-            error: true, 
-            message: "The user ID is invalid!" 
-        })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const existingUser = await User.findById({_id: id})
-        if (!existingUser) return res.json({
-            error: true, 
-            message: 'User not found'
-        });
+        if (!existingUser) return res.status(404).json({error: 'User not found'});
 
         // find the current user role
         const currentUserRole = Object.values(existingUser.roles).filter(Boolean)
@@ -457,16 +391,13 @@ const switchToSellerRole = async (req, res) => {
                 seller:'seller',
                 admin: null
             }
-
             await existingUser.save()
+
             res.status(201).json({
-                success: true,
-                message: `${existingUser.username}. Your profile has been switched to ${existingUser.roles.seller} successfully`,
+                message: `Your profile has been switched to ${existingUser.roles.seller} profile successfully`,
                 updatedUser: existingUser
             })
         }
-        
-
     }
     catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
@@ -476,16 +407,10 @@ const switchToSellerRole = async (req, res) => {
 const switchToBuyerRole = async (req, res) => {
         const {id} = req.params
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(403).json({
-            error: true, 
-            message: "The user ID is invalid!" 
-        })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const existingUser = await User.findById({_id: id})
-        if (!existingUser) return res.json({
-            error: true, 
-            message: 'User not found'
-        });
+        if (!existingUser) return res.status(404).json({error: 'User not found'});
 
         // find the current user role
         const currentUserRole = Object.values(existingUser.roles).filter(Boolean)
@@ -499,11 +424,10 @@ const switchToBuyerRole = async (req, res) => {
                 seller: null,
                 admin: null
             }
-
             await existingUser.save()
+
             res.status(201).json({
-                success: true,
-                message: `${existingUser.username}. Your profile has been switched to ${existingUser.roles.buyer} successfully`,
+                message: `Your profile has been switched to ${existingUser.roles.buyer} profile successfully`,
                 updatedUser: existingUser
             })
         }
