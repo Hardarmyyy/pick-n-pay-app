@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Outlet, Link } from 'react-router-dom'
+import { Outlet, NavLink } from 'react-router-dom'
 import Navigation from '../../Layouts/Navigation/Navigation';
+import { ToastContainer } from 'react-toastify'
 // import Dashboard from '../../Components/Pages/Shops/Dashboard/Dashboard';
 import './Shop.css'
 
@@ -8,28 +9,36 @@ import './Shop.css'
 
 const ShopLayout = () => {
 
-// define a state to show and hide the useProfile card;
-const [active, setActive] = useState(false)  
 
 return (
 
 <>
     
+    <ToastContainer 
+        position='top-right'
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+    />
+
     <Navigation></Navigation>
 
-    <section className='shop'>
+    <section className='min-w-full h-auto px-6 flex'>
 
-        <div className='shopLinks'>
-            <Link to='/post-product'> <p> Add new product </p>  </Link>
-            <Link to='/shop/all-products'> <p> All products </p> </Link>
+        <div className='w-40 h-96 py-4 bg-gray-200 rounded-md md:text-sm lg:text-lg shadow-sm text-center text-my-primary font-Montserrat'>
+
+            <p className='my-1 py-1'> <NavLink to='/shop/add-new-product'> new product </NavLink> </p>
+            <p className='my-1 py-1'> <NavLink to='/shop/all-products'> Products </NavLink> </p>
+
         </div>
 
-        {/* <Dashboard></Dashboard> */}
+        <Outlet></Outlet>
 
     </section>
 
 
-    <Outlet></Outlet>
 </>
 
 )

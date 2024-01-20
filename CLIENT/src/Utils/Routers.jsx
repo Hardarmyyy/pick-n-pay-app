@@ -19,13 +19,19 @@ import UpdateProfile from '../Pages/UserProfile/UpdateProfile/UpdateProfile.jsx'
 import ChangePassword from '../Pages/UserProfile/ChangePassword/ChangePassword.jsx'
 
 import Orders from '../Pages/Orders/Orders.jsx'
+
 import ShopLayout from '../Pages/Shop/ShopLayout.jsx'
+import Dashboard from '../Pages/Shop/Dashboard/Dashboard.jsx'
+import NewProduct from '../Pages/Shop/NewProduct/NewProduct.jsx'
+import Products from '../Pages/Shop/Products/Products.jsx'
+
 import FavouritesLayout from '../Pages/Favourites/FavouritesLayout.jsx'
 import CartProduct from '../Pages/CartProducts/CartProduct.jsx' 
 import CheckoutLayout from '../Pages/Checkout/CheckoutLayout.jsx'
 
 import PageNotFound from '../Pages/PageNotFound/PageNotFound.jsx'
 import Unauthorized from '../Pages/Unauthorized/Unauthorized.jsx'
+
 
 
 export const router = createBrowserRouter(
@@ -57,7 +63,13 @@ export const router = createBrowserRouter(
 
                 <Route element={<PrivateRoutes allowedRoles={seller}></PrivateRoutes>}>
 
-                    <Route path='/shop' element={<ShopLayout></ShopLayout>}></Route>
+                    <Route path='/shop' element={<ShopLayout></ShopLayout>}>
+
+                        <Route index element={<Dashboard></Dashboard>}></Route>
+                        <Route path=':add-new-product' element={<NewProduct></NewProduct>}></Route>
+                        <Route path=':all-products' element={<Products></Products>}></Route>
+
+                    </Route>
 
                 </Route>
 
