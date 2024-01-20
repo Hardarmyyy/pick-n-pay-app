@@ -60,10 +60,6 @@ const signUp = async (req, res) => {
                 }
             })          
 
-        // Save the new user to googlesheets and to the database
-        await user.save()
-        registerGoogleSheets(userRole, username, email)
-
         // Remove any existing OTP for the user in the database before generating a new OTP.
         await Otp.deleteOne({userId: user._id})
 
@@ -102,8 +98,12 @@ const signUp = async (req, res) => {
             delete req.session.cart;
         }
 
+        // Save the new user to the database and googlesheet
+        await user.save()
+        registerGoogleSheets(userRole, username, email)
+
         return res.status(201).json({
-            message: `Account created successfully`,
+            success: `Account created successfully`,
             url: verifyEmailUrl,
             otp: signupOtp
         })
@@ -287,18 +287,9 @@ const signIn = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
         const cookies = req.cookies
-        const refreshToken = cookies?.refresh
         const {email} = req.body
 
     try {
-        if (refreshToken) {
-            res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 })
-            // check if the existing user has a refresh token;
-            const existingUser = await User.findOne({token: refreshToken});
-            const newRefreshTokenArray = existingUser.token.filter((rt) => rt !== refreshToken)
-            existingUser.token = [...newRefreshTokenArray];
-            await existingUser.save()
-        }
 
         if (!email) return res.status(400).json({error: 'Please enter email address'})
 
@@ -475,7 +466,7 @@ const logout = async (req, res) => {
         const refreshToken = cookies.refresh
 
     try {
-        if (!refreshToken) return res.sendStatus(204) // No content 
+        if (!refreshToken) return res.sendStatus(401)  
 
         // check if the existing user has a refresh token
         const existingUser = await User.findOne({token: refreshToken})
@@ -495,7 +486,7 @@ const logout = async (req, res) => {
         res.clearCookie('refresh', refreshToken, { httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 }) 
 
         return res.status(200).json({
-            message: 'logout successfull'
+            message: 'Logout success'
         })
     }
     catch (err) {

@@ -2,18 +2,17 @@ const mongoose = require('mongoose')
 const {format} = require('date-fns')
 const bcrypt = require('bcrypt')
 const User = require('../models/UserModel')
-const Product = require('../models/ProductsModel')
-const ShippingAddress = require('../models/ShippingAddressModel')
-const Cart = require('../models/CartModel')
-const Favourites = require('../models/FavouritesModel')
-const Order = require('../models/OrderModel')
+const {createAccessToken} = require('../Utilities/signJWT')
+
 
 
 
 const getAllUsers = async (req, res) => { 
         const {id} = req.params
-
+        const cookies = req.cookies;
+        const refreshToken = cookies?.refresh;
     try {
+        if (!refreshToken) return res.sendStatus(401); 
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const allUsers = await User.aggregate([
@@ -58,8 +57,10 @@ const getAllUsers = async (req, res) => {
 
 const allSellers = async (req, res) => {
         const {id} = req.params
-
+        const cookies = req.cookies;
+        const refreshToken = cookies?.refresh;
     try {
+        if (!refreshToken) return res.sendStatus(401);  
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const allSellers = await User.aggregate([
@@ -107,8 +108,10 @@ const allSellers = async (req, res) => {
 
 const allBuyers = async (req, res) => {
     const {id} = req.params
-
+    const cookies = req.cookies;
+    const refreshToken = cookies?.refresh;
 try {
+    if (!refreshToken) return res.sendStatus(401); 
     if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
     const allBuyers = await User.aggregate([
@@ -156,8 +159,10 @@ catch(err) {
 
 const getSingleUser = async (req, res) => {
         const {id} = req.params
-
+        const cookies = req.cookies;
+        const refreshToken = cookies?.refresh;
     try {
+        if (!refreshToken) return res.sendStatus(401); 
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const user = await User.findById({_id: id})
@@ -166,10 +171,11 @@ const getSingleUser = async (req, res) => {
 
         const createdTime = format(user.createdAt, 'yyyy-MM-dd hh:mm:ss a')
         const updatedTime = format(user.updatedAt, 'yyyy-MM-dd hh:mm:ss a')
+        const currentRole = Object.values(user.roles).filter(Boolean)
 
         const singleUserFormatedDate = { 
             userId: user._id,
-            roles: user.roles,
+            roles: currentRole,
             username: user.username,
             email: user.email, 
             createdAt: createdTime, 
@@ -188,105 +194,20 @@ const getSingleUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
         const {id} = req.params
-
-	try {
+        const cookies = req.cookies;
+        const refreshToken = cookies?.refresh;
+    try {
+        if (!refreshToken) return res.sendStatus(401); 
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const existingUser = await User.findById({_id: id})
         if (!existingUser) return res.json({error: 'User not found'});
 
-        //check if the user (seller) have existing products
-        const existingProducts = await Product.aggregate([
-            {
-                $match: {
-                    'seller': existingUser._id
-                }
-            }
-        ])
-
-        //check if the user (buyer) have existing addresses
-        const existingAddresses = await ShippingAddress.aggregate([
-            {
-                $match: {
-                    'buyer': existingUser._id
-                }
-            }
-        ])
-
-        //check if the user (buyer) have existing cart
-        const existingCart = await Cart.findOne({buyer: existingUser._id})
-
-        //check if the user (buyer) have existing favoruites
-        const existingFavourites = await Favourites.aggregate([
-            {
-                $match: {
-                    'buyer': existingUser._id
-                }
-            }
-        ])
-
-        //check if the user (buyer) have order history
-        const existingOrder = await Order.aggregate([
-            {
-                $match: {
-                    'buyer': existingUser._id
-                }
-            }
-        ])
-
-        if (!existingCart && !existingFavourites.length && !existingProducts.length && !existingAddresses.length && !existingOrder.length) {
-            const deletedUser = await User.findByIdAndDelete({_id: id})
+        const deletedUser = await User.findByIdAndDelete({_id: id})
             return res.status(200).json({
-                success: 'true', 
-                message: 'User has been deleted successfully',
+                message: 'User profile deleted successfully',
                 deletedUser: deletedUser
-            })
-        } 
-
-        else if (existingAddresses && (existingCart || existingFavourites) && existingOrder)  { // if the user(buyer) have exisiting addresses, cart, orderhistory, etc;
-            // Delete the address and the user concurrently
-            const existingUserAddress = await Promise.all(existingAddresses.map(  async(address) => {
-                const deleteExisitngAddress = await ShippingAddress.findByIdAndDelete({_id: address._id})
-                return {deleteExisitngAddress}
-            }))
-
-            // delete the cart
-            const deletedCart = await Cart.findByIdAndDelete({_id: existingCart._id})
-
-            // Delete the favourites list and the user concurrently
-            const existingUserFavourites = await Promise.all(existingFavourites.map(  async(fav) => {
-                const deleteExistingFavourites = await Favourites.findByIdAndDelete({_id: fav._id})
-                return {deleteExistingFavourites}
-            }))
-
-            // Delete the order list and the user concurrently
-            const existingUserOrder = await Promise.all(existingOrder.map(  async(ord) => {
-                const deleteExistingOrders = await Order.findByIdAndDelete({_id: ord._id})
-                return {deleteExistingOrders}
-            }))
-
-            const deletedUser = await User.findByIdAndDelete({_id: id})
-
-            return res.status(200).json({
-                message: 'User deleted successfully', 
-                deletedUser: deletedUser
-            })
-        }
-
-        else if (existingProducts) { // if the user(seller) have exisiting products;
-            // Delete the products and the user concurrently
-            const existingStoreProducts = await Promise.all(existingProducts.map(  async(item) => {
-                const deleteExisitngProduct = await Product.findByIdAndDelete({_id: item._id})
-                return {deleteExisitngProduct}
-            }))
-
-            const deletedUser = await User.findByIdAndDelete({_id: id})
-
-            return res.status(200).json({
-                message: 'User deleted successfully', 
-                deletedUser: deletedUser
-            })
-        }
+        })
 	} 
     catch (err) {
         res.status(500).json({error: 'Internal server error', message: err.message})
@@ -294,9 +215,12 @@ const deleteUser = async (req, res) => {
 }
 
 const updatePassword = async (req, res) => {
+            const cookies = req.cookies;
+            const refreshToken = cookies?.refresh;
             const {id} = req.params
             const {currentPassword, newPassword, confirmPassword} = req.body
     try {
+        if (!refreshToken) return res.sendStatus(401); 
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const existingUser = await User.findById({_id: id})
@@ -310,11 +234,10 @@ const updatePassword = async (req, res) => {
         // Check if the provided current password matches the user's password
         const isPasswordMatch = await bcrypt.compare(currentPassword, existingUser.password);
 
-        if (!isPasswordMatch) return res.status(401).json({error: 'Incorrect current password'});
+        if (!isPasswordMatch) return res.status(400).json({error: 'Incorrect current password'});
 
         // check if the new password matches the confirm new password
-        if (newPassword !== confirmPassword) return res.status(400).json({error: 'Password does not match'});
-        
+        if (newPassword !== confirmPassword) return res.status(400).json({error: 'New password does not match'});
         
         // Hash the user new password
         const salt = await bcrypt.genSalt(Number(process.env.SALT));
@@ -326,7 +249,6 @@ const updatePassword = async (req, res) => {
 
         res.status(200).json({
             message: `Password has been updated successfully`,
-            updatedUser: existingUser
         })
 	} 
     catch (err) {
@@ -337,7 +259,11 @@ const updatePassword = async (req, res) => {
 const updateUser = async (req, res) => {
         const {id} = req.params
         const {username, email } = req.body;
+        const cookies = req.cookies;
+        const refreshToken = cookies?.refresh;
+        
     try {
+        if (!refreshToken) return res.sendStatus(401); 
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         if (!username || !email) return res.status(400).json({error: "All fields are required!"})
@@ -353,16 +279,18 @@ const updateUser = async (req, res) => {
         // check for email duplicate
         const registeredEmail = await User.findOne({ email: email });
 
-        if (registeredEmail && registeredEmail?._id.toString() !== existingUser._id.toString()) return res.status(409).json({error: "Email is already in use. Choose another one."})
+        if (registeredEmail && registeredEmail?._id.toString() !== existingUser._id.toString()) return res.status(409).json({error: "Email address is taken. Choose another one."})
 
         // if all the condition are passed; update the user information;
         existingUser.username = username,
         existingUser.email = email
         await existingUser.save()
 
+        const token = createAccessToken(existingUser)
+
         res.status(200).json({
             message: `Profile has been updated successfully`,
-            updatedUser: existingUser
+            token: token 
         })
     }
     catch (err) {
@@ -370,10 +298,13 @@ const updateUser = async (req, res) => {
     }
 }
 
-const switchToSellerRole = async (req, res) => {
+const switchUserRole = async (req, res) => {
         const {id} = req.params
+        const cookies = req.cookies;
+        const refreshToken = cookies?.refresh;
 
     try {
+        if (!refreshToken) return res.sendStatus(401); 
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const existingUser = await User.findById({_id: id})
@@ -383,19 +314,29 @@ const switchToSellerRole = async (req, res) => {
         const currentUserRole = Object.values(existingUser.roles).filter(Boolean)
 
         // check if the currentUser role is not thesame as the new role
-        const allowNewRole = currentUserRole.find((role) => role !== 'seller')
+        const buyerRole = currentUserRole.find((role) => role === 'buyer')
+        const sellerRole = currentUserRole.find((role) => role === 'seller')
 
-        if (allowNewRole) {
-            existingUser.roles = {
-                buyer: null,
-                seller:'seller',
-                admin: null
-            }
+        if (buyerRole) {
+            existingUser.roles = {buyer: null, seller:'seller', admin: null}
             await existingUser.save()
 
-            res.status(201).json({
-                message: `Your profile has been switched to ${existingUser.roles.seller} profile successfully`,
-                updatedUser: existingUser
+            const token = createAccessToken(existingUser)
+
+            return res.status(201).json({
+                message: `Your profile has been switched successfully`,
+                token: token
+            })
+        }
+        else if (sellerRole) {
+            existingUser.roles = { buyer: 'buyer', seller: null, admin: null}
+            await existingUser.save()
+
+            const token = createAccessToken(existingUser)
+
+            return res.status(201).json({
+                message: `Your profile has been switched successfully`,
+                token: token
             })
         }
     }
@@ -404,38 +345,6 @@ const switchToSellerRole = async (req, res) => {
     }
 }
 
-const switchToBuyerRole = async (req, res) => {
-        const {id} = req.params
-    try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
-
-        const existingUser = await User.findById({_id: id})
-        if (!existingUser) return res.status(404).json({error: 'User not found'});
-
-        // find the current user role
-        const currentUserRole = Object.values(existingUser.roles).filter(Boolean)
-
-        // check if the currentUser role is not thesame as the new role
-        const allowNewRole = currentUserRole.find((role) => role !== 'buyer')
-
-        if (allowNewRole) {
-            existingUser.roles = {
-                buyer: 'buyer',
-                seller: null,
-                admin: null
-            }
-            await existingUser.save()
-
-            res.status(201).json({
-                message: `Your profile has been switched to ${existingUser.roles.buyer} profile successfully`,
-                updatedUser: existingUser
-            })
-        }
-    }
-    catch (err) {
-        res.status(500).json({error: 'Internal server error', message: err.message})
-    }
-}
 
 
 module.exports = {
@@ -446,8 +355,7 @@ module.exports = {
     deleteUser,
     updatePassword,
     updateUser,
-    switchToSellerRole,
-    switchToBuyerRole
+    switchUserRole
 }
 
 
