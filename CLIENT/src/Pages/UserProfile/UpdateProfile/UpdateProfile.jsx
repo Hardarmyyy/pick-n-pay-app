@@ -16,7 +16,7 @@ const handleUpdateUserProfile = async (e) => {
   return (
 
     <>
-        <section className='w-1/2 px-10 py-2 font-Montserrat text-my-primary border rounded-md shadow-sm bg-white mx-auto md:translate-x-20 lg:translate-x-20 xl:translate-x-10 -translate-y-80'>
+        <section className='w-1/2 px-10 py-2 font-Montserrat text-my-primary border rounded-md shadow-sm bg-white mx-auto translate-y-0'>
 
             <p className='text-center mb-2 font-bold font-Jost md:text-xl lg:text-2xl'> Update profile </p>
 

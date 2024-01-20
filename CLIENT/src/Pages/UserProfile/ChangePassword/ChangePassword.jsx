@@ -15,7 +15,7 @@ const submitUpdatePassword = async (e) => {
 
   return (
     <>
-        <section className='w-1/2 md:px-2 lg:px-8 py-2 font-Montserrat text-my-primary border rounded-md shadow-sm bg-white mx-auto md:translate-x-20 md:-translate-y-96 lg:-translate-y-80 xl:-translate-y-80'>
+        <section className='lg:w-1/2 xl:w-1/2 md:px-2 lg:px-6 py-2 font-Montserrat text-my-primary border rounded-md shadow-sm bg-white mx-auto translate-y-0'>
 
             <p className='text-center mb-2 font-bold font-Jost md:text-xl lg:text-2xl'> Change password </p>
 

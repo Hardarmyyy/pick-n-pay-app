@@ -32,9 +32,9 @@ return (
 
     <Navigation></Navigation>
     
-    <section className='min-w-full h-auto px-6'>
+    <section className='min-w-full h-auto px-6 flex'>
 
-        <div className='w-40 h-96 py-8 bg-gray-200 rounded-md md:text-sm lg:text-lg shadow-sm text-center text-my-primary font-Montserrat'>
+        <div className='w-40 h-96 py-2 bg-gray-200 rounded-md md:text-sm lg:text-lg shadow-sm text-center text-my-primary font-Montserrat'>
 
             <p className='my-1 py-1'> <NavLink to={`/profile/update-profile`}>  Update profile  </NavLink> </p>
             <p className='my-1 py-1'> <NavLink to={`/profile/update-password`}> Change Password </NavLink> </p>
@@ -45,9 +45,10 @@ return (
 
         {openModal && <DeleteProfileModal handleCloseModal={handleOpenModal}></DeleteProfileModal>}
 
+        <Outlet></Outlet>
+
     </section>
 
-    <Outlet></Outlet>
 </>
 )
 }
