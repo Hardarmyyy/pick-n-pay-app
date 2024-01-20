@@ -43,7 +43,7 @@ const handleChange = (e) => {
         setError((error) => {return {...error, userRole: value ? '': 'Kindly choose a user profile'}})
     }
     else if (name === 'username') {
-        setError((error) => {return {...error, username: value ? '': 'Kindly enter username' }})
+        setError((error) => {return {...error, username: value ? value.length < 8 ? 'Username must be at least 8 characters!' : '' : 'Kindly enter username' }})
         setInvalid((invalid) => {return {...invalid, username: value ? false : true}})
     }
     else if (name === 'email') {
@@ -97,7 +97,7 @@ const handleSignup = async () => {
         setIsSubmitting(true); // Disable the signup button
         await dispatch(REGISTERUSERS(newUser))
         .then((response) => {
-            if (response.payload.message) {
+            if (response.payload.success) {
                 setTimeout(() => {
                     handleOpenModal()
                 }, 2500)

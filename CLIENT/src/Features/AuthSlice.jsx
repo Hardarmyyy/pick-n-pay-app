@@ -1,6 +1,7 @@
 import { createSlice, isFulfilled, isPending, isRejected } from "@reduxjs/toolkit";
 import {toast} from 'react-toastify'
 import {LOGIN, REGISTERUSERS, VERIFYEMAILTOKEN, VERIFYEMAIL, FORGOTPASSWORD, VERIFYRESETTOKEN, RESETPASSWORD, REFRESH, LOGOUT} from '../Services/authApi'
+import { SINGLEUSER, UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE } from "../Services/userApi";
 import { decodeToken } from "../Utils/DecodeJwt";
 
 export const initialState = {
@@ -21,7 +22,7 @@ export const authSlice = createSlice({
     extraReducers (builder) {
         builder 
                 .addCase(REGISTERUSERS.fulfilled, (state, action) => { 
-                    const message = action.payload.message
+                    const message = action.payload.success
                     toast.success(message, {
                         toastStyle: { background: 'green', color: 'white' }
                     })
@@ -42,10 +43,10 @@ export const authSlice = createSlice({
                     })
                 })
                 .addCase(LOGIN.fulfilled, (state, action) => {
-                    state.accessToken = action.payload.token
-                    const decodedUser = decodeToken(action.payload.token)
-                    state.user = {userID: decodedUser.userId, userName: decodedUser.username, userRole: [...decodedUser.userRole]}
-                    const message = action.payload.message
+                    const {token, message} = action.payload
+                    const decodedUser = decodeToken(token)
+                    state.accessToken = token
+                    state.user = {userID: decodedUser.userId, userName: decodedUser.username, email:decodedUser.email, userRole: decodedUser.userRole}
                     toast.success(message, {
                         toastStyle: { background: 'green', color: 'white' }
                     })
@@ -73,30 +74,62 @@ export const authSlice = createSlice({
                     if (token) {
                         state.accessToken = token
                         const decodedUser = decodeToken(action.payload.token)
-                        state.user = {userID: decodedUser.userId, userName: decodedUser.username, userRole: [...decodedUser.userRole]} // decode the access token to get the current user information
+                        state.user = {userID: decodedUser.userId, userName: decodedUser.username, email:decodedUser.email, userRole: decodedUser.userRole}
                     }
                 }) 
                 .addCase(LOGOUT.fulfilled, (state, action) => {
                     const {message} = action.payload;
-                    if (message) {
-                        state.user = null
-                        state.accessToken = null
-                    }
+                    state.user = null
+                    state.accessToken = null
                 }) 
+                .addCase(SINGLEUSER.fulfilled, (state, action) => {
+                    const userInfo = action.payload.user
+                    state.user = {userID: userInfo.userId, userName: userInfo.username, userRole: userInfo.roles, email: userInfo.email}
+                })
+                .addCase(UPDATEUSERPROFILE.fulfilled, (state, action) => {
+                    const {message, token} = action.payload
+                    const decodedUser = decodeToken(token)
+                    state.accessToken = token
+                    state.user = {userID: decodedUser.userId, userName: decodedUser.username, email:decodedUser.email, userRole: decodedUser.userRole}
+                    toast.success(message, {
+                        toastStyle: { background: 'green', color: 'white' }
+                    })
+                })
+                .addCase(UPDATEPASSWORD.fulfilled, (state, action) => {
+                    const {message} = action.payload
+                    toast.success(message, {
+                        toastStyle: { background: 'green', color: 'white' }
+                    })
+                })
+                .addCase(DELETEUSER.fulfilled, (state, action) => {
+                    const {message} = action.payload
+                    toast.success(message, {
+                        toastStyle: { background: 'green', color: 'white' }
+                    })
+                })
+                .addCase(SWICTHPROFILE.fulfilled, (state, action) => {
+                    const {message, token} = action.payload
+                    const decodedUser = decodeToken(token)
+                    state.accessToken = token
+                    state.user = {userID: decodedUser.userId, userName: decodedUser.username, email:decodedUser.email, userRole: decodedUser.userRole}
+                    toast.success(message, {
+                        toastStyle: { background: 'green', color: 'white' }
+                    })
+                })
                 .addMatcher(
-                    isFulfilled(REGISTERUSERS, VERIFYEMAILTOKEN, VERIFYEMAIL, LOGIN, FORGOTPASSWORD, VERIFYRESETTOKEN, RESETPASSWORD, REFRESH, LOGOUT),
+                    isFulfilled(REGISTERUSERS, VERIFYEMAILTOKEN, VERIFYEMAIL, LOGIN, FORGOTPASSWORD, VERIFYRESETTOKEN, RESETPASSWORD, REFRESH, LOGOUT, SINGLEUSER, UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE),
                     (state) => {
                     state.status = 'success';
                 }
                 )
                 .addMatcher(
-                    isPending(REGISTERUSERS, VERIFYEMAILTOKEN, VERIFYEMAIL, LOGIN, FORGOTPASSWORD, VERIFYRESETTOKEN, RESETPASSWORD, REFRESH, LOGOUT),
+                    isPending(REGISTERUSERS, VERIFYEMAILTOKEN, VERIFYEMAIL, LOGIN, FORGOTPASSWORD, VERIFYRESETTOKEN, RESETPASSWORD, REFRESH, LOGOUT, UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER),
                     (state) => {
                     state.status = 'Loading.......';
                 }
                 )
                 .addMatcher(
-                    isRejected(REGISTERUSERS, VERIFYEMAILTOKEN, VERIFYEMAIL, LOGIN, FORGOTPASSWORD, VERIFYRESETTOKEN, RESETPASSWORD, REFRESH, LOGOUT),
+                    isRejected(REGISTERUSERS, VERIFYEMAILTOKEN, VERIFYEMAIL, LOGIN, FORGOTPASSWORD, VERIFYRESETTOKEN, RESETPASSWORD, REFRESH, LOGOUT, SINGLEUSER, UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE),
                     (state, action) => {
                         state.status = 'failed';
                         const message = action.payload.error

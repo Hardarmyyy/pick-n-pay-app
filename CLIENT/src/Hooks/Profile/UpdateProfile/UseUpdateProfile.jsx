@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
+import { UPDATEUSERPROFILE } from '../../../Services/userApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import UseValidateUpdateProfile from './UseValidateUpdateProfile';
@@ -11,11 +12,12 @@ const navigate = useNavigate();
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-const currentUser = useSelector((state) => state.user?.currentUser)
-
+const currentUser = useSelector((state) => state.auth?.user)
+const id = useSelector((state) => state.auth?.user?.userID)
+const status = useSelector((state) => state.auth.status)
 
 const [updateProfile, setUpdateProfile] = useState({
-    username: currentUser?.username,
+    username: currentUser?.userName,
     email: currentUser?.email
 })
 
@@ -27,7 +29,7 @@ const handleChange = (e) => {
     setUpdateProfile((updateProfile) => {return {...updateProfile, [name]: value.replace(/\s/g, "")}})
     // validating form state;
     if (name === 'username') {
-        setError((error) => {return {...error, username: value ? '': 'Kindly enter username' }})
+        setError((error) => {return {...error, username: value ? value.length < 8 ? 'Username must be at least 8 characters!' : '' : 'Kindly enter username' }})
     }
     if (name === 'email') {
         setError((error) => { return {...error, email: value ? emailRegex.test(value) ? '' : 'Enter a valid email address' : 'Enter email address'}})
@@ -36,14 +38,16 @@ const handleChange = (e) => {
 
 const [isSubmitting, setIsSubmitting] = useState(false);
 
-// import and use validateLoginForm hook to catch errors on the form object;
+// import and use useValidateUpdateProfile hook to catch errors on the form object;
 const {errors} = UseValidateUpdateProfile(updateProfile)
 
 // define a function to check that all fields in the form object are not empty
 const handleCanUpdateProfile = (value) => {
     const canUpdate = [
         value.username && 
-        value.email
+        value.username.length >= 8 && 
+        value.email && 
+        emailRegex.test(value.email)
     ].every(Boolean)
 
     return canUpdate
@@ -51,7 +55,7 @@ const handleCanUpdateProfile = (value) => {
 
 const isSave = handleCanUpdateProfile(updateProfile)
 
-// define a function to dispatch the LOGIN request
+// define a function to dispatch the request
 const handleUpdateProfile = async () => {
 
     setError(errors)
@@ -60,28 +64,22 @@ const handleUpdateProfile = async () => {
 
     if(!isSubmitting && isSave) {
         setIsSubmitting(true); 
-        console.log(updateProfile)
-        // await await dispatch(LOGIN(regUser))
-        // .then((response) => {
-        //     if (response.payload.message) {
-        //         setTimeout(() => {
-        //             navigate(from, {replace : true});
-        //         }, 2500)
-        //         setRegUser({
-        //             username: '',
-        //             password: ''
-        //         })
-        //     }
-        // })
-        // .catch((err) => {
-        //     toast.error('Something went wrong', {
-        //         toastStyle: { background: 'red', color: 'white' }
-        //     })
-        // })
-        // .finally(() => {
-        //     setIsSubmitting(false); // Re-enable the signup button on error
-        // })
-        setIsSubmitting(false); // Re-enable the signup button on error
+        await await dispatch(UPDATEUSERPROFILE({id, updateProfile}))
+        .then((response) => {
+            if (response.payload.message) {
+                setTimeout(() => {
+                    navigate('/profile');
+                }, 2500)
+            }
+        })
+        .catch((err) => {
+            toast.error('Something went wrong', {
+                toastStyle: { background: 'red', color: 'white' }
+            })
+        })
+        .finally(() => {
+            setIsSubmitting(false); // Re-enable the signup button on error
+        })
     }
 }
 
@@ -90,7 +88,7 @@ useEffect(() => {
 }, [updateProfile])
 
 
-return {updateProfile, error, handleChange,  handleUpdateProfile}
+return {status, updateProfile, error, handleChange,  handleUpdateProfile}
 }
 
 export default UseUpdateProfile

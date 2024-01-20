@@ -23,6 +23,7 @@ return (
                         onChange={handleChange} 
                         name="password" 
                         placeholder="Enter password"
+                        maxLength={22}
                     />
                     {error.password && <p className='absolute text-crimson left-0'> {error.password}  </p> }
 
@@ -41,6 +42,7 @@ return (
                         onChange={handleChange} 
                         name="confirmPassword" 
                         placeholder="Confirm password"
+                        maxLength={22}
                     />
                     {error.confirmPassword && <p className='absolute text-crimson left-0'> {error.confirmPassword} </p> }
 

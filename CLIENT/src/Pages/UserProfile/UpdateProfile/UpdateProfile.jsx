@@ -1,12 +1,11 @@
 import React from 'react'
-import { useEffect } from 'react'
 import UseUpdateProfile from '../../../Hooks/Profile/UpdateProfile/UseUpdateProfile'
 import Button from '../../../component/Button'
 
 
 const UpdateProfile = () => {
 
-const {updateProfile, error, handleChange,  handleUpdateProfile} = UseUpdateProfile()
+const {status, updateProfile, error, handleChange,  handleUpdateProfile} = UseUpdateProfile()
 
 const handleUpdateUserProfile = async (e) => {
     e.preventDefault()
@@ -33,7 +32,7 @@ const handleUpdateUserProfile = async (e) => {
                       name='username' 
                       value={updateProfile?.username} 
                       onChange={handleChange} 
-                      maxLength={30}
+                      maxLength={16}
                     />
                     {error && <p className='text-crimson absolute left-0 -bottom-5 text-sm'> {error.username} </p>}
                   </div>
@@ -53,7 +52,7 @@ const handleUpdateUserProfile = async (e) => {
                   </div>
 
                   <div className='text-center'>
-                      <Button margin='30px 10px'> Save changes </Button>
+                      <Button margin='30px 10px'> {status === 'Loading.......' ? <span> Updating </span> : <span> Save changes </span> } </Button>
                   </div>
 
                 </form>

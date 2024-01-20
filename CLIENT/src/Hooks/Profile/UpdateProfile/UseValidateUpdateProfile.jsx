@@ -16,6 +16,9 @@ const validate = (value) => {
         if (field === 'username' && value[field]?.trim() === '') {
             newErrors[field] = 'Username field is required';
         }
+        else if (field === 'username' && value[field]?.trim() !== '' && value[field]?.length < 8) {
+            newErrors[field] = 'Username must be at least 8 characters!';
+        }
         else if (field === 'email' && value[field]?.trim() === '') {
             newErrors[field] = 'Email field is required';
         }

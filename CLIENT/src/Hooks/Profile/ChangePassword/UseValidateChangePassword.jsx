@@ -25,16 +25,16 @@ const UseValidateChangePassword = (value) => {
                 newErrors[field] = 'Confirm new password';
             }
             else if (field === 'newPassword' && value[field].trim() !== '' && value[field].length < 8 ) {
-                newErrors[field] = 'New password must be at least 8 characters long';
+                newErrors[field] = 'Password must be at least 8 characters long';
             }
             else if ((field === 'newPassword' && value[field].trim() !== '') && !(passwordRegexUpperCase.test(value[field]))) {
-                newErrors[field] = 'New password must contain at least one uppercased letter!';
+                newErrors[field] = 'Password must contain one uppercased letter!';
             }
             else if ((field === 'newPassword' && value[field].trim() !== '') && !(passwordRegexNumber.test(value[field]))) {
-                newErrors[field] = 'New password must contain at least one number!';
+                newErrors[field] = 'Password must contain at least one number!';
             }
             else if ((field === 'newPassword' && value[field].trim() !== '') && !(passwordRegexSymbol.test(value[field]))) {
-                newErrors[field] = 'New password must contain at least one symbol!';
+                newErrors[field] = 'Password must contain at least one symbol!';
             }
         }
     

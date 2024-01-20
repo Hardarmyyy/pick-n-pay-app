@@ -15,9 +15,9 @@ const handleGoToLogin = () => {
   return (
 
     <>
-        <div className= 'w-96 h-auto mx-auto p-4 border border-gray-400 shadow-sm rounded-md font-Montserrat text-my-primary translate-y-10'> 
+        <div className='w-96 h-96 flex flex-col border shadow-sm justify-center items-center font-Montserrat text-my-primary mx-auto rounded-md p-4 bg-white translate-y-10 lg:translate-y-10 relative'>
 
-            <div className='flex flex-col justify-center items-center'>
+            <div className='flex flex-col justify-center items-center'> 
                 <SuccessIcon></SuccessIcon>
                 <p className='my-2 text-lg'> Your email has already been verified </p>
                 

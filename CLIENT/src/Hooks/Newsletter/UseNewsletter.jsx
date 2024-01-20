@@ -17,13 +17,13 @@ const UseNewsletter = () => {
     const handleChange = (e) => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const {name, value} = e.target
-        setNewsLetter((newsLetter) => {return {...newsLetter, [name]: value.replace(/\s/g, "")}})
+        setNewsLetter((newsLetter) => {return {...newsLetter, [name]: name === 'name' ? value : value.replace(/\s/g, "")}})
     
         if (name === 'name') {
-            setError((error) => { return {...error, name: value ? '' : null, multi: value ? '' : null }})
+            setError((error) => { return {...error, name: value ? '' : 'Enter name', email: value ? '' : null, multi: value ? '' : null }})
         }
         else if (name === 'email') {
-            setError((error) => { return {...error, name: '', email: value ? emailRegex.test(value) ? '' : 'Enter a valid email address' : null, multi: value ? '' : null}})
+            setError((error) => { return {...error, name: '', email: value ? emailRegex.test(value) ? '' : 'Invalid email address' : 'Enter email address', multi: value ? '' : null}})
         }
     } 
     

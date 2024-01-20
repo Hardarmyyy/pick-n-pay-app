@@ -19,7 +19,7 @@ return (
 
             <form className='w-full text-sm font-Montserrat text-my-primary' onSubmit={submitForm}> 
 
-                <div className='w-full mx-auto my-3 text-sm text-center text-blue-950 font-bold font-Montserrat relative'>
+                <div className='w-full flex justify-center items-center mx-auto my-3 text-sm text-center text-blue-950 font-bold font-Montserrat relative'>
 
                     <label className='cursor-pointer mx-3'>
                         <input className="sr-only peer" name="userRole" type="radio" value="buyer" onChange={handleChange} />
@@ -39,7 +39,7 @@ return (
 
                 </div>
 
-                <div className='relative'>
+                <div className='relative mt-4'>
                     <label> Username <span className='text-crimson'> * </span></label> <br />
                     <input 
                         type="text" 
@@ -48,11 +48,12 @@ return (
                         onChange={handleChange} 
                         name="username" 
                         placeholder="Enter username"
+                        maxLength={16}
                     />
                     {error.username && <p className='absolute text-crimson left-0'> {error.username}  </p> }
                 </div>
 
-                <div className='relative mt-3'>
+                <div className='relative mt-4'>
                     <label> Email address <span className='text-crimson'> * </span></label> <br />
                     <input 
                         type="text" 
@@ -61,11 +62,12 @@ return (
                         onChange={handleChange} 
                         name="email" 
                         placeholder="Enter email address"
+                        maxLength={30}
                     /> 
                     {error.email && <p className='absolute text-crimson left-0'> {error.email}  </p> }
                 </div>
 
-                <div className='relative mt-3'>
+                <div className='relative mt-4'>
                     <label> Password  <span className='text-crimson'> * </span></label> <br />
                     <input 
                         type={showPassword ? 'text' : 'password'} 
@@ -74,6 +76,7 @@ return (
                         onChange={handleChange} 
                         name="password" 
                         placeholder="Enter password"
+                        maxLength={22}
                     />
                     {error.password && <p className='absolute text-crimson left-0'> {error.password} </p> }
 

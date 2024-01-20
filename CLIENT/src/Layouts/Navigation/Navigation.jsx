@@ -60,7 +60,7 @@ return (
 
                 <BiSearch className='absolute left-5 top-3 text-slate-500'></BiSearch>
 
-                <input className='w-full px-5 py-2 bg-white border rounded-md text-sm text-my-primary font-Montserrat shadow-sm placeholder:italic placeholder:text-slate-400 focus:outline-none focus: border-slate-500' type='text' placeholder='search for products or brands' name='searchWord' value={word} onChange={handleSearch} maxLength={35}/>
+                <input className='w-full px-10 py-2 bg-white border rounded-md text-sm text-my-primary font-Montserrat shadow-sm placeholder:italic placeholder:text-slate-400 focus:outline-none focus: border-slate-500' type='text' placeholder='search for products or brands' name='searchWord' value={word} onChange={handleSearch} maxLength={35}/>
 
                 {clearResult && <MdOutlineClear onClick={handleClearResult} className=''></MdOutlineClear>}
 

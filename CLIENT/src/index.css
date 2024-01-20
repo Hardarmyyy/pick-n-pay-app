@@ -31,3 +31,9 @@ body::-webkit-scrollbar-thumb:hover, .cart::-webkit-scrollbar {
     font-family: 'Jost', sans-serif; 
     font-size: 34px;
 }
+
+.active {
+    background-color: rgb(153, 163, 175);
+    border-radius: 2px;
+    padding: 0.5rem 0rem 0.5rem 0rem;
+}

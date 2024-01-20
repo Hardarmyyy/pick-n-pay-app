@@ -1,7 +1,9 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
+import { UPDATEPASSWORD } from '../../../Services/userApi';
 import UseValidateChangePassword from './UseValidateChangePassword';
+import UseLogout from '../../../Hooks/Auth/Logout/UseLogout'
 
 const UseChangePassword = () => {
 
@@ -10,6 +12,9 @@ const UseChangePassword = () => {
     const passwordRegexSymbol = /^(?=.*[.!@#$%^&*])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
     
     const dispatch = useDispatch()
+    const {handleLogoutforPassword} = UseLogout()
+    const id = useSelector((state) => state.auth?.user?.userID)
+    const status = useSelector((state) => state.auth?.status)
     
     // define state to manage form object data
     const [updatePassword, setUpdatepassword] = useState({
@@ -21,7 +26,9 @@ const UseChangePassword = () => {
     const [error, setError] = useState({})
     
     // define a state to handle show password
-    const [showPassword, setShowPassword] = useState(false)
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+    const [showNewPassword, setShowNewPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     
     const [isSubmitting, setIsSubmitting] = useState(false);
     
@@ -44,8 +51,14 @@ const UseChangePassword = () => {
     }
     
     // define a function to handle show password;
-    const handleShowPassword = () => {
-        setShowPassword(!showPassword)
+    const handleShowCurrentPassword = () => {
+        setShowCurrentPassword(!showCurrentPassword)
+    }
+    const handleShowNewPassword = () => {
+        setShowNewPassword(!showNewPassword)
+    }
+    const handleShowConfirmPassword = () => {
+        setShowConfirmPassword(!showConfirmPassword)
     }
     
     // import and use validatesignup hook to catch errors on the form object ;
@@ -76,30 +89,27 @@ const UseChangePassword = () => {
     
         if (!isSubmitting & canUpdate) {
             setIsSubmitting(true); // Disable the signup button
-            console.log(updatePassword)
-            // await dispatch(REGISTERUSERS(newUser))
-            // .then((response) => {
-            //     if (response.payload.message) {
-            //         setTimeout(() => {
-            //             handleOpenModal()
-            //         }, 2500)
-            //         setNewUser({
-            //             userRole: '',
-            //             username: '',
-            //             email: '',
-            //             password: ''
-            //         })
-            //     }
-            // })
-            // .catch((err) => {
-            //     toast.error('Something went wrong', {
-            //         toastStyle: { background: 'red', color: 'white' }
-            //     })
-            // })
-            // .finally(() => {
-            //     setIsSubmitting(false); // Re-enable the signup button on error
-            // })
-            setIsSubmitting(false); // Re-enable the signup button on error
+            await dispatch(UPDATEPASSWORD({id, updatePassword}))
+            .then((response) => {
+                if (response.payload.message) {
+                    setUpdatepassword({
+                        currentPassword: '',
+                        newPassword: '',
+                        confirmPassword: ''
+                    })
+                    setTimeout(() => {
+                        handleLogoutforPassword()
+                    }, 3000)
+                }
+            })
+            .catch((err) => {
+                toast.error('Something went wrong', {
+                    toastStyle: { background: 'red', color: 'white' }
+                })
+            })
+            .finally(() => {
+                setIsSubmitting(false); // Re-enable the signup button on error
+            })
         }
     }
     
@@ -108,7 +118,7 @@ const UseChangePassword = () => {
         handleCanUpdate(updatePassword)
     }, [updatePassword])
     
-        return {updatePassword, error, handleChange, showPassword, handleShowPassword, handleUpdatePassword}
+        return {status, updatePassword, error, handleChange, showCurrentPassword,  showNewPassword, showConfirmPassword, handleShowCurrentPassword, handleShowNewPassword, handleShowConfirmPassword, handleUpdatePassword}
 }
 
 export default UseChangePassword

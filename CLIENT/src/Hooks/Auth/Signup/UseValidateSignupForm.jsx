@@ -25,7 +25,7 @@ const UseValidateSignupForm = (value) => {
                 newInvalid[field] = true;
             }
             else if (field === 'username' && value[field].trim() !== '' && value[field].length < 8) {
-                newErrors[field] = 'Username must be at least 8 characters long';
+                newErrors[field] = 'Username must be at least 8 characters!';
                 newInvalid[field] = true;
             }
             else if (field === 'email' && value[field].trim() === '') {

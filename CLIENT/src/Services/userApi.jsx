@@ -20,6 +20,54 @@ const SINGLEUSER = createAsyncThunk('users/singleUser', async (id) => {
     }
 }) 
 
+const UPDATEUSERPROFILE = createAsyncThunk('users/update-profile', async ({id, updateProfile}, { rejectWithValue }) => { 
+        const axiosPrivate = setupInterceptors(store);
+    try {
+        const response = await axiosPrivate.patch(`/edit-profile/${id}`, updateProfile )
+        return response.data
+    }
+    catch (err) {
+        return rejectWithValue(err.response.data);
+    }
+}) 
+
+const UPDATEPASSWORD = createAsyncThunk('users/update-password', async ({id, updatePassword}, { rejectWithValue }) => { 
+        const axiosPrivate = setupInterceptors(store);
+    try {
+        const response = await axiosPrivate.patch(`/password/${id}`, updatePassword )
+        return response.data
+    }
+    catch (err) {
+        return rejectWithValue(err.response.data);
+    }
+}) 
+
+const DELETEUSER = createAsyncThunk('users/delete-user', async (id, { rejectWithValue }) => { 
+        const axiosPrivate = setupInterceptors(store);
+    try {
+        const response = await axiosPrivate.delete(`/delete/${id}` )
+        return response.data
+    }
+    catch (err) {
+        return rejectWithValue(err.response.data);
+    }
+}) 
+
+const SWICTHPROFILE = createAsyncThunk('users/swicth-profile', async (id, { rejectWithValue }) => { 
+    const axiosPrivate = setupInterceptors(store);
+    try {
+        const response = await axiosPrivate.patch(`/switch-role/${id}`)
+        return response.data
+    }
+    catch (err) {
+        return rejectWithValue(err.response.data);
+    }
+}) 
+
 export {
-    SINGLEUSER
+    SINGLEUSER,
+    UPDATEUSERPROFILE,
+    UPDATEPASSWORD,
+    DELETEUSER,
+    SWICTHPROFILE
 }

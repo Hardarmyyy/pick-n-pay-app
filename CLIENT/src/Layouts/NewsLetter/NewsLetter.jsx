@@ -1,7 +1,14 @@
 import React from 'react'
+import UseNewsletter from '../../Hooks/Newsletter/UseNewsletter'
 
-const NewsLetter = ({newsLetter, error, handleChange, handleSubmit}) => {
+const NewsLetter = () => {
 
+const {newsLetter, error, handleChange, handleSubmitNewsLetter} = UseNewsletter()
+
+const handleSubmit = (e) => {
+    e.preventDefault()
+    handleSubmitNewsLetter()
+}
 
   return (
     <>
@@ -34,7 +41,7 @@ const NewsLetter = ({newsLetter, error, handleChange, handleSubmit}) => {
                 {error && <p className='text-crimson text-sm absolute left-0 font-Montserrat'> {error.email} </p>}
                 {error && <p className='text-crimson text-sm absolute left-0 font-Montserrat'> {error.multi} </p>}
 
-                <button className='font-Montserrat md:px-2 lg:px-3 py-1 mt-4 text-white bg-crimson rounded-md hover:bg-red-700'> Subscribe now </button>
+                <button className='font-Montserrat md:px-2 lg:px-3 py-1 mt-6 text-white bg-crimson rounded-md hover:bg-red-700'> Subscribe now </button>
 
             </form>
 

@@ -3,18 +3,21 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SINGLEUSER } from '../../../Services/userApi';
 
+
 const Profile = () => {
+
+const currentUser = useSelector((state) => state.auth?.user)
+const buyer = currentUser?.userRole[0]
+const seller = currentUser?.userRole[0]
 
 const dispatch = useDispatch()
 const id = useSelector((state) => state.auth?.user?.userID)
-const currentUser = useSelector((state) => state.user?.currentUser)
-const buyer = currentUser?.userType.buyer
-const seller = currentUser?.userType.seller
 
 
 useEffect(() => {
     dispatch(SINGLEUSER(id))
 }, [dispatch])
+
 
   return (
     <>
@@ -38,7 +41,7 @@ useEffect(() => {
                             <label className='font-bold'> Username: </label>
                             <input 
                                 type="text" 
-                                value={currentUser?.username} 
+                                value={currentUser?.userName} 
                                 disabled
                                 className='w-full ml-2 mt-2 px-2 border rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400'
                             />

@@ -1,67 +1,21 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import UseFooter from '../../Hooks/Footer/UseFooter'
 import { Link } from 'react-router-dom'
-import { ToastContainer, toast } from 'react-toastify'
-import Button from '../../component/Button'
+import { ToastContainer } from 'react-toastify'
 import { FaFacebookF } from "react-icons/fa"
 import { FaTwitter } from "react-icons/fa"
 import { FaLinkedinIn } from "react-icons/fa"
-import UseValidateForgotPasswordForm from '../../Hooks/Auth/ForgotPassword/UseValidateForgotPasswordForm'
 import 'react-toastify/dist/ReactToastify.css';
 
 
 const Footer = () => {
 
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const {user, error, handleChange, handleFormSubmit} = UseFooter()
 
-// define a state to handle user email
-const [user, setUser] = useState({
-    email: ''
-})
-
-const [error, setError] = useState({})
-const [invalid, setInvalid] = useState({})
-
-const handleChange = (e) => {
-    
-    const {name, value} = e.target
-    setUser((user) => { return {...user, [name]: value.replace(/\s/g, "")} })
-
-    if (name === 'email') {
-        setError((error) => { return {...error, email: value ? emailRegex.test(value) ? '' : 'Enter a valid email address' : 'Enter email address'}})
-        setInvalid((invalid) => { return {...invalid, email: value ? false : true }})
-    }
-}
-
-const {errors, invalids} = UseValidateForgotPasswordForm (user)
-
-const handleCanSave = (value) => {
-    const canSubmit = Boolean(emailRegex.test(value.email)) // enable the submit button 
-
-    return canSubmit
-}
-
-const isSave = handleCanSave(user)
-
-const handleFormSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault()
-
-    setError(errors)
-    setInvalid(invalids)
-
-    if(isSave) {
-        toast.success('Thank you!. Updates will be sent to your email address', {
-            toastStyle: { background: 'green', color: 'white' }
-        })
-        setUser({
-            email: ''
-        })
-    }
+    await handleFormSubmit()
 }
-
-useEffect(() => {
-    handleCanSave(user)
-}, [user])
 
 return (
 
@@ -134,7 +88,7 @@ return (
                 <h6 className='font-Jost text-lg text-blue-950 font-bold text-center'> Get Update </h6>
                 <p className='text-sm text-center'> We're growing fast. Get daily update </p>
 
-                <form onSubmit={handleFormSubmit} className='w-full relative'>
+                <form onSubmit={handleSubmit} className='w-full relative'>
                     <input 
                         type='text' 
                         className='w-72 mt-3 mr-2 p-2 border-2 rounded-md text-sm shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-900'
@@ -157,16 +111,16 @@ return (
 
                 <p className='font-Jost text-lg text-blue-950 font-bold'> Follow us on social media </p>
 
-                <div className='w-56 flex justify-around text-2xl mt-2'>
-                    <div className='w-5 h-5 rounded-md p-4 relative cursor-pointer bg-blue-950'>
+                <div className='w-60 flex justify-around text-2xl mt-2'>
+                    <div className='w-12 h-12 rounded-md cursor-pointer relative bg-blue-950'>
                         <Link to='#'> <FaFacebookF className='absolute top-3 left-3 text-white'></FaFacebookF> </Link>
                     </div>
 
-                    <div className='w-5 h-5 rounded-md p-4 relative cursor-pointer bg-blue-950'>
+                    <div className='w-12 h-12 rounded-md p-4 relative cursor-pointer bg-blue-950'>
                         <Link to='#'> <FaTwitter className='absolute top-3 left-3 text-white'></FaTwitter> </Link>
                     </div>
 
-                    <div className='w-5 h-5 rounded-md p-4 relative cursor-pointer bg-blue-950'>
+                    <div className='w-12 h-12 rounded-md p-4 relative cursor-pointer bg-blue-950'>
                         <Link to='#'> <FaLinkedinIn className='absolute top-3 left-3 text-white'></FaLinkedinIn> </Link>
                     </div>
                 </div>
