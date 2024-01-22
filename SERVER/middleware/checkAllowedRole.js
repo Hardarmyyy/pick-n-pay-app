@@ -1,8 +1,11 @@
 const isAllowedRole = (...permission) => {
 
     return (req, res, next) => {
-
+        const cookies = req.cookies;
+        const refreshToken = cookies?.refresh
+        
         if (!req?.userRole) return res.sendStatus(401)
+        if (!refreshToken) return res.sendStatus(403);
 
         const rolesArray = [...permission]
         const currentRole = req.userRole

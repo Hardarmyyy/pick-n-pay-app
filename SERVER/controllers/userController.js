@@ -9,10 +9,9 @@ const {createAccessToken} = require('../Utilities/signJWT')
 
 const getAllUsers = async (req, res) => { 
         const {id} = req.params
-        const cookies = req.cookies;
-        const refreshToken = cookies?.refresh;
+        
     try {
-        if (!refreshToken) return res.sendStatus(401); 
+
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const allUsers = await User.aggregate([
@@ -57,10 +56,9 @@ const getAllUsers = async (req, res) => {
 
 const allSellers = async (req, res) => {
         const {id} = req.params
-        const cookies = req.cookies;
-        const refreshToken = cookies?.refresh;
+    
     try {
-        if (!refreshToken) return res.sendStatus(401);  
+
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const allSellers = await User.aggregate([
@@ -108,10 +106,9 @@ const allSellers = async (req, res) => {
 
 const allBuyers = async (req, res) => {
     const {id} = req.params
-    const cookies = req.cookies;
-    const refreshToken = cookies?.refresh;
+    
 try {
-    if (!refreshToken) return res.sendStatus(401); 
+
     if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
     const allBuyers = await User.aggregate([
@@ -159,14 +156,11 @@ catch(err) {
 
 const getSingleUser = async (req, res) => {
         const {id} = req.params
-        const cookies = req.cookies;
-        const refreshToken = cookies?.refresh;
+
     try {
-        if (!refreshToken) return res.sendStatus(401); 
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const user = await User.findById({_id: id})
-
         if (!user) return res.status(404).json({error: "User not found!"})
 
         const createdTime = format(user.createdAt, 'yyyy-MM-dd hh:mm:ss a')
@@ -194,10 +188,8 @@ const getSingleUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
         const {id} = req.params
-        const cookies = req.cookies;
-        const refreshToken = cookies?.refresh;
+
     try {
-        if (!refreshToken) return res.sendStatus(401); 
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const existingUser = await User.findById({_id: id})
@@ -215,12 +207,10 @@ const deleteUser = async (req, res) => {
 }
 
 const updatePassword = async (req, res) => {
-            const cookies = req.cookies;
-            const refreshToken = cookies?.refresh;
             const {id} = req.params
             const {currentPassword, newPassword, confirmPassword} = req.body
+
     try {
-        if (!refreshToken) return res.sendStatus(401); 
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const existingUser = await User.findById({_id: id})
@@ -259,11 +249,9 @@ const updatePassword = async (req, res) => {
 const updateUser = async (req, res) => {
         const {id} = req.params
         const {username, email } = req.body;
-        const cookies = req.cookies;
-        const refreshToken = cookies?.refresh;
         
     try {
-        if (!refreshToken) return res.sendStatus(401); 
+
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         if (!username || !email) return res.status(400).json({error: "All fields are required!"})
@@ -300,11 +288,9 @@ const updateUser = async (req, res) => {
 
 const switchUserRole = async (req, res) => {
         const {id} = req.params
-        const cookies = req.cookies;
-        const refreshToken = cookies?.refresh;
 
     try {
-        if (!refreshToken) return res.sendStatus(401); 
+
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         const existingUser = await User.findById({_id: id})

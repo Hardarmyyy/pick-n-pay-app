@@ -6,11 +6,8 @@ const {format} = require('date-fns')
 const addCategory = async (req, res) => {
         const {userId} = req.params
         const {categoryName} = req.body
-        const cookies = req.cookies;
-        const refreshToken = cookies?.refresh;
 
     try {
-        if (!refreshToken) return res.sendStatus(401); 
         if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(403)
 
         if (!categoryName) return res.status(400).json({message: "All fields are required!" })
@@ -65,11 +62,9 @@ const allCategories = async (req, res) => {
 const updateCategory = async (req, res) => {
         const {id} = req.params
         const {categoryName} = req.body
-        const cookies = req.cookies;
-        const refreshToken = cookies?.refresh;
 
     try {
-        if (!refreshToken) return res.sendStatus(401); 
+        
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         if (!categoryName) return res.status(400).json({message: "All fields are required!"})
@@ -98,11 +93,9 @@ const updateCategory = async (req, res) => {
 //delete a category
 const deleteCategory = async (req, res) => {
         const {id} = req.params
-        const cookies = req.cookies;
-        const refreshToken = cookies?.refresh;
         
     try {
-        if (!refreshToken) return res.sendStatus(401); 
+
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
         
         const category = await Category.findOneAndDelete({ _id: id })

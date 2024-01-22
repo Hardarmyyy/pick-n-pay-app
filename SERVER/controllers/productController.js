@@ -10,37 +10,25 @@ const addProduct = async (req, res) => {
         const {title, price, description, category, brand, countInStock} = req.body
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(userId)) return res.json({
-            error: true, 
-            message: 'Invalid id'
-        })
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(403)
         
-        if (!title || !price || !description || !category || !brand || !countInStock) return res.status(404).json({ 
-            error: true, 
-            message: 'All fields are required.' 
-        });
+        if (!title || !price || !description || !category || !brand || !countInStock) return res.status(400).json({error: 'All fields are required.'});
         
         // Check if the specified category exists in the database
         const foundCategory = await Category.findOne({ categoryName: category });
-        if (!foundCategory) return res.status(404).json({ 
-            error: true, 
-            message: 'Invalid category selected.' 
-        });
+        if (!foundCategory) return res.status(400).json({error: 'Invalid category selected.'});
         
         // check if the user(seller) exist
         const existingUser = await User.findById({_id: userId})
-        if (!existingUser) return res.status(404).json({ 
-            error: true, 
-            message: "The user(seller) doesn't exist!" 
-        })
+        if (!existingUser) return res.status(404).json({error: "The user(seller) doesn't exist!"})
         
         // create a new product and add to the user(seller) store
         const product = new Product({seller: userId, ...req.body, category: foundCategory.categoryName })
         await product.save()
 
-        return res.status(200).json({
-            success: true, 
-            message: 'New product has been added successfully', 
+        return res.status(201).json({
+            success: 'New product has been added successfully', 
             newProduct: product
         })
     }
@@ -83,17 +71,11 @@ const allProducts =  async (req, res) => {
             return {sellerName: seller.username, ...p, createdAt: createdTime, updatedAt: updatedTime}
         }))
 
-        if (!products.length) return res.json({
-            error: true, 
-            message: 'The product list is empty', 
-            emptyproducts: products
-        })
+        if (!products.length) return res.status(404).json({error: 'The product list is empty'})
 
         res.status(200).json({
-            success: true, 
-            message: 'All products fetched successfully', 
-            products: allProducts,
-            totalNumberOfProduct: products.length
+            success: 'All products fetched successfully', 
+            products: allProducts
         })
     }
     catch (err) {
@@ -105,12 +87,11 @@ const sellerStoreProducts =  async (req, res) => {
         const {userId} = req.params
 
     try {
-        
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(403)
+
         const existingUser = await User.findOne({_id: userId})
-        if (!existingUser) return res.status(404).json({ 
-            error: true, 
-            message: "The user(seller) doesn't exist!" 
-        })
+        if (!existingUser) return res.status(404).json({error: "The user(seller) doesn't exist!"})
 
         const sellerProducts = await Product.aggregate([
             {
@@ -143,15 +124,10 @@ const sellerStoreProducts =  async (req, res) => {
             return { ...p, createdAt: createdTime, updatedAt: updatedTime}
         })
 
-        if (!sellerProducts.length) return res.json({
-            error: true, 
-            message: "The seller's product list is empty", 
-            emptyStore: sellerProducts
-        })
+        if (!sellerProducts.length) return res.status(404).json({error: "The seller's product list is empty"})
         
         res.status(200).json({
-            success: true,
-            message: 'All products for the seller is fetched successfully',
+            success: 'All products for the seller is fetched successfully',
             sellersStore: sellersStoreProducts
         });        
     }
@@ -165,22 +141,14 @@ const singleProduct = async (req, res) => {
     const {username} = req.query
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ 
-            error: true, 
-            message:  "The product ID is invalid!" 
-        })
+
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
 
         let product  = await Product.findById({_id: id})
-        if (!product) return res.status(404).json({ 
-            error: true, 
-            message: "The product does not exist!" 
-        })
+        if (!product) return res.status(404).json({error: "The product does not exist!"})
 
         const existingUser = await User.findOne({username: username})
-        if (!existingUser) return res.status(404).json({ 
-            error: true, 
-            message: "The user(seller) doesn't exist!" 
-        })
+        if (!existingUser) return res.status(404).json({error: "The user(seller) doesn't exist!"})
 
         const sellerProducts = await Product.aggregate([
             {
@@ -204,9 +172,8 @@ const singleProduct = async (req, res) => {
 
         let existingProduct = sellerProducts.find((item) => item.productId.equals(id))
 
-        if (!existingProduct) return res.status(404).json({ 
-            error: true, 
-            message: "Product not found in the user (seller) store!",
+        if (!existingProduct) return res.status(400).json({ 
+            error: "Product not found in the user (seller) store!",
             product: product,
             sellerStoreProducts: sellerProducts
         })
@@ -217,8 +184,7 @@ const singleProduct = async (req, res) => {
         const singleProductFormatedDate = { ...existingProduct, createdAt: createdTime, updatedAt: updatedTime}
         
         res.status(200).json({
-            success: true, 
-            message: 'Single product fetched successfully', 
+            success: 'Single product fetched successfully', 
             singleProduct: singleProductFormatedDate
         })
     }
@@ -233,28 +199,17 @@ const updateProduct = async (req, res) => {
     const {title, price, description, category, brand, countInStock} = req.body
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ 
-            error: true, 
-            message: "The product ID is invalid!"
-        })
 
-        if (!title || !price || !description || !category || !brand || !countInStock) return res.status(404).json({ 
-            error: true, 
-            message: 'All fields are required.' 
-        });
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+
+        if (!title || !price || !description || !category || !brand || !countInStock) return res.status(400).json({error: 'All fields are required.'});
         
         //check if the product is existing in the database
         let product  = await Product.findById({_id: id})
-        if (!product) return res.status(404).json({ 
-            error: true, 
-            message: "The product does not exist!" 
-        })
+        if (!product) return res.status(404).json({error: "The product does not exist!"})
 
         const existingUser = await User.findOne({username: username})
-        if (!existingUser) return res.status(404).json({ 
-            error: true, 
-            message: "The user(seller) doesn't exist!" 
-        })
+        if (!existingUser) return res.status(404).json({error: "The user(seller) doesn't exist!"})
 
         const sellerProducts = await Product.aggregate([
             {
@@ -272,9 +227,8 @@ const updateProduct = async (req, res) => {
 
         let existingProduct = sellerProducts.find((item) => item.productId.equals(id))
 
-        if (!existingProduct) return res.status(404).json({ 
-            error: true, 
-            message: "Product not found in the user (seller) store!",
+        if (!existingProduct) return res.status(400).json({ 
+            error: "Product not found in the user (seller) store!",
             product: product,
             sellerStoreProducts: sellerProducts
         })
@@ -282,10 +236,7 @@ const updateProduct = async (req, res) => {
         // Check if the category exists in the database
         const foundCategory = await Category.findOne({ categoryName: category });
 
-        if (!foundCategory) return res.status(404).json({ 
-            error: true, 
-            message: 'Invalid category selected.' 
-        });
+        if (!foundCategory) return res.status(404).json({error: 'Invalid category selected.'});
         
         // update the product with the request body;
         product.title = title,
@@ -297,8 +248,7 @@ const updateProduct = async (req, res) => {
         await product.save()
     
         return res.status(201).json({
-            success: true,
-            message: 'Product has been updated successfully',
+            success: 'Product has been updated successfully',
             updatedProduct: product
         })
     }
@@ -310,25 +260,17 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
         const {id} = req.params
         const {username} = req.query
+
     try {
         
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ 
-            error: true, 
-            message: "The product ID is invalid!"
-        })
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
         
         //check if the product is existing in the database
         let product  = await Product.findById({_id: id})
-        if (!product) return res.status(404).json({ 
-            error: true, 
-            message: "The product does not exist!" 
-        })
+        if (!product) return res.status(404).json({error: "The product does not exist!"})
 
         const existingUser = await User.findOne({username: username})
-        if (!existingUser) return res.status(404).json({ 
-            error: true, 
-            message: "The user(seller) doesn't exist!" 
-        })
+        if (!existingUser) return res.status(404).json({error: "The user(seller) doesn't exist!"})
 
         const sellerProducts = await Product.aggregate([
             {
@@ -346,9 +288,8 @@ const deleteProduct = async (req, res) => {
 
         let existingProduct = sellerProducts.find((item) => item.productId.equals(id))
 
-        if (!existingProduct) return res.status(404).json({ 
-            error: true, 
-            message: "Product not found in the user (seller) store!",
+        if (!existingProduct) return res.status(400).json({ 
+            error: "Product not found in the user (seller) store!",
             product: product,
             sellerStoreProducts: sellerProducts
         })
@@ -357,8 +298,7 @@ const deleteProduct = async (req, res) => {
         const DeletedProduct = await Product.findOneAndDelete({ _id: id })
 
         return res.status(201).json({ 
-            success: true,
-            message: 'Product has been deleted successfully', 
+            success: 'Product has been deleted successfully', 
             deletedItem: DeletedProduct
         })
     }
