@@ -14,7 +14,7 @@ const cart = useSelector((state) => state.cart.cartItems)
 
 const {deliveryInfo, handleChange, error, handleSubmitDeliveryInformation} = UseDeliveryInformation()
 
-// define a function to handle the form submit of userDeliveryInfo and setModel to open;
+// define a function to handle the userDeliveryInfo form submission;
 const handleFormSubmit = async (e) => {
     e.preventDefault();
     await handleSubmitDeliveryInformation()

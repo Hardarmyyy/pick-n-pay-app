@@ -1,18 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { setupInterceptors } from "../Utils/Axios";
+const axiosInstance = setupInterceptors();
 
 
-
-let store
-
-export const injectStore = _store => {  
-    store = _store
-}
 
 const SINGLEUSER = createAsyncThunk('users/singleUser', async (id) => { 
-        const axiosPrivate = setupInterceptors(store);
     try {
-        const response = await axiosPrivate.get(`/user/${id}`)
+        const response = await axiosInstance.get(`/user/${id}`)
         return response.data
     }
     catch (err) {
@@ -21,9 +15,8 @@ const SINGLEUSER = createAsyncThunk('users/singleUser', async (id) => {
 }) 
 
 const UPDATEUSERPROFILE = createAsyncThunk('users/update-profile', async ({id, updateProfile}, { rejectWithValue }) => { 
-        const axiosPrivate = setupInterceptors(store);
     try {
-        const response = await axiosPrivate.patch(`/edit-profile/${id}`, updateProfile )
+        const response = await axiosInstance.patch(`/edit-profile/${id}`, updateProfile )
         return response.data
     }
     catch (err) {
@@ -32,9 +25,8 @@ const UPDATEUSERPROFILE = createAsyncThunk('users/update-profile', async ({id, u
 }) 
 
 const UPDATEPASSWORD = createAsyncThunk('users/update-password', async ({id, updatePassword}, { rejectWithValue }) => { 
-        const axiosPrivate = setupInterceptors(store);
     try {
-        const response = await axiosPrivate.patch(`/password/${id}`, updatePassword )
+        const response = await axiosInstance.patch(`/password/${id}`, updatePassword )
         return response.data
     }
     catch (err) {
@@ -43,9 +35,8 @@ const UPDATEPASSWORD = createAsyncThunk('users/update-password', async ({id, upd
 }) 
 
 const DELETEUSER = createAsyncThunk('users/delete-user', async (id, { rejectWithValue }) => { 
-        const axiosPrivate = setupInterceptors(store);
     try {
-        const response = await axiosPrivate.delete(`/delete/${id}` )
+        const response = await axiosInstance.delete(`/delete/${id}` )
         return response.data
     }
     catch (err) {
@@ -53,10 +44,9 @@ const DELETEUSER = createAsyncThunk('users/delete-user', async (id, { rejectWith
     }
 }) 
 
-const SWICTHPROFILE = createAsyncThunk('users/swicth-profile', async (id, { rejectWithValue }) => { 
-    const axiosPrivate = setupInterceptors(store);
+const SWICTHPROFILE = createAsyncThunk('users/swicth-profile', async (id, { rejectWithValue }) => {
     try {
-        const response = await axiosPrivate.patch(`/switch-role/${id}`)
+        const response = await axiosInstance.patch(`/switch-role/${id}`)
         return response.data
     }
     catch (err) {

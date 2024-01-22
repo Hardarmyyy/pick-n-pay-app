@@ -2,6 +2,13 @@ import axios from 'axios';
 import { REFRESH } from '../Services/authApi';
 
 
+let store
+
+export const injectStore = _store => {  
+    store = _store
+}
+
+
 // create an axios instance
 export const axiosInstance = axios.create({ 
     baseURL: import.meta.env.VITE_API_URI,
@@ -10,7 +17,7 @@ export const axiosInstance = axios.create({
 });
 
 // create a setupInterceptors for requests headers and authourization
-export const setupInterceptors = (store) => {
+export const setupInterceptors = () => {
 
     axiosInstance.interceptors.request.use(
         (config) => {
@@ -40,10 +47,6 @@ export const setupInterceptors = (store) => {
             return axiosInstance(originalRequest);
         }
         else if (error?.response && error?.response?.status === 403 && originalRequest?.sent) {
-            window.location.replace('/login')
-            return Promise.reject(err);
-        }
-        else if (error?.response && error?.response?.status === 401) {
             window.location.replace('/login')
             return Promise.reject(err);
         }
