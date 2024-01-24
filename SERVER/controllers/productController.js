@@ -11,7 +11,7 @@ const addProduct = async (req, res) => {
 
     try {
 
-        if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(400)
         
         if (!title || !price || !description || !category || !brand || !countInStock) return res.status(400).json({error: 'All fields are required.'});
         
@@ -88,7 +88,7 @@ const sellerStoreProducts =  async (req, res) => {
 
     try {
 
-        if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(400)
 
         const existingUser = await User.findOne({_id: userId})
         if (!existingUser) return res.status(404).json({error: "The user(seller) doesn't exist!"})
@@ -105,7 +105,9 @@ const sellerStoreProducts =  async (req, res) => {
                     productId: "$_id",
                     title: "$title",
                     price: "$price",
+                    description: "$description",
                     category: "$category",
+                    brand: "$brand",
                     countInStock: "$countInStock",
                     createdAt: "$createdAt",
                     updatedAt: "$updatedAt"
@@ -142,7 +144,7 @@ const singleProduct = async (req, res) => {
 
     try {
 
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
         let product  = await Product.findById({_id: id})
         if (!product) return res.status(404).json({error: "The product does not exist!"})
@@ -162,6 +164,8 @@ const singleProduct = async (req, res) => {
                     productId: "$_id",
                     title: "$title",
                     price: "$price",
+                    description: "$description",
+                    brand: "$brand",
                     category: "$category",
                     countInStock: "$countInStock",
                     createdAt: "$createdAt",
@@ -200,7 +204,7 @@ const updateProduct = async (req, res) => {
 
     try {
 
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
         if (!title || !price || !description || !category || !brand || !countInStock) return res.status(400).json({error: 'All fields are required.'});
         
@@ -263,7 +267,7 @@ const deleteProduct = async (req, res) => {
 
     try {
         
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
         
         //check if the product is existing in the database
         let product  = await Product.findById({_id: id})
@@ -299,6 +303,7 @@ const deleteProduct = async (req, res) => {
 
         return res.status(201).json({ 
             success: 'Product has been deleted successfully', 
+            productId: id,
             deletedItem: DeletedProduct
         })
     }

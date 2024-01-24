@@ -12,7 +12,7 @@ const getAllUsers = async (req, res) => {
         
     try {
 
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
         const allUsers = await User.aggregate([
             {
@@ -59,7 +59,7 @@ const allSellers = async (req, res) => {
     
     try {
 
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
         const allSellers = await User.aggregate([
             {
@@ -109,7 +109,7 @@ const allBuyers = async (req, res) => {
     
 try {
 
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
     const allBuyers = await User.aggregate([
         {
@@ -158,7 +158,7 @@ const getSingleUser = async (req, res) => {
         const {id} = req.params
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
         const user = await User.findById({_id: id})
         if (!user) return res.status(404).json({error: "User not found!"})
@@ -190,7 +190,7 @@ const deleteUser = async (req, res) => {
         const {id} = req.params
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
         const existingUser = await User.findById({_id: id})
         if (!existingUser) return res.json({error: 'User not found'});
@@ -211,7 +211,7 @@ const updatePassword = async (req, res) => {
             const {currentPassword, newPassword, confirmPassword} = req.body
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
         const existingUser = await User.findById({_id: id})
         if (!existingUser) return res.json({error: 'User not found'});
@@ -252,7 +252,7 @@ const updateUser = async (req, res) => {
         
     try {
 
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
         if (!username || !email) return res.status(400).json({error: "All fields are required!"})
 
@@ -291,7 +291,7 @@ const switchUserRole = async (req, res) => {
 
     try {
 
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
         const existingUser = await User.findById({_id: id})
         if (!existingUser) return res.status(404).json({error: 'User not found'});

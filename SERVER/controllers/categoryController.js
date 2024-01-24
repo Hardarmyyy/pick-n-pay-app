@@ -8,7 +8,7 @@ const addCategory = async (req, res) => {
         const {categoryName} = req.body
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(400)
 
         if (!categoryName) return res.status(400).json({message: "All fields are required!" })
         
@@ -65,7 +65,7 @@ const updateCategory = async (req, res) => {
 
     try {
         
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
         if (!categoryName) return res.status(400).json({message: "All fields are required!"})
         
@@ -96,7 +96,7 @@ const deleteCategory = async (req, res) => {
         
     try {
 
-        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(403)
+        if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
         
         const category = await Category.findOneAndDelete({ _id: id })
         if (!category) return res.status(404).json({message: "category doesn't exist!"})
