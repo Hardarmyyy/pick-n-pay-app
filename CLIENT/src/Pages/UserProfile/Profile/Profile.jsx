@@ -1,7 +1,5 @@
 import React from 'react'
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { SINGLEUSER } from '../../../Services/userApi';
+import { useSelector } from 'react-redux';
 
 
 const Profile = () => {
@@ -9,14 +7,6 @@ const Profile = () => {
 const currentUser = useSelector((state) => state.auth?.user)
 const buyer = currentUser?.userRole[0]
 const seller = currentUser?.userRole[0]
-
-const dispatch = useDispatch()
-const id = useSelector((state) => state.auth?.user?.userID)
-
-
-useEffect(() => {
-    dispatch(SINGLEUSER(id))
-}, [dispatch])
 
 
   return (

@@ -1,5 +1,7 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { SINGLEUSER } from '../../Services/userApi';
 import { Outlet, NavLink } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import Navigation from '../../Layouts/Navigation/Navigation';
@@ -19,6 +21,14 @@ const [openModal, setOpenModal] = useState(false)
 const handleOpenModal = () => { 
     setOpenModal(!openModal);
 }
+
+
+const dispatch = useDispatch()
+const id = useSelector((state) => state.auth?.user?.userID)
+
+useEffect(() => {
+    dispatch(SINGLEUSER(id))
+}, [dispatch])
 
 return (
 <>

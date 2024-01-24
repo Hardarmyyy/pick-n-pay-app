@@ -1,7 +1,5 @@
 import React from 'react'
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { STOREPRODUCTS } from '../../../Services/productAPi';
+import { useSelector } from 'react-redux';
 import { BsCart3 } from "react-icons/bs";
 import { FaSitemap } from "react-icons/fa"
 import { BiCoinStack } from "react-icons/bi";
@@ -9,13 +7,8 @@ import { BiCoinStack } from "react-icons/bi";
 
 const Dashboard = () => {
 
-const dispatch = useDispatch()
-const userId = useSelector((state) => state.auth?.user?.userID)
 const storeProducts = useSelector((state) => state.product?.store)
 
-useEffect(() => {
-    dispatch(STOREPRODUCTS(userId))
-}, [dispatch]);
 
   return (
     <>

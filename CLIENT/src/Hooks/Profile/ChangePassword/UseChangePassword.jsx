@@ -61,7 +61,7 @@ const UseChangePassword = () => {
         setShowConfirmPassword(!showConfirmPassword)
     }
     
-    // import and use validatesignup hook to catch errors on the form object ;
+    // import and use useValidateChange password hook to catch errors on the form object ;
     const {errors} = UseValidateChangePassword(updatePassword)
     
     const handleCanUpdate = (value) => {
@@ -80,7 +80,7 @@ const UseChangePassword = () => {
     
     const canUpdate = handleCanUpdate(updatePassword)
     
-    // define a function to dispatch the REGSITERUSERS request
+    // define a function to update user password
     const handleUpdatePassword = async () => {
     
         setError(errors)
@@ -88,7 +88,7 @@ const UseChangePassword = () => {
         if (isSubmitting) return; // Don't submit the form if it's already submitting
     
         if (!isSubmitting & canUpdate) {
-            setIsSubmitting(true); // Disable the signup button
+            setIsSubmitting(true); // Disable the button
             await dispatch(UPDATEPASSWORD({id, updatePassword}))
             .then((response) => {
                 if (response.payload.message) {
@@ -108,7 +108,7 @@ const UseChangePassword = () => {
                 })
             })
             .finally(() => {
-                setIsSubmitting(false); // Re-enable the signup button on error
+                setIsSubmitting(false); // Re-enable the button on error
             })
         }
     }

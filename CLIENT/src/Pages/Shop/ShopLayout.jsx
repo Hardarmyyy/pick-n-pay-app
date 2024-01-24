@@ -1,12 +1,20 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Outlet, NavLink } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux';
+import { STOREPRODUCTS } from '../../Services/productAPi';
 import Navigation from '../../Layouts/Navigation/Navigation';
 import { ToastContainer } from 'react-toastify'
 
 
 
-
 const ShopLayout = () => {
+
+const dispatch = useDispatch()
+const userId = useSelector((state) => state.auth?.user?.userID)
+
+useEffect(() => {
+    dispatch(STOREPRODUCTS(userId))
+}, [dispatch]);
 
 
 return (

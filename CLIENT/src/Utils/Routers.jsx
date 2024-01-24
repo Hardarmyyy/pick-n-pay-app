@@ -24,6 +24,8 @@ import ShopLayout from '../Pages/Shop/ShopLayout.jsx'
 import Dashboard from '../Pages/Shop/Dashboard/Dashboard.jsx'
 import NewProduct from '../Pages/Shop/NewProduct/NewProduct.jsx'
 import Products from '../Pages/Shop/Products/Products.jsx'
+import UpdateProduct from '../Pages/Shop/UpdateProduct/UpdateProduct.jsx'
+import ProductAdded from '../component/ProductAdded.jsx'
 
 import FavouritesLayout from '../Pages/Favourites/FavouritesLayout.jsx'
 import CartProduct from '../Pages/CartProducts/CartProduct.jsx' 
@@ -68,6 +70,8 @@ export const router = createBrowserRouter(
                         <Route index element={<Dashboard></Dashboard>}></Route>
                         <Route path=':add-new-product' element={<NewProduct></NewProduct>}></Route>
                         <Route path=':all-products' element={<Products></Products>}></Route>
+                        <Route path=':edit-product/:id' element={<UpdateProduct></UpdateProduct>}></Route>
+                        <Route path=':product-success/:id' element={<ProductAdded></ProductAdded>}></Route>
 
                     </Route>
 

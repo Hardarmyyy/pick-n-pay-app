@@ -1,25 +1,22 @@
 import React from 'react'
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { STOREPRODUCTS } from '../../../Services/productAPi';
+import { useSelector } from 'react-redux';
 import {Link} from 'react-router-dom'
 import { LuEdit } from "react-icons/lu";
 import { AiFillDelete } from "react-icons/ai";
+import UseDeleteProduct from '../../../Hooks/Shop/UseDeleteProduct';
 
 const Products = () => {
 
-const dispatch = useDispatch()
-const userId = useSelector((state) => state.auth?.user?.userID)
 const storeProducts = useSelector((state) => state.product?.store)
-
-useEffect(() => {
-    dispatch(STOREPRODUCTS(userId))
-}, [dispatch]);
+const status = useSelector((state) => state.product?.status)
+const {handleDeleteproduct} = UseDeleteProduct()
 
 
   return (
     <>
-      <section className='w-3/4 px-8 py-4 font-Montserrat text-my-primary border rounded-md shadow-sm bg-white mx-auto translate-y-0'>
+      <section className='w-3/4 p-4 font-Montserrat text-my-primary border rounded-md shadow-sm bg-white mx-auto translate-y-0'>
+
+    {status !== 'Loading.......' && 
 
         <table className='w-full'>
 
@@ -39,16 +36,16 @@ useEffect(() => {
             {storeProducts?.length > 0 
                 ?
                     <tbody className='text-sm text-center'>
-                        {storeProducts.map((item, index) => (
-                            <tr key={item.productId} className=''>
-                                <td className='py-2'> {index} </td>
+                        {storeProducts.map((item) => (
+                            <tr key={item.productId} className='border-b'>
+                                <td className='py-2'> - </td>
                                 <td className='py-2'> {item.productId.slice(0,12)} </td>
-                                <td className='py-2'> <Link to={`/product/${item.productId}`} className='text-blue-600'>  {item.title} </Link> </td>
+                                <td className='py-2'> <Link to={`/product/${item.productId}`} className='text-blue-600'>  {item.title.slice(0,40)} ..... </Link> </td>
                                 <td className='py-2'> $ {item.price} </td>
                                 <td className='py-2'> {item.category} </td>
                                 <td className='py-2'> {item.countInStock > 0 ?  <span> {item.countInStock} </span> : <span> - </span>} </td>
-                                <td className='py-2' > <AiFillDelete className='text-crimson cursor-pointer text-lg'></AiFillDelete></td>
-                                <td className='py-2'> <Link to={`/edit-product/${item.productId}`}> <LuEdit className='text-gray-600 text-lg'></LuEdit> </Link> </td>
+                                <td className='py-2' > <AiFillDelete onClick={() => {handleDeleteproduct(item.productId)}} className='text-crimson cursor-pointer text-lg'></AiFillDelete></td>
+                                <td className='py-2'> <Link to={`/shop/edit-product/${item?.productId}`}> <LuEdit className='text-gray-600 text-lg'></LuEdit> </Link> </td>
                             </tr>
                         ))}
                     </tbody>
@@ -62,6 +59,8 @@ useEffect(() => {
             } 
             
         </table>
+
+    }
 
       </section>
     </>
