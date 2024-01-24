@@ -109,7 +109,7 @@ const handleUpdateProduct = async () => {
                 })
                 setTimeout(() => {
                     navigate(`/shop/product-success/${updatedProduct._id}`)
-                }, 2500)
+                }, 500)
         }
       })
       .catch((err) => {

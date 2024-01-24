@@ -10,12 +10,12 @@ import { MdOutlineClear } from "react-icons/md";
 
 
 
-const Navigation = () => {
+const Navigation = ({category}) => {
 
 const user = useSelector((state) => state?.auth?.user);
 const cart = useSelector((state) => state?.cart?.cartItems);
 const location = useLocation();
-const showSearchBar = location.pathname === '/'
+const showSearchBar = location.pathname === '/' || location.pathname === `/category/${category}`
 const seller = user && user.userRole[0] === 'seller';
 const buyer = user && user.userRole[0] === 'buyer';
 

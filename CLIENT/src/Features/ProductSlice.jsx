@@ -7,7 +7,8 @@ import {toast} from 'react-toastify'
 
 const initialState = {
     status: 'idle',
-    store: []
+    store: [],
+    categoryProducts: []
 }
 
 export const productSlice = createSlice({ 

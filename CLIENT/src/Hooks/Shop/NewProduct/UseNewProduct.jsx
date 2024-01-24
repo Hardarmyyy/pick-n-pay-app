@@ -108,7 +108,7 @@ const handleUploadNewProduct = async () => {
                 })
                 setTimeout(() => {
                     navigate(`/shop/product-success/${newProduct._id}`)
-                }, 2500)
+                }, 500)
             }
         })
         .catch((err) => {

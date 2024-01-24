@@ -10,7 +10,7 @@ const allCategories = useSelector((state) => state?.category.allCategories)
 return (
 
 <>
-    <section className="w-40 h-72 py-2 bg-gray-200 rounded-md shadow-sm text-center text-my-primary font-Montserrat">
+    <section className="w-40 h-72 py-2 bg-gray-200 rounded-md shadow-sm text-center text-my-primary font-Montserrat sticky top-0">
 
         <ul>
             {allCategories.map((category) =>

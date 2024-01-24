@@ -13,6 +13,8 @@ import { admin, buyer, seller, registeredUser } from './AllowedRoles'
 
 import LandingPage from '../Pages/HomePage/LandingPage.jsx'
 
+import CategoryProduct from '../Pages/Products/CategoryProducts/CategoryProduct.jsx'
+
 import ProfileLayout from '../Pages/UserProfile/ProfileLayout.jsx'
 import Profile from '../Pages/UserProfile/Profile/Profile.jsx'
 import UpdateProfile from '../Pages/UserProfile/UpdateProfile/UpdateProfile.jsx'
@@ -50,6 +52,7 @@ export const router = createBrowserRouter(
 
             <Route path='/' element={<LandingPage></LandingPage>}></Route>
             <Route path='/cart' element={<CartProduct></CartProduct>}></Route>
+            <Route path='/category/:category' element={<CategoryProduct></CategoryProduct>}></Route>
 
             <Route element={<PrivateRoutes allowedRoles={registeredUser}></PrivateRoutes>}>
 

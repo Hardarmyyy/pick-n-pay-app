@@ -40,7 +40,11 @@ const {handleDeleteproduct} = UseDeleteProduct()
                             <tr key={item.productId} className='border-b'>
                                 <td className='py-2'> - </td>
                                 <td className='py-2'> {item.productId.slice(0,12)} </td>
-                                <td className='py-2'> <Link to={`/product/${item.productId}`} className='text-blue-600'>  {item.title.slice(0,40)} ..... </Link> </td>
+                                <td className='py-2'> 
+                                    <Link to={`/product/${item.productId}`} className='text-blue-600'> 
+                                        {item.title.length > 40 ? <span> {item.title.slice(0,40)} ..... </span> : <span> {item.title} </span>}
+                                    </Link> 
+                                </td>
                                 <td className='py-2'> $ {item.price} </td>
                                 <td className='py-2'> {item.category} </td>
                                 <td className='py-2'> {item.countInStock > 0 ?  <span> {item.countInStock} </span> : <span> - </span>} </td>
