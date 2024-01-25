@@ -11,7 +11,18 @@ const FETCHALLCATEGORIES = createAsyncThunk('category/all', async () => {
     }
 })
 
+const CATEGORYPRODUCTS = createAsyncThunk('category/products', async (category) => { 
+    try {
+        const response = await axiosInstance.get(`all-products-category?category=${category}`)
+        return response.data
+    }
+    catch (err) {
+        return err.message
+    }
+})
+
 export {
-    FETCHALLCATEGORIES
+    FETCHALLCATEGORIES,
+    CATEGORYPRODUCTS
 }
 

@@ -7,7 +7,7 @@ import Categories from '../../../component/Categories/Categories'
 const CategoryProduct = () => {
 
 const {category} = useParams()
-const categoryProducts = useSelector((state) => state.product?.categoryProducts)
+const categoryProducts = useSelector((state) => state.category?.categoryProducts)
 
 
   return (
@@ -28,7 +28,9 @@ const categoryProducts = useSelector((state) => state.product?.categoryProducts)
                 {categoryProducts?.length 
                     ?
                         <>
-                            
+                            {categoryProducts.map((item) => (
+                                <p key={item?.productId}> {item?.title} </p>
+                            ))}
                         </>
 
                         : 

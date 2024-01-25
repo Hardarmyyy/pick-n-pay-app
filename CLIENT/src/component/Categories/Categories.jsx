@@ -1,10 +1,27 @@
 import { Link } from "react-router-dom"
-import {useSelector } from 'react-redux'
+import { CATEGORYPRODUCTS } from '../../Services/categoryApi'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from "react-router-dom"
+
 
 
 const Categories = () => {
 
+const dispatch = useDispatch()
+const navigate = useNavigate()
 const allCategories = useSelector((state) => state?.category.allCategories)
+
+const fetchCategoryProducts = async (category) => {
+    await dispatch(CATEGORYPRODUCTS(category))
+    .then((response) => {
+        if (response.payload.success) {
+            navigate(`/category/${category}`)
+        }
+    })
+    .catch((error) => {
+        console.error(error)
+    })
+}
 
 
 return (
@@ -15,7 +32,7 @@ return (
         <ul>
             {allCategories.map((category) =>
                 <li key={category?.categoryID} className="md:text-sm lg:text-lg my-1 py-1 hover:bg-gray-400 rounded-sm">
-                    <Link to={`/category/${category?.category}`}> 
+                    <Link to={`#`} onClick={() => {fetchCategoryProducts(category?.category)}}> 
                         {category.category}
                     </Link>
                 </li>
