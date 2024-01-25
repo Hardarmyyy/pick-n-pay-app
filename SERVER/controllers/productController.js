@@ -138,6 +138,62 @@ const sellerStoreProducts =  async (req, res) => {
     }
 }
 
+const getProductsByCategory = async (req, res) => {
+    const {category} = req.query
+    
+    try {
+
+        const products = await Product.aggregate([
+            {
+                $match: {
+                    category: category                
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    sellerId: "$seller",
+                    productId: "$_id",
+                    title: "$title",
+                    price: "$price",
+                    description: "$description",
+                    category: "$category",
+                    brand: "$brand",
+                    countInStock: "$countInStock",
+                    createdAt: "$createdAt",
+                    updatedAt: "$updatedAt"
+                }
+            },
+            {
+                $sort: {
+                    createdAt: -1
+                }
+            }
+        ])
+
+        const allProductsByCategory = await Promise.all(products.map( async (p) => {
+            const createdTime = format(p.createdAt, 'yyyy-MM-dd hh:mm:ss a') 
+            const updatedTime = format(p.updatedAt, 'yyyy-MM-dd hh:mm:ss a') 
+            const seller = await User.findById({_id: p.sellerId})
+
+            return {sellerName: seller.username, ...p, createdAt: createdTime, updatedAt: updatedTime}
+        }))
+
+        if (!products.length) return res.status(200).json({
+            success: 'The are no products list in this category',
+            categoryProducts: products
+        })
+
+        res.status(200).json({
+            success: 'Category products fetched successfully', 
+            categoryProducts: allProductsByCategory
+        })
+    }
+    catch (err) {
+        res.status(500).json({error: 'Internal server error', message: err.message})
+    }
+}
+
 const singleProduct = async (req, res) => {
     const {id} = req.params
     const {username} = req.query
@@ -318,5 +374,6 @@ module.exports = {
     updateProduct, 
     deleteProduct, 
     sellerStoreProducts,
-    allProducts
+    allProducts,
+    getProductsByCategory
 }
