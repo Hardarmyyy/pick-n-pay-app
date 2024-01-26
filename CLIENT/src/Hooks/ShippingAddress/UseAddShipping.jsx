@@ -1,19 +1,17 @@
+import React from 'react'
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { ADDSHIPPINGADDRESS } from '../../Services/addressApi'
-import UseValidateDeliveryInformation from './UseValidateDeliveryInformation'
-import {toast} from 'react-toastify'
+import UseValidateDeliveryInformation from '../DeliveryInformation/UseValidateDeliveryInformation'
 
 
-const UseDeliveryInformation = () => {
-
+const UseAddShipping = () => {
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const navigate = useNavigate()
 const dispatch = useDispatch()
 
-const cart = useSelector((state) => state.cart?.cartItems)
 const userId = useSelector((state) => state.auth?.user?.userID)
 
 //define a state to handle the customer delivery information form;
@@ -25,8 +23,7 @@ const [deliveryInfo, setDeliveryInfo] = useState({
     streetAddress: '',
     city: '',
     state: '',
-    zipcode: '',
-    isShipping: false
+    zipcode: ''
 })
 
 //define a state to handle error on input change validation
@@ -42,8 +39,7 @@ const handleChange = (e) => {
         name === 'streetAddress' ? value 
             : name === 'phoneNumber' ? value.replace(/[^0-9]/g, '')
                 : name === 'zipcode' ? value.replace(/[^0-9]/g, '')
-                    : name === 'isShipping' ? !deliveryInfo.isShipping
-                        : value.replace(/\s/g, "")
+                    : value.replace(/\s/g, "")
     }})
 
     if (name === 'firstName') {
@@ -66,10 +62,6 @@ const handleChange = (e) => {
     }
     else if (name === 'state') {
         setError((error) => { return {...error, state: value ? '' : 'Enter your state'}})
-    }
-    else if (name === 'isShipping') {
-        setDeliveryInfo((deliveryInfo) => {return {...deliveryInfo, firstName: '', lastName: '', email: '', phoneNumber: '', streetAddress: '', city: '', state: '', zipcode: ''}})
-        setError((error) => { return {...error, firstName: value ? '' : null, lastName: value ? '': null, email: value ? '' : null, phoneNumber: value ? '' : null, streetAddress: value ? '' : null, city: value ? '' : null,  state: value ? '' : null, zipcode: value ? '' : null}})
     }
 }
 
@@ -96,27 +88,12 @@ const saveInformation = handleCanSave(deliveryInfo)
 //define a function to submit delivery information form
 const handleSubmitDeliveryInformation = async () => {
 
-    if (isSubmitting) return 
-
-    if (deliveryInfo.isShipping) {
-
-        if (!cart.length) {
-            return toast.error('Kindly add products to cart', {
-                        toastStyle: { background: 'red', color: 'white' }
-                    })
-        }
-        return navigate('/checkout')
-    }
-
     setError(errors)
+
+    if (isSubmitting) return 
 
     if (!isSubmitting && saveInformation) {
 
-        if (!cart.length) {
-            return toast.error('Kindly add products to cart', {
-                        toastStyle: { background: 'red', color: 'white' }
-                    })
-        }
         setIsSubmitting(true); // Disable the button
         await dispatch(ADDSHIPPINGADDRESS({userId, deliveryInfo}))
         .then((response) => {
@@ -151,6 +128,7 @@ useEffect(() => {
 }, [deliveryInfo])  
 
     return {deliveryInfo, handleChange, error, handleSubmitDeliveryInformation}
+
 }
 
-export default UseDeliveryInformation
+export default UseAddShipping

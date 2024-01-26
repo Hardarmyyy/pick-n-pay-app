@@ -1,14 +1,21 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { CATEGORYPRODUCTS } from '../../../Services/categoryApi'
 import Navigation from '../../../Layouts/Navigation/Navigation'
 import Categories from '../../../component/Categories/Categories'
 
 const CategoryProduct = () => {
 
 const {category} = useParams()
+const dispatch = useDispatch()
 const categoryProducts = useSelector((state) => state.category?.categoryProducts)
+const status = useSelector((state) => state.category?.status)
 
+useEffect(() => {
+    dispatch(CATEGORYPRODUCTS(category))
+}, [])
 
   return (
 
@@ -25,17 +32,16 @@ const categoryProducts = useSelector((state) => state.category?.categoryProducts
 
                 <p className='font-Jost text-blue-950 md:text-lg lg:text-2xl'> Find a great deal to suit your selection </p>
 
-                {categoryProducts?.length 
-                    ?
-                        <>
-                            {categoryProducts.map((item) => (
-                                <p key={item?.productId}> {item?.title} </p>
-                            ))}
-                        </>
-
+                {status === 'success' && !categoryProducts?.length 
+                
+                    ? <p className='text-center md:text-lg lg:text-2xl mt-20 text-my-primary font-Montserrat'> There are no products in this category </p>
+                    
                         : 
-
-                            <p className='text-center md:text-lg lg:text-2xl mt-20 text-my-primary font-Montserrat'> There are no products in this category </p>
+                            <>
+                                {categoryProducts.map((item) => (
+                                    <p key={item?.productId}> {item?.title} </p>
+                                ))}
+                            </>
                 }
 
             </main>

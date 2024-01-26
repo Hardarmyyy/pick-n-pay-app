@@ -1,9 +1,15 @@
 import React from 'react'
+import { useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import Button from '../../../component/Button'
 
 
 const Checkoutform = ({userDeliveryInfo, handleUserDeliveryInfo, error, handleFormSubmit}) => {
 
+const status = useSelector((state) => state.address?.status)
+const location = useLocation()
+const showCheckbox = location.pathname === '/cart'
+const createAddressButton = location.pathname === '/shipping-address'
 
   return (
 
@@ -127,19 +133,26 @@ const Checkoutform = ({userDeliveryInfo, handleUserDeliveryInfo, error, handleFo
 
             </div>
 
-            <div className='mt-4'>
-                <input 
-                    type='checkbox' 
-                    className='mr-2'
-                    checked={userDeliveryInfo.isShipping} 
-                    onChange={handleUserDeliveryInfo}
-                    name='isShipping'
-                /> 
-                <label> I have an existing shipping address and information </label>
-            </div>
+            {showCheckbox && 
+                <div className='mt-6'>
+                    <input 
+                        type='checkbox' 
+                        className='mr-2'
+                        checked={userDeliveryInfo.isShipping} 
+                        onChange={handleUserDeliveryInfo}
+                        name='isShipping'
+                    /> 
+                    <label> I have an existing shipping address and information </label>
+                </div>
+            }
 
             <div className='text-center'> 
-                <Button margin='20px 0px' padding='5px 70px'> Proceed to payment </Button>
+                {showCheckbox 
+                    ?   <Button margin='20px 0px' padding='5px 70px'> Proceed to payment </Button> 
+                        : createAddressButton 
+                            ? <Button margin='30px 0px' padding='5px 70px'> {status === 'Loading.......' ? <span> Creating ... </span> : <span> Create address </span>}  </Button>
+                                : <Button margin='30px 0px' padding='5px 70px'> {status === 'Loading.......' ? <span> Updating ... </span> : <span> Update address </span>} </Button>
+                }
             </div>
 
         </form>

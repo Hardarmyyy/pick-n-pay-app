@@ -3,14 +3,16 @@ import {configureStore, combineReducers} from '@reduxjs/toolkit'
 import authReducer from '../Features/AuthSlice'
 import categoryReducer from '../Features/CategorySlice'
 import cartReducer from '../Features/CartSlice'
-import productSlice from '../Features/ProductSlice'
+import productReducer from '../Features/ProductSlice'
+import addressReducer from '../Features/AddressSlice'
 
 const reducers = combineReducers({
     // user: userReducer,
     auth: authReducer,
     category: categoryReducer,
     cart: cartReducer,
-    product: productSlice
+    product: productReducer,
+    address: addressReducer
 });
 
 

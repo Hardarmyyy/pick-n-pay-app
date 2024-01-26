@@ -33,6 +33,10 @@ import FavouritesLayout from '../Pages/Favourites/FavouritesLayout.jsx'
 import CartProduct from '../Pages/CartProducts/CartProduct.jsx' 
 import CheckoutLayout from '../Pages/Checkout/CheckoutLayout.jsx'
 
+import AddressLayout from '../Pages/ShippingAddress/AddressLayout.jsx'
+import AddShipping from '../Pages/ShippingAddress/addShipping.jsx'
+import UpdateShipping from '../Pages/ShippingAddress/UpdateShipping.jsx'
+
 import PageNotFound from '../Pages/PageNotFound/PageNotFound.jsx'
 import Unauthorized from '../Pages/Unauthorized/Unauthorized.jsx'
 
@@ -85,6 +89,11 @@ export const router = createBrowserRouter(
                     <Route path='/favourites' element={<FavouritesLayout></FavouritesLayout>}></Route>
                     <Route path='/checkout' element={<CheckoutLayout></CheckoutLayout>}></Route>
 
+                    <Route path='/shipping-address' element={<AddressLayout></AddressLayout>}>
+                        <Route index element={<AddShipping></AddShipping>}></Route>
+                        <Route path=':update/:id' element={<UpdateShipping></UpdateShipping>}></Route>
+                    </Route>
+                    
                 </Route>
 
             </Route>
