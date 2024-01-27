@@ -9,22 +9,17 @@ const createShippingAddress = async (req, res) => {
 
     try {
         if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(400)
-    
+        if (!firstName || !lastName || !email || !phoneNumber || !streetAddress || !city || !state) return res.status(400).json({error: 'All fields are required.'});
+
         const user = await User.findById({_id: userId})
         if (!user) return res.status(404).json({error: "User doesn't exist!"})
 
         // create the new shipping address
-        const newShippingAddress = {
-            fullName: `${firstName} ${lastName}`, 
-            email: email, 
-            phoneNumber: phoneNumber, 
-            streetAddress: streetAddress, 
-            city: city, 
-            state: state
-        }
+        const newShippingAddress = { fullName: `${firstName} ${lastName}`, ...req.body}
 
         const shippingAddress = new ShippingAddress ({buyer: userId, ...newShippingAddress})
         await shippingAddress.save()
+
         return res.status(201).json({
             success: 'Shipping address created successfully', 
             newShippingAddress: shippingAddress
@@ -137,6 +132,7 @@ const updateShippingAddress = async (req, res) => {
 
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
+        if (!firstName || !lastName || !email || !phoneNumber || !streetAddress || !city || !state) return res.status(400).json({error: 'All fields are required.'});
 
         let shippingAddress = await ShippingAddress.findById({_id: id})
         if (!shippingAddress) return res.status(404).json({error: "Address not found!"})
@@ -162,19 +158,11 @@ const updateShippingAddress = async (req, res) => {
 
         if (!existingBuyerAddress) return res.status(404).json({error: "Address not found in the user's list of addresses!"})
 
-        // update ths existing shipping address with the req body
-        shippingAddress.fullName = `${firstName} ${lastName}`, 
-        shippingAddress.email = email,
-        shippingAddress.phoneNumber = phoneNumber,
-        shippingAddress.streetAddress = streetAddress,
-        shippingAddress.city = city,
-        shippingAddress.state = state
-
-        await shippingAddress.save();
+        const updatedShippingAddress = await ShippingAddress.findByIdAndUpdate({_id: id}, {$set : {fullName: `${firstName} ${lastName}`, ...req.body}}, {new: true})
 
         return res.status(200).json({
             success: 'Address has been updated successfully', 
-            updatedShippingAddress: shippingAddress
+            updatedShippingAddress: updatedShippingAddress
         })
 
     }

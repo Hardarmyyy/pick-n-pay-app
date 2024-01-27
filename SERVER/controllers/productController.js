@@ -24,7 +24,7 @@ const addProduct = async (req, res) => {
         if (!existingUser) return res.status(404).json({error: "The user(seller) doesn't exist!"})
         
         // create a new product and add to the user(seller) store
-        const product = new Product({seller: userId, ...req.body, category: foundCategory.categoryName })
+        const product = new Product({seller: userId, ...req.body})
         await product.save()
 
         return res.status(201).json({
@@ -297,19 +297,12 @@ const updateProduct = async (req, res) => {
         const foundCategory = await Category.findOne({ categoryName: category });
 
         if (!foundCategory) return res.status(404).json({error: 'Invalid category selected.'});
-        
-        // update the product with the request body;
-        product.title = title,
-        product.price = price,
-        product.description = description,
-        product.category = foundCategory.categoryName,
-        product.brand = brand,
-        product.countInStock = countInStock
-        await product.save()
+
+        const updatedProduct = await Product.findByIdAndUpdate({_id: id}, {$set : req.body}, {new: true})
     
         return res.status(201).json({
             success: 'Product has been updated successfully',
-            updatedProduct: product
+            updatedProduct: updatedProduct
         })
     }
     catch (err) {
