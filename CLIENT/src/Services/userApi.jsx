@@ -1,18 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { setupInterceptors } from "../Utils/Axios";
+const axiosInstance = setupInterceptors();
 
 
 
-let store
-
-export const injectStore = _store => {  
-    store = _store
-}
-
-const FETCHREGISTEREDUSERS = createAsyncThunk('users/fetchUser', async (id) => { 
-        const axiosPrivate = setupInterceptors(store);
+const SINGLEUSER = createAsyncThunk('users/singleUser', async (id) => { 
     try {
-        const response = await axiosPrivate.get(`/all-users/${id}`)
+        const response = await axiosInstance.get(`/user/${id}`)
         return response.data
     }
     catch (err) {
@@ -20,18 +14,50 @@ const FETCHREGISTEREDUSERS = createAsyncThunk('users/fetchUser', async (id) => {
     }
 }) 
 
-const SINGLEUSER = createAsyncThunk('users/singleUser', async (userId) => { 
-        const axiosPrivate = setupInterceptors(store);
+const UPDATEUSERPROFILE = createAsyncThunk('users/update-profile', async ({id, updateProfile}, { rejectWithValue }) => { 
     try {
-        const response = await axiosPrivate.get(`/user/${userId}`)
+        const response = await axiosInstance.patch(`/edit-profile/${id}`, updateProfile )
         return response.data
     }
     catch (err) {
-        return err.message
+        return rejectWithValue(err.response.data);
+    }
+}) 
+
+const UPDATEPASSWORD = createAsyncThunk('users/update-password', async ({id, updatePassword}, { rejectWithValue }) => { 
+    try {
+        const response = await axiosInstance.patch(`/password/${id}`, updatePassword )
+        return response.data
+    }
+    catch (err) {
+        return rejectWithValue(err.response.data);
+    }
+}) 
+
+const DELETEUSER = createAsyncThunk('users/delete-user', async (id, { rejectWithValue }) => { 
+    try {
+        const response = await axiosInstance.delete(`/delete/${id}` )
+        return response.data
+    }
+    catch (err) {
+        return rejectWithValue(err.response.data);
+    }
+}) 
+
+const SWICTHPROFILE = createAsyncThunk('users/swicth-profile', async (id, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.patch(`/switch-role/${id}`)
+        return response.data
+    }
+    catch (err) {
+        return rejectWithValue(err.response.data);
     }
 }) 
 
 export {
-    FETCHREGISTEREDUSERS,
-    SINGLEUSER
+    SINGLEUSER,
+    UPDATEUSERPROFILE,
+    UPDATEPASSWORD,
+    DELETEUSER,
+    SWICTHPROFILE
 }

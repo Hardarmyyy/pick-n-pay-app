@@ -13,7 +13,12 @@ const handleLogout = () => {
     navigate('/')
 }
 
-  return {handleLogout}
+const handleLogoutforPassword = () => {
+    dispatch(LOGOUT())
+    navigate('/login')
+}
+
+  return {handleLogout, handleLogoutforPassword}
 }
 
 export default UseLogout

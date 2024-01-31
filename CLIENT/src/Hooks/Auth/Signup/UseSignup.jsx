@@ -7,6 +7,11 @@ import {toast} from 'react-toastify'
 
 const UseSignup = () => {
 
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const passwordRegexUpperCase = /^(?=.*[A-Z])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
+const passwordRegexNumber = /^(?=.*[0-9])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
+const passwordRegexSymbol = /^(?=.*[.!@#$%^&*])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
+
 const dispatch = useDispatch()
 
 // define state to manage form object data
@@ -35,18 +40,18 @@ const handleChange = (e) => {
     setNewUser((newUser) => {return {...newUser, [name]: name === 'userRole' ? value : value.replace(/\s/g, "")}})
     // validating form state;
     if (name === 'userRole') {
-        setError((error) => {return {...error, userRole: value ? '': 'Kindly choose a user profile' }})
+        setError((error) => {return {...error, userRole: value ? '': 'Kindly choose a user profile'}})
     }
     else if (name === 'username') {
-        setError((error) => {return {...error, username: value ? '': 'Kindly enter username' }})
+        setError((error) => {return {...error, username: value ? value.length < 8 ? 'Username must be at least 8 characters!' : '' : 'Kindly enter username' }})
         setInvalid((invalid) => {return {...invalid, username: value ? false : true}})
     }
     else if (name === 'email') {
-        setError((error) => {return {...error, email: value ? '': 'Kindly enter email address' }})
+        setError((error) => { return {...error, email: value ? emailRegex.test(value) ? '' : 'Enter a valid email address' : 'Enter email address'}})
         setInvalid((invalid) => {return {...invalid, email: value ? false : true}})
     }
     else if (name === 'password') {
-        setError((error) => {return {...error, password: value ? '': 'Kindly enter password' }})
+        setError((error) => {return {...error, password: value ? '' : 'Kindly enter password' }})
         setInvalid((invalid) => {return {...invalid, password: value ? false : true}})
     }
 
@@ -54,7 +59,7 @@ const handleChange = (e) => {
 
 // define a function to open modal 
 const handleOpenModal = () => { 
-    setOpenModal(true);
+    setOpenModal(!openModal);
 }
 
 // define a function to handle show password;
@@ -64,11 +69,6 @@ const handleShowPassword = () => {
 
 // import and use validatesignup hook to catch errors on the form object ;
 const {errors, invalids} = UseValidateSignupForm(newUser)
-
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const passwordRegexUpperCase = /^(?=.*[A-Z])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-const passwordRegexNumber = /^(?=.*[0-9])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-const passwordRegexSymbol = /^(?=.*[.!@#$%^&*])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
 
 const handleCanSave = (value) => {
     const canSave = [
@@ -90,7 +90,6 @@ const isSave = handleCanSave(newUser)
 const handleSignup = async () => {
 
     setError(errors)
-    setInvalid(invalids)
 
     if (isSubmitting) return; // Don't submit the form if it's already submitting
 
@@ -98,7 +97,7 @@ const handleSignup = async () => {
         setIsSubmitting(true); // Disable the signup button
         await dispatch(REGISTERUSERS(newUser))
         .then((response) => {
-            if (response.payload.message) {
+            if (response.payload.success) {
                 setTimeout(() => {
                     handleOpenModal()
                 }, 2500)
@@ -126,7 +125,7 @@ useEffect(() => {
     handleCanSave(newUser)
 }, [newUser])
 
-    return {newUser, error, invalid, handleChange, openModal, showPassword, handleShowPassword, handleSignup}
+    return {newUser, error, invalid, handleChange, openModal, handleOpenModal, showPassword, handleShowPassword, handleSignup}
 }
 
 export default UseSignup

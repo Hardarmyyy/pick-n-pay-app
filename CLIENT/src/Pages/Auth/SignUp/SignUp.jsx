@@ -2,15 +2,14 @@ import React from 'react'
 import { ToastContainer } from 'react-toastify'
 import Logo from '../../../Layouts/Logo/Logo'
 import SignupForm from './SignupForm/SignupForm'
-import Modal from '../../../Layouts/Modal/Modal'
+import SignUpModal from '../../../Layouts/SignUpModal/SignUpModal'
 import UseSignup from '../../../Hooks/Auth/Signup/UseSignup'
-import './SignUp.css'
 import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = () => {
 
 //import UseSignup hook for form submission
-const {newUser, error, invalid, handleChange, openModal, showPassword, handleShowPassword, handleSignup} = UseSignup()
+const {newUser, error, handleChange, openModal, handleOpenModal, showPassword, handleShowPassword, handleSignup} = UseSignup()
 
 // define a function to handle form submission
 const handleFormSubmit = async (e) => {
@@ -23,7 +22,6 @@ const handleFormSubmit = async (e) => {
 return ( 
 
 <>
-    <Logo></Logo>
 
     <ToastContainer 
         position='top-right'
@@ -33,17 +31,20 @@ return (
         closeOnClick
         rtl={false}/>
 
+    <div className='p-4'>
+        <Logo></Logo>
+    </div>
+
     <SignupForm 
         newUser={newUser}
         error={error}
-        invalid={invalid}
         showPassword={showPassword}
         handleShowPassword={handleShowPassword}
         handleChange={handleChange}
         submitForm={handleFormSubmit}>
     </SignupForm> 
 
-    {openModal && <Modal></Modal>}
+    {openModal && <SignUpModal handleOpenModal={handleOpenModal}></SignUpModal>}
 </>
 )
 }

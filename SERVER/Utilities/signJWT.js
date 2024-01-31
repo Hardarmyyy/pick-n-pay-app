@@ -14,7 +14,7 @@ const createVerifyEmailToken = (user) => {
 }
 
 const createAccessToken = (user) => {
-    const {_id, username, email, roles, cart, favourites, myOrders, store } = user
+    const {_id, username, email, roles, token } = user
 
     const currentRole = Object.values(roles).filter(Boolean) // getting the value of roles from the user object
 
@@ -23,10 +23,7 @@ const createAccessToken = (user) => {
         username,
         email,
         userRole: currentRole,
-        cart,
-        favourites, 
-        myOrders, 
-        store
+        token
     }
     
     const accesstoken = JWT.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.EXPIRY_KEY_ACCESS});

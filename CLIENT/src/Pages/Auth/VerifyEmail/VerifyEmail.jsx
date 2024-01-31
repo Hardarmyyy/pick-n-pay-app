@@ -9,7 +9,7 @@ import ExpiredLink from '../../../component/ExpiredLink/ExpiredLink'
 import Verified from '../../../component/Verified/Verified'
 import UseVerifyEmail from '../../../Hooks/Auth/VerifyEmail/UseVerifyEmail'
 import 'react-toastify/dist/ReactToastify.css';
-import './VerifyEmail.css' 
+
 
 
 const VerifyEmail = () => {
@@ -26,7 +26,7 @@ const email = searchParams?.get('email')
 
 const modalMessage = `Your email has been verified successfully`
 
-const {signupOtp, invalid, error, handleChange, inputRefs, openModal, handleBackspace, handleVerifyEmail, handleVerifyEmailToken} = UseVerifyEmail(token, email) 
+const {signupOtp, invalid, error, handleChange, inputRefs, openModal, handleOpenModal, handleBackspace, handleVerifyEmail, handleVerifyEmailToken} = UseVerifyEmail(token, email) 
 
 // define a function to handle form submission
 const handleFormSubmit = async (e) => {
@@ -43,8 +43,6 @@ return (
 
 <>
 
-    <Logo></Logo>
-
     <ToastContainer 
         position='top-right'
         autoClose={5000}
@@ -53,9 +51,13 @@ return (
         closeOnClick
         rtl={false}/>
 
+    <div className='p-4'>
+        <Logo></Logo>
+    </div>
+
     {isVerified && <Verified></Verified>}
 
-    {!isValid && status === 'failed' && <ExpiredLink></ExpiredLink> }
+    {!isValid && !isVerified && <ExpiredLink></ExpiredLink> }
 
     {isValid && 
         <>
@@ -69,7 +71,7 @@ return (
                 handleChange={handleChange} 
                 submitForm={handleFormSubmit}>
             </VerifyEmailForm>
-            {openModal && <SuccessModal message={modalMessage}></SuccessModal>}
+            {openModal && <SuccessModal handleOpenModal={handleOpenModal} message={modalMessage}></SuccessModal>}
         </>           
     }
 </>

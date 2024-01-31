@@ -1,7 +1,7 @@
 const isAllowedRole = (...permission) => {
 
     return (req, res, next) => {
-
+        
         if (!req?.userRole) return res.sendStatus(401)
 
         const rolesArray = [...permission]

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import {useDispatch} from 'react-redux'
 import {useNavigate, useLocation} from 'react-router-dom'
 import UseValidateLoginform from './UseValidateLoginForm'
-import { LOGIN } from '../../../Services/authApi'
+import { LOGIN } from '../../../Services/authApi' 
+import {toast} from 'react-toastify'
 
 
 const UseLogin = () => {  
@@ -65,7 +66,6 @@ const isLogin = handleCanLogin(regUser)
 const handleLogin = async () => {
 
     setError(errors)
-    setInvalid(invalids)
 
     if (isSubmitting) return; // Don't submit the form if it's already submitting
 

@@ -1,62 +1,64 @@
-import { createSlice } from "@reduxjs/toolkit";
-import {FETCHREGISTEREDUSERS, SINGLEUSER } from "../Services/userApi";
-import { LOGOUT } from "../Services/authApi";
+// import { createSlice, isPending, isFulfilled, isRejected} from "@reduxjs/toolkit";
+// import {SINGLEUSER, UPDATEUSERPROFILE} from "../Services/userApi";
+// import { LOGOUT } from "../Services/authApi";
+// import {toast} from 'react-toastify'
 
 
-const initialState = {
-    status: 'idle',
-    allRegisteredUsers: [],
-    currentUser: [],
-    error: null
-}
 
-export const usersSlice = createSlice({ 
-    name:'users',
-    initialState,
-    reducers: {
+// const initialState = {
+//     status: 'idle',
+//     currentUser: null
+// }
+
+// export const userSlice = createSlice({ 
+//     name:'user',
+//     initialState,
+//     reducers: {
         
-    },
-    extraReducers (builder) {
-        builder
-                .addCase(FETCHREGISTEREDUSERS.fulfilled, (state, action) => {
-                    const {success} = action.payload
-                    if (success) {
-                        state.status = 'success'
-                        const allRegisteredUsers = action.payload.user
-                        state.allRegisteredUsers = [...allRegisteredUsers]
-                    }
-                })
-                .addCase(SINGLEUSER.fulfilled, (state, action) => {
-                    const {success} = action.payload
-                    if (success) {
-                        state.status = 'success'
-                        const activeUser = action.payload.user
-                        state.currentUser = [activeUser]
-                    }
-                })
-                .addCase(LOGOUT.fulfilled, (state, action) => {
-                    const {success} = action.payload
-                    if (success) {
-                        state.status = 'success'
-                        state.allRegisteredUsers = null
-                        state.currentUser = null
-                    }
-                })
-                .addMatcher(
-                    (action) => action.type.endsWith('/pending'),
-                    (state) => {
-                    state.status = 'Loading';
-                }
-                )
-                .addMatcher(
-                    (action) => action.type.endsWith('/rejected'),
-                    (state) => {
-                    state.status = 'failed';
-                    state.error = action.error.message
-                }
-                )
-    }
-})
+//     },
+//     extraReducers (builder) {
+//         builder
+//                 .addCase(SINGLEUSER.fulfilled, (state, action) => {
+//                     const userInfo = action.payload.user
+//                     state.currentUser = {userType: userInfo.roles, username: userInfo.username, email: userInfo.email}
+//                 })
+//                 .addCase(UPDATEUSERPROFILE.fulfilled, (state, action) => {
+//                     const {message, updatedUser} = action.payload
+//                     state.currentUser = {userType: updatedUser.roles, username: updatedUser.username, email: updatedUser.email}
+//                     toast.success(message, {
+//                         toastStyle: { background: 'green', color: 'white' }
+//                     })
+//                 })
+//                 .addCase(LOGOUT.fulfilled, (state, action) => {
+//                     const {message} = action.payload;
+//                     if (message) {
+//                         state.currentUser = null
+//                     }
+//                 }) 
+//                 .addMatcher(
+//                     isFulfilled(SINGLEUSER, UPDATEUSERPROFILE, LOGOUT),
+//                     (state) => {
+//                     state.status = 'success'
+//                 }
+//                 )
+//                 .addMatcher(
+//                     isPending(SINGLEUSER, UPDATEUSERPROFILE, LOGOUT),
+//                     (state) => {
+//                     state.status = 'Loading.......';
+//                 }
+//                 )
+//                 .addMatcher(
+//                     isRejected(SINGLEUSER, UPDATEUSERPROFILE, LOGOUT),
+//                     (state, action) => {
+//                         state.status = 'failed';
+//                         const message = action.payload.error
+//                         toast.error(message, {
+//                             toastStyle: { background: 'red', color: 'white' }
+//                         })
+//                 }
+//                 )
+//     }
+// })
 
 
-export default usersSlice.reducer
+// export default userSlice.reducer

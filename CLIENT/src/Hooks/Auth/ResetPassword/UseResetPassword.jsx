@@ -19,7 +19,7 @@ const [invalid, setInvalid] = useState({})
 
 const [isSubmitting, setIsSubmitting] = useState(false);
 
-const [openModal, setOpenModal] = useState(false)
+const [openModal, setOpenModal] = useState(false) 
 
 // define a state to handle show password
 const [showPassword, setShowPassword] = useState(false)
@@ -42,7 +42,7 @@ const handleChange = (e) => {
 
 // define a function to open modal 
 const handleOpenModal = () => { 
-    setOpenModal(true);
+    setOpenModal(!openModal);
 } 
 
 // define a function to handle show password;
@@ -75,7 +75,6 @@ const submitEmail = canSubmit(user)
 const handleResetPassword = async () => {
 
     setError(errors)
-    setInvalid(invalids)
 
     if (isSubmitting) return; 
     
@@ -113,7 +112,7 @@ useEffect(() => {
     canSubmit(user)
 }, [user])
 
-return {user, error, invalid, handleChange, handleVerifyResetToken, handleResetPassword, openModal, showPassword, handleShowPassword, showConfirmPassword, handleShowConfirmPassword}
+return {user, error, invalid, handleChange, handleVerifyResetToken, handleResetPassword, openModal, handleOpenModal, showPassword, handleShowPassword, showConfirmPassword, handleShowConfirmPassword}
 }
 
 export default UseResetPassword

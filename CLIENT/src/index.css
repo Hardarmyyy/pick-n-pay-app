@@ -1,28 +1,24 @@
-body {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
-    box-sizing: border-box;
-    overflow-x: hidden;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body::-webkit-scrollbar {
+
+body::-webkit-scrollbar, .cart::-webkit-scrollbar {
     width: 5px;
 }
 
-body::-webkit-scrollbar-track {
+body::-webkit-scrollbar-track, .cart::-webkit-scrollbar {
     background: #f6f3f3;
     box-shadow: inset 0 0 5px grey;
     border-radius: 10px;
 }
 
-body::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb, .cart::-webkit-scrollbar {
     background: #393737;
     border-radius: 10px;
 }
 
-body::-webkit-scrollbar-thumb:hover {
+body::-webkit-scrollbar-thumb:hover, .cart::-webkit-scrollbar {
     background: #555;
 }
 
@@ -34,4 +30,14 @@ body::-webkit-scrollbar-thumb:hover {
     color: #132A63;
     font-family: 'Jost', sans-serif; 
     font-size: 34px;
+}
+
+.active {
+    background-color: rgb(153, 163, 175);
+    border-radius: 2px;
+    padding: 0.5rem 0rem 0.5rem 0rem;
+}
+
+textarea {
+    resize:none
 }

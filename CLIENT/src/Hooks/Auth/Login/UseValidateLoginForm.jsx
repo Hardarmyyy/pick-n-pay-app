@@ -13,11 +13,11 @@ const validate = (value) => {
 
     for (const field in value) {
         if (field === 'username' && value[field].trim() === '') {
-            newErrors[field] = 'Username field is empty';
+            newErrors[field] = 'Username field is required';
             newInvalid[field] = true;
         }
         else if (field === 'password' && value[field].trim() === '') {
-            newErrors[field] = 'Password field is empty';
+            newErrors[field] = 'Password field is required';
             newInvalid[field] = true;
         }
     }

@@ -1,35 +1,51 @@
-import { useState } from 'react';
-import { Outlet, Link } from 'react-router-dom'
+import { useEffect } from 'react';
+import { Outlet, NavLink } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux';
+import { STOREPRODUCTS } from '../../Services/productAPi';
 import Navigation from '../../Layouts/Navigation/Navigation';
-// import Dashboard from '../../Components/Pages/Shops/Dashboard/Dashboard';
-import './Shop.css'
+import { ToastContainer } from 'react-toastify'
 
 
 
 const ShopLayout = () => {
 
-// define a state to show and hide the useProfile card;
-const [active, setActive] = useState(false)  
+const dispatch = useDispatch()
+const userId = useSelector((state) => state.auth?.user?.userID)
+
+useEffect(() => {
+    dispatch(STOREPRODUCTS(userId))
+}, [dispatch]);
+
 
 return (
 
 <>
     
+    <ToastContainer 
+        position='top-right'
+        autoClose={2500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+    />
+
     <Navigation></Navigation>
 
-    <section className='shop'>
+    <section className='min-w-full h-auto px-6 flex'>
 
-        <div className='shopLinks'>
-            <Link to='/post-product'> <p> Add new product </p>  </Link>
-            <Link to='/shop/all-products'> <p> All products </p> </Link>
+        <div className='w-40 h-96 py-4 bg-gray-200 rounded-md md:text-sm lg:text-lg shadow-sm text-center text-my-primary font-Montserrat sticky top-0'>
+
+            <p className='my-1 py-1'> <NavLink to='/shop/add-new-product'> new product </NavLink> </p>
+            <p className='my-1 py-1'> <NavLink to='/shop/all-products'> Products </NavLink> </p>
+
         </div>
 
-        {/* <Dashboard></Dashboard> */}
+        <Outlet></Outlet>
 
     </section>
 
 
-    <Outlet></Outlet>
 </>
 
 )

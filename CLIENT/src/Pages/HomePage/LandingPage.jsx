@@ -4,19 +4,11 @@ import Footer from '../../Layouts/Footer/Footer'
 import { ToastContainer } from 'react-toastify'
 import Carousel from '../../component/Carousel/Carousel'
 import Categories from '../../component/Categories/Categories'
-import UseNewsletter from '../../Hooks/Newsletter/UseNewsletter'
 import NewsLetter from '../../Layouts/NewsLetter/NewsLetter'
-import './LandingPage.css'
 import 'react-toastify/dist/ReactToastify.css';
 
 const LandingPage = () => {
 
-const {newsLetter, error, invalid, handleChange, handleSubmitNewsLetter} = UseNewsletter()
-
-const handleSubmit = (e) => {
-    e.preventDefault()
-    handleSubmitNewsLetter()
-}
 
 return (
 
@@ -32,27 +24,15 @@ return (
     
     <Navigation ></Navigation>
     
-    <section className='pageContainer'> 
+    <section className='min-w-full my-4 px-4 flex justify-between items-start'> 
 
-        <div className='topContainer'>
+        <Categories></Categories>
 
-            <Categories></Categories>
+        <Carousel></Carousel> 
 
-            <div className='carousel'>
-                <Carousel></Carousel> 
-            </div>
+        <NewsLetter></NewsLetter>
 
-            <NewsLetter
-                newsLetter={newsLetter}
-                error={error}
-                invalid={invalid}
-                handleChange={handleChange}
-                handleSubmit={handleSubmit}
-            >
-            </NewsLetter>
 
-        
-        </div>
         {/* slide.js was removed in favor of photos */}
         {/* <div className='productSlider'>
             <Slider></Slider>

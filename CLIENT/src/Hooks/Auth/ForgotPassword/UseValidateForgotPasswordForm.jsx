@@ -13,11 +13,11 @@ const UseValidateForgotPasswordForm = (value) => {
     
         for (const field in value) {
             if (field === 'email' && value[field].trim() === '') {
-                newErrors[field] = 'Email field is empty';
+                newErrors[field] = 'Email field is required';
                 newInvalid[field] = true;
             }
             else if ((field === 'email' && value[field].trim() !== '') && !(emailRegex.test(value[field].trim()))) {
-                newErrors[field] = 'Kindly enter a valid email address';
+                newErrors[field] = 'Enter a valid email address';
                 newInvalid[field] = true;
             }
         }

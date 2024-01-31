@@ -1,10 +1,11 @@
 import { createSlice, isPending, isFulfilled, isRejected } from "@reduxjs/toolkit";
-import {FETCHALLCATEGORIES} from "../Services/categoryApi";
+import {FETCHALLCATEGORIES, CATEGORYPRODUCTS} from "../Services/categoryApi";
 
 
 export const initialState = {
     status: 'idle',
-    allCategories: []
+    allCategories: [],
+    categoryProducts: []
 }
 
 export const categorySlice = createSlice({
@@ -19,23 +20,30 @@ export const categorySlice = createSlice({
                     const categories = action.payload.categories
                     if (categories) {
                         const sortedCategories = categories.sort((a, b) => a.categoryName > b.categoryName ? 1 : -1);
-                        state.allCategories = state.allCategories.concat(sortedCategories)
+                        const categoryData = sortedCategories.map((category) => {return {categoryID: category._id, category: category.categoryName} })
+                        state.allCategories = state.allCategories.concat(categoryData)
+                    }
+                })
+                .addCase(CATEGORYPRODUCTS.fulfilled, (state, action) => { 
+                    const {success, categoryProducts} = action.payload
+                    if (success) {
+                        state.categoryProducts = [...categoryProducts]
                     }
                 })
                 .addMatcher(
-                    isFulfilled(FETCHALLCATEGORIES),
+                    isFulfilled(FETCHALLCATEGORIES, CATEGORYPRODUCTS),
                     (state) => {
                     state.status = 'success'
                 }
                 )
                 .addMatcher(
-                    isPending(FETCHALLCATEGORIES),
+                    isPending(FETCHALLCATEGORIES, CATEGORYPRODUCTS),
                     (state) => {
                     state.status = 'Loading.......';
                 }
                 )
                 .addMatcher(
-                    isRejected(FETCHALLCATEGORIES),
+                    isRejected(FETCHALLCATEGORIES, CATEGORYPRODUCTS),
                     (state, action) => {
                         state.status = 'failed';
                         const message = action.payload.error

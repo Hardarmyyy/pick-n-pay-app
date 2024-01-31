@@ -1,38 +1,64 @@
 import React from 'react'
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { SINGLEUSER } from '../../Services/userApi';
+import { Outlet, NavLink } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 import Navigation from '../../Layouts/Navigation/Navigation';
-import { Outlet, Link } from 'react-router-dom'
-import { useState } from 'react';
-import { BsCart3 } from "react-icons/bs";
+import DeleteProfileModal from '../../Layouts/DeleteProfileModal/DeleteProfileModal';
+import UseSwicthProfile from '../../Hooks/Profile/UseSwicthProfile';
+import Button from '../../component/Button';
+
 
 const ProfileLayout = () => {
 
-// define a state to open and close deleteAccount Modal
-const [deleteModal, setDeleteModal] = useState(false)
+const {handleSwicthProfile} = UseSwicthProfile()
 
-// define a function to open delete modal 
-const openModal = () => { 
-    setDeleteModal(true);
+// define a state to open delete Modal
+const [openModal, setOpenModal] = useState(false)
+
+// define a function to open modal 
+const handleOpenModal = () => { 
+    setOpenModal(!openModal);
 }
 
-// define a function to close delete Modal;
-const closeModal = () => { 
-    setDeleteModal(false);
-}
+
+const dispatch = useDispatch()
+const id = useSelector((state) => state.auth?.user?.userID)
+
+useEffect(() => {
+    dispatch(SINGLEUSER(id))
+}, [dispatch])
 
 return (
 <>
-    
+    <ToastContainer 
+        position='top-right'
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}/>
+
     <Navigation></Navigation>
     
-    <div className='profileLinks'>
-            <p> <Link to={`/profile/edit/${{}}`}>  Edit profile  </Link> </p>
-            <p> <Link to={`/profile/update-password/${{}}`}> Change Password </Link> </p>
-            <p onClick={openModal}> <Link> Delete account </Link> </p>
-    </div>
+    <section className='min-w-full h-auto px-6 flex'>
 
-    {/* {deleteModal && <DeleteProfileModal closeModal={closeModal}></DeleteProfileModal>} */}
+        <div className='w-40 h-96 py-2 bg-gray-200 rounded-md md:text-sm shadow-sm text-center text-my-primary font-Montserrat'>
 
-    <Outlet></Outlet>
+            <p className='my-1 py-1'> <NavLink to={`/profile/update-profile`}>  Update profile  </NavLink> </p>
+            <p className='my-1 py-1'> <NavLink to={`/profile/update-password`}> Change Password </NavLink> </p>
+            <Button margin= '10px 0px' eventHandler={() => handleSwicthProfile()}> Switch Profile </Button>
+            <Button padding='5px 5px' margin= '15px 0px' backgroundColor='crimson' eventHandler={handleOpenModal}> Delete account </Button>
+
+        </div>
+
+        {openModal && <DeleteProfileModal handleCloseModal={handleOpenModal}></DeleteProfileModal>}
+
+        <Outlet></Outlet>
+
+    </section>
+
 </>
 )
 }

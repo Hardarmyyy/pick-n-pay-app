@@ -10,8 +10,8 @@ import { Provider } from 'react-redux'
 import  store  from './App/store.jsx'
 
 
-import { injectStore } from './Services/userApi.jsx'
-injectStore(store) // inject store is used to provide the store for the axios private in the usersAPI;
+import { injectStore } from './Utils/Axios.jsx'
+injectStore(store) // inject store is used to provide the store for the axios private;
 
 //fetch all categories when application is loaded
 import {FETCHALLCATEGORIES} from './Services/categoryApi.jsx'
@@ -19,11 +19,11 @@ store.dispatch(FETCHALLCATEGORIES())
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  // <React.StrictMode>
+  //<React.StrictMode>
     <Provider store={store}>
       <RouterProvider router={router}>
         <App />
       </RouterProvider>
     </Provider>
-  // </React.StrictMode>,
+  //</React.StrictMode>,
 )
