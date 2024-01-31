@@ -3,12 +3,12 @@ const MongoStore = require('connect-mongo');
 require('dotenv').config();
 
 const connectDb = () => {
-    return mongoose.connect(process.env.MONGO_URI, {useUnifiedTopology: true, useNewUrlParser: true})
+    return mongoose.connect(process.env.MONGODB_URI, {useUnifiedTopology: true, useNewUrlParser: true})
 } 
 
 const store = new MongoStore(
     {
-        mongoUrl: process.env.MONGO_URI,
+        mongoUrl: process.env.MONGODB_URI,
         collection: 'mySessions',
         autoRemove: 'native', // Enable automatic removal of expired sessions
     }, 
