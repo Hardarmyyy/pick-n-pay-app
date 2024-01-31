@@ -126,7 +126,10 @@ const sellerStoreProducts =  async (req, res) => {
             return { ...p, createdAt: createdTime, updatedAt: updatedTime}
         })
 
-        if (!sellerProducts.length) return res.status(404).json({error: "The seller's product list is empty"})
+        if (!sellerProducts.length) return res.status(200).json({
+            success: "The seller's product list is empty", 
+            sellersStore: sellersStoreProducts
+        })
         
         res.status(200).json({
             success: 'All products for the seller is fetched successfully',
