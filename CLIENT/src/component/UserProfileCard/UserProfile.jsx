@@ -63,7 +63,7 @@ return (
             :
                 <div className='block'>
                     <Link to='/login'> <Button backgroundColor='crimson' padding='5px 25px' opacity='0.8'> Sign in </Button> </Link>
-                    <p className='text-my-primary font-Montserrat text-sm my-1'> or click <Link to='/signup' className='text-blue-600'> here </Link> to sign up</p>
+                    <p className='text-my-primary font-Montserrat text-sm my-1'>  click <Link to='/signup' className='text-blue-600'> here </Link> to sign up</p>
                 </div>
             }
 

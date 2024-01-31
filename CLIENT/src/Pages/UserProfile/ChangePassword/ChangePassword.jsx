@@ -36,7 +36,7 @@ const submitUpdatePassword = async (e) => {
                         />
                         {error && <p className='absolute left-1 -bottom-5 text-crimson text-sm'> {error.currentPassword} </p>}
 
-                        <div className="text-lg absolute bottom-2 md:right-3 lg:right-5 xl:right-10 cursor-pointer" onClick={handleShowCurrentPassword}>
+                        <div className="text-lg absolute bottom-2 md:right-3 lg:right-5 xl:right-8 cursor-pointer" onClick={handleShowCurrentPassword}>
                             {showCurrentPassword ? <BsEye /> : <BsEyeSlash />} 
                         </div>
                     </div>
@@ -54,7 +54,7 @@ const submitUpdatePassword = async (e) => {
                         />
                         {error && <p className='absolute left-1 -bottom-5 text-crimson text-sm'> {error.newPassword} </p>}
 
-                        <div className="text-lg absolute bottom-2 md:right-3  lg:right-5 xl:right-10 cursor-pointer" onClick={handleShowNewPassword}>
+                        <div className="text-lg absolute bottom-2 md:right-3  lg:right-5 xl:right-8 cursor-pointer" onClick={handleShowNewPassword}>
                             {showNewPassword ? <BsEye /> : <BsEyeSlash />} 
                         </div>
                     </div>
@@ -72,12 +72,12 @@ const submitUpdatePassword = async (e) => {
                         />
                         {error && <p className='absolute left-1 -bottom-5 text-crimson text-sm'> {error.confirmPassword} </p>}
 
-                        <div className="text-lg absolute bottom-2 md:right-3  lg:right-5 xl:right-10 cursor-pointer" onClick={handleShowConfirmPassword}>
+                        <div className="text-lg absolute bottom-2 md:right-3  lg:right-5 xl:right-8 cursor-pointer" onClick={handleShowConfirmPassword}>
                             {showConfirmPassword ? <BsEye /> : <BsEyeSlash />} 
                         </div>
                     </div>
 
-                    <div className='text-center'>
+                    <div className='text-center md:text-sm lg:text-lg'>
                         <Button margin='30px 10px'> {status === 'Loading.......' ? <span> Updating </span> : <span> Update password </span>} </Button>
                     </div>
 
