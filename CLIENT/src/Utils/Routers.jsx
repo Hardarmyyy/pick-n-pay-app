@@ -34,7 +34,7 @@ import CartProduct from '../Pages/CartProducts/CartProduct.jsx'
 import CheckoutLayout from '../Pages/Checkout/CheckoutLayout.jsx'
 
 import AddressLayout from '../Pages/ShippingAddress/AddressLayout.jsx'
-import AddShipping from '../Pages/ShippingAddress/addShipping.jsx'
+import AddShipping from '../Pages/ShippingAddress/AddShipping.jsx'
 import UpdateShipping from '../Pages/ShippingAddress/UpdateShipping.jsx'
 
 import PageNotFound from '../Pages/PageNotFound/PageNotFound.jsx'
