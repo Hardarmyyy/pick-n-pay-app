@@ -19,59 +19,61 @@ const createAddressButton = location.pathname === '/shipping-address'
             <p className='md:text-lg lg:text-2xl text-blue-950'> Contact information</p>
             <p className='md:text-sm lg:text-lg font-semibold'> Complete the form. All field with <span className='text-crimson'> *  </span> is required. </p>
 
-            <div className='w-full mt-2 flex justify-between flex-wrap'>
+            <div className='w-full mt-2 flex justify-between'>
 
-                <div className='relative mb-3'>
+                <div className='w-1/2 relative mb-3 mr-2'>
                     <label> First Name <span className='text-crimson'> * </span></label> <br />
                     <input 
                         type='text' 
-                        className='md:w-44 lg:w-60 xl:w-80 mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
+                        className='w-full mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
                         value={userDeliveryInfo.firstName} 
                         onChange={handleUserDeliveryInfo} 
                         placeholder='Enter your first name' 
                         name='firstName' 
                         maxLength={30}
                     />
-                    {error && <p className='text-crimson absolute left-0 -bottom-5'> {error.firstName} </p>}
+                    {error && <p className='text-crimson font-Jost absolute left-0 -bottom-5'> {error.firstName} </p>}
                 </div>
 
-                <div className='relative mb-3'>
+                <div className='w-1/2 relative mb-3'>
                     <label> Last Name <span className='text-crimson'> * </span></label> <br />
                     <input 
                         type='text' 
-                        className='md:w-44 lg:w-60 xl:w-80 mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
+                        className='w-full mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
                         value={userDeliveryInfo.lastName} 
                         onChange={handleUserDeliveryInfo} 
                         placeholder='Enter your last name' 
                         name='lastName' maxLength={30}
                     />
-                    {error && <p className='text-crimson absolute left-0 -bottom-5'> {error.lastName} </p>}
+                    {error && <p className='text-crimson font-Jost absolute left-0 -bottom-5'> {error.lastName} </p>}
                 </div>
+            </div>
 
-                <div className='relative'>
+            <div className='w-full mt-2 flex justify-between'>
+                <div className='w-1/2 relative mr-2'>
                     <label> Email Address <span className='text-crimson'> * </span></label> <br />
                     <input 
                         type='text' 
-                        className='md:w-44 lg:w-60 xl:w-80 mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
+                        className='w-full mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
                         value={userDeliveryInfo.email}
                         onChange={handleUserDeliveryInfo} 
                         placeholder='user@example.com' 
                         name='email'
                     />
-                    {error && <p className='text-crimson absolute left-0 -bottom-5'> {error.email} </p>}
+                    {error && <p className='text-crimson font-Jost absolute left-0 -bottom-5'> {error.email} </p>}
                 </div>
 
-                <div className='relative'>
+                <div className='w-1/2 relative'>
                     <label> Phone Number <span className='text-crimson'> * </span></label> <br />
                     <input 
                         type='text' 
-                        className='md:w-44 lg:w-60 xl:w-80 mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
+                        className='w-full mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
                         value={userDeliveryInfo.phoneNumber} 
                         onChange={handleUserDeliveryInfo} 
                         placeholder='234 800 000 0000' 
                         name='phoneNumber'
                     />
-                    {error && <p className='text-crimson absolute left-0 -bottom-5'> {error.phoneNumber} </p>}
+                    {error && <p className='text-crimson font-Jost absolute left-0 -bottom-5'> {error.phoneNumber} </p>}
                 </div>
 
             </div>
@@ -88,42 +90,42 @@ const createAddressButton = location.pathname === '/shipping-address'
                     placeholder='Enter your address' 
                     name='streetAddress'
                 />
-                {error && <p className='text-crimson absolute left-0 -bottom-5'> {error.streetAddress} </p>}
+                {error && <p className='text-crimson font-Jost absolute left-0 -bottom-5'> {error.streetAddress} </p>}
             </div>
 
-            <div className='flex justify-between'>
+            <div className='w-full flex justify-between'>
 
-                <div className='relative'>
+                <div className='w-1/3 relative mr-2'>
                     <label> City <span className='text-crimson'> * </span> </label> <br />
                     <input 
                         type='text' 
-                        className='md:w-28 lg:w-40 xl:w-52 mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
+                        className='w-full mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
                         value={userDeliveryInfo.city} 
                         onChange={handleUserDeliveryInfo} 
                         placeholder='Enter city' 
                         name='city'
                     />
-                    {error && <p className='text-crimson absolute left-0 -bottom-5'> {error.city} </p>}
+                    {error && <p className='text-crimson font-Jost absolute left-0 -bottom-5'> {error.city} </p>}
                 </div>
 
-                <div className='relative'>
+                <div className='w-1/3 relative mr-2'>
                     <label> State <span className='text-crimson'> * </span> </label> <br />
                     <input 
                         type='text'
-                        className='md:w-28 lg:w-40 xl:w-52 mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
+                        className='w-full mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
                         value={userDeliveryInfo.state} 
                         onChange={handleUserDeliveryInfo} 
                         placeholder='Enter state' 
                         name='state'
                     />
-                    {error && <p className='text-crimson absolute left-0 -bottom-5'> {error.state} </p>}
+                    {error && <p className='text-crimson font-Jost absolute left-0 -bottom-5'> {error.state} </p>}
                 </div>
 
-                <div className=''>
+                <div className='w-1/3 relative'>
                     <label> Zip code </label> <br />
                     <input 
                         type='text' 
-                        className='md:w-28 lg:w-40 xl:w-52 mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
+                        className='w-full mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
                         value={userDeliveryInfo.zipcode} 
                         onChange={handleUserDeliveryInfo} 
                         placeholder='00000' 
@@ -134,7 +136,7 @@ const createAddressButton = location.pathname === '/shipping-address'
             </div>
 
             {showCheckbox && 
-                <div className='mt-6'>
+                <div className='w-full mt-6'>
                     <input 
                         type='checkbox' 
                         className='mr-2'
@@ -142,7 +144,7 @@ const createAddressButton = location.pathname === '/shipping-address'
                         onChange={handleUserDeliveryInfo}
                         name='isShipping'
                     /> 
-                    <label> I have an existing shipping address and information </label>
+                    <label className='text-sm'> I have an existing shipping information </label>
                 </div>
             }
 

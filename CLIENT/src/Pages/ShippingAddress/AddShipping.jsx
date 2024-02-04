@@ -4,7 +4,7 @@ import UseAddShipping from '../../Hooks/ShippingAddress/UseAddShipping'
 
 const AddShipping = () => {
 
-const {deliveryInfo, handleChange, error, handleSubmitDeliveryInformation} = UseAddShipping()
+const {status, deliveryInfo, handleChange, error, handleSubmitDeliveryInformation} = UseAddShipping()
 
 const handleSubmitAddress = async (e) => {
     e.preventDefault()
@@ -17,6 +17,7 @@ const handleSubmitAddress = async (e) => {
         <section className='w-1/2 pl-6'>
 
             <Checkoutform
+                status={status}
                 userDeliveryInfo={deliveryInfo}
                 handleUserDeliveryInfo={handleChange}
                 error={error}

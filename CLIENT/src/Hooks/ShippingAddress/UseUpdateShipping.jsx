@@ -54,10 +54,10 @@ const handleChange = (e) => {
         setError((error) => { return {...error, lastName: value ? '' : 'Enter your last name'}})
     }
     else if (name === 'email') {
-        setError((error) => { return {...error, email: value ? emailRegex.test(value) ? '' : 'Enter a valid email address' : 'Enter email address'}})
+        setError((error) => { return {...error, email: value ? emailRegex.test(value) ? '' : 'Invalid email address' : 'Enter email address'}})
     }
     else if (name === 'phoneNumber') {
-        setError((error) => { return {...error, phoneNumber: value ? '' : 'Enter your phone number'}})
+        setError((error) => { return {...error, phoneNumber: value ? '' : 'Enter phone number'}})
     }
     else if (name === 'streetAddress') {
         setError((error) => { return {...error, streetAddress: value ? '' : 'Enter street address'}})

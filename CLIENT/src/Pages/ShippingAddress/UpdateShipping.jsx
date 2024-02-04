@@ -7,7 +7,7 @@ const UpdateShipping = () => {
 
 const {id} = useParams()
 
-const {currentAddress, deliveryInfo, handleChange, error, handleSubmitDeliveryInformation} = UseUpdateShipping(id)
+const {status, currentAddress, deliveryInfo, handleChange, error, handleSubmitDeliveryInformation} = UseUpdateShipping(id)
 
 const submitUpdateShipping = async (e) => {
     e.preventDefault()
@@ -24,6 +24,7 @@ const submitUpdateShipping = async (e) => {
             {currentAddress 
                 ? 
                     <Checkoutform
+                        status={status}
                         userDeliveryInfo={deliveryInfo}
                         handleUserDeliveryInfo={handleChange}
                         error={error}

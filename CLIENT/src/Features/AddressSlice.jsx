@@ -58,7 +58,7 @@ export const addressSlice = createSlice({
                 }
                 )
                 .addMatcher(
-                    isPending(ADDSHIPPINGADDRESS, FETCHADDRESSLIST, UPDATEADDRESS),
+                    isPending(ADDSHIPPINGADDRESS, UPDATEADDRESS),
                     (state) => {
                     state.status = 'Loading.......';
                 }
