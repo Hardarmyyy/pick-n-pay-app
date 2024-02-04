@@ -14,7 +14,7 @@ const handleSubmit = (e) => {
     <>
         <section className='md:w-44 lg:w-56 h-72 py-2 md:px-1 lg:px-3 font-Montserrat text-my-primary bg-gray-200 rounded-md shadow-sm text-center'>
 
-            <p className='lg:text-lg md:text-sm'> Get updates and receive alerts when we have new products </p> 
+            <p className='text-sm'> Get updates and receive alerts when we have new products </p> 
 
             <form onSubmit={handleSubmit} className='md:w-full lg:w-full relative' >
                 
