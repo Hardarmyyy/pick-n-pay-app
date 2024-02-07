@@ -34,10 +34,10 @@ return (
 
     <section className='min-w-full h-auto px-6 flex'>
 
-        <div className='w-40 h-96 py-4 bg-gray-200 rounded-md md:text-sm lg:text-lg shadow-sm text-center text-my-primary font-Montserrat sticky top-0'>
+        <div className='w-40 h-96 py-3 bg-gray-200 rounded-md md:text-sm lg:text-lg shadow-sm text-center text-my-primary font-Montserrat sticky top-0'>
 
-            <p className='my-1 py-1'> <NavLink to='/shop/add-new-product'> new product </NavLink> </p>
-            <p className='my-1 py-1'> <NavLink to='/shop/all-products'> Products </NavLink> </p>
+            <p className='my-1 py-1'> <NavLink className={({ isActive }) => isActive ? "py-1 px-3 mb-2 bg-gray-400 rounded-sm" : undefined}  to='/shop/add-new-product'> new product </NavLink> </p>
+            <p className='my-1 py-1'> <NavLink className={({ isActive }) => isActive ? "py-1 px-4 mb-2 bg-gray-400 rounded-sm" : undefined} to='/shop/all-products'> Products </NavLink> </p>
 
         </div>
 
