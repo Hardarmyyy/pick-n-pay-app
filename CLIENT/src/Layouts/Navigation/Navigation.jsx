@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
 import Logo from '../Logo/Logo'
@@ -14,6 +14,7 @@ const Navigation = ({category}) => {
 
 const user = useSelector((state) => state?.auth?.user);
 const cart = useSelector((state) => state?.cart?.cartItems);
+const navRef = useRef(null);
 const location = useLocation();
 const showSearchBar = location.pathname === '/' || location.pathname === `/category/${category}`
 const seller = user && user.userRole[0] === 'seller';
@@ -47,6 +48,20 @@ const handleClearResult = () => {
     setClearResult(false)
 }
 
+useEffect(() => {
+    const handleDocumentClick = (e) => {
+        if (active && navRef.current && !navRef.current.contains(e.target)) {
+            setActive(false);
+        }
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+
+    return () => {
+        document.removeEventListener('click', handleDocumentClick);
+    };
+}, [active]);
+
 return (
 
 <> 
@@ -79,7 +94,7 @@ return (
 
         <nav className={'flex justify-between items-center relative'}> 
 
-            <div  className='flex justify-between items-center cursor-pointer p-2 rounded-md mr-11 md:mr-5 lg:mr-7 xl:mr-9 bg-gray-200 hover:bg-gray-400' onClick={() => setActive(!active)}> 
+            <div  className='flex justify-between items-center cursor-pointer p-2 rounded-md mr-11 md:mr-5 lg:mr-7 xl:mr-9 bg-gray-200 hover:bg-gray-400' onClick={() => setActive(!active)} ref={navRef}> 
 
                 <BiUserCircle className='text-2xl text-my-primary mr-2'></BiUserCircle>
                 <div className='flex items-center text-sm'>
