@@ -32,6 +32,15 @@ const [isSubmitting, setIsSubmitting] = useState(false)
 const handleChange = (e) => {
     const {name, value} = e.target
 
+    // Format price value to allow two decimal places
+    let formattedValue = value.replace(/[^\d.]/g, '');
+    const parts = formattedValue.split('.');
+    if (parts.length > 1) {
+        // If there are decimal parts, keep only two decimal places
+        formattedValue = `${parts[0]}.${parts[1].slice(0, 2)}`;
+    }
+
+
     setNewProduct((newProduct) => {return {...newProduct, [name]: 
         name === 'title' 
             ? value 
@@ -40,7 +49,7 @@ const handleChange = (e) => {
                         : name === 'category' 
                             ? value
                             : name === 'price' 
-                                ? value.replace(/[^0-9]/g, '')
+                                ? formattedValue
                                     : name === 'countInStock' 
                                         ? value.replace(/[^0-9]/g, '')
                                             : value.replace(/\s/g, "")

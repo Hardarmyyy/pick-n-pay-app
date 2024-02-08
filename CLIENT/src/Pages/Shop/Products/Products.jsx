@@ -34,9 +34,9 @@ const {handleDeleteproduct} = UseDeleteProduct()
                 {storeProducts?.length > 0 
                     ?
                         <tbody className='text-sm text-center'>
-                            {storeProducts.map((item) => (
+                            {storeProducts.map((item, index) => (
                                 <tr key={item.productId} className='border-b'>
-                                    <td className='py-2'> - </td>
+                                    <td className='py-2'> {index + 1} </td>
                                     <td className='py-2'> {item.productId.slice(0,12)} </td>
                                     <td className='py-2'> 
                                         <Link to={`/product/${item.productId}`} className='text-blue-600'> 
