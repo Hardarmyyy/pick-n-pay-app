@@ -10,7 +10,7 @@ import { RxDashboard } from "react-icons/rx";
 import Button from '../Button'
 
 
-const UserProfile = () => {
+const UserProfile = ({onProfileClick}) => {
 
 const accessToken = useSelector((state) => state.auth?.accessToken);
 const id = useSelector((state) => state.auth?.user?.userID)
@@ -53,7 +53,7 @@ const handleGoToShop = async () => {
 return (
 
 <>
-    <section className='w-40 h-48 absolute top-12 -left-5 z-10 text-center rounded-md py-2 shadow-sm bg-gray-200'>
+    <section className='w-40 h-48 absolute top-12 -left-5 z-10 text-center rounded-md py-2 shadow-sm bg-gray-200' onClick={onProfileClick}>
 
         <div>
 

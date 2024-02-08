@@ -48,6 +48,10 @@ const handleClearResult = () => {
     setClearResult(false)
 }
 
+const handleProfileClick = (e) => {
+    e.stopPropagation(); // Prevent click event from bubbling up to the document
+};
+
 useEffect(() => {
     const handleDocumentClick = (e) => {
         if (active && navRef.current && !navRef.current.contains(e.target)) {
@@ -104,7 +108,7 @@ return (
 
             </div>
 
-            {active && <UserProfile></UserProfile>}
+            {active && <UserProfile onProfileClick={handleProfileClick}></UserProfile>}
 
             {seller 
                 ?  null 
