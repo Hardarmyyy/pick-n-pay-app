@@ -24,6 +24,9 @@ const UseValidateUpdateProduct = (value) => {
             else if (field === 'category' && !value[field]) {
                 newErrors[field] = 'Please select a category';
             }
+            else if (field === 'category' && value[field]?.trim() === 'Choose category') {
+                newErrors[field] = 'Please select a valid category';
+            }
             else if (field === 'countInStock' && !value[field]) {
                 newErrors[field] = 'Quantity is required';
             }
