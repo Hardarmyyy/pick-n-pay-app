@@ -1,12 +1,14 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import Logo from '../Logo/Logo'
-import UserProfile from '../../component/UserProfileCard/UserProfile'
-import { BiUserCircle, BiSearch } from "react-icons/bi";
-import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
-import { BsCart3 } from "react-icons/bs";
+import Aside from '../../component/Aside'
+import MobileSearchInput from '../../component/MobileSearchInput'
+import MobileMenu from '../../component/MobileMenu'
+import Menu from '../../component/Menu'
+import HamburgerMenu from '../../component/HamburgerMenu'
 import { MdOutlineClear } from "react-icons/md";
+import { BiSearch } from "react-icons/bi";
 
 
 
@@ -14,14 +16,15 @@ const Navigation = ({category}) => {
 
 const user = useSelector((state) => state?.auth?.user);
 const cart = useSelector((state) => state?.cart?.cartItems);
-const navRef = useRef(null);
 const location = useLocation();
 const showSearchBar = location.pathname === '/' || location.pathname === `/category/${category}`
 const seller = user && user.userRole[0] === 'seller';
 const buyer = user && user.userRole[0] === 'buyer';
 
-// define a state to show and hide the useProfile card;
-const [active, setActive] = useState(false)   
+const [showAsideMenu, setShowAsideMenu] = useState(false)  
+const [showDropDown, setShowDropDown] = useState(false)
+const [showMobileSearch, setShowMobileSearch] = useState(false)
+
 
 // define state for search input field;
 const [searchResult, setSearchResult] = useState([]) 
@@ -48,35 +51,22 @@ const handleClearResult = () => {
     setClearResult(false)
 }
 
-const handleProfileClick = (e) => {
-    e.stopPropagation(); // Prevent click event from bubbling up to the document
-};
-
-useEffect(() => {
-    const handleDocumentClick = (e) => {
-        if (active && navRef.current && !navRef.current.contains(e.target)) {
-            setActive(false);
-        }
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-
-    return () => {
-        document.removeEventListener('click', handleDocumentClick);
-    };
-}, [active]);
 
 return (
 
 <> 
+    <header className='w-full tablet:mt-4 mini:mt-4 laptop:mt-4 super:mt-4 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-between items-center border-b tablet:pb-4 mini:pb-4 laptop:pb-4 super:pb-4 sticky top-0 right-0 z-50 bg-white'> 
+        <div className='flex items-center'>
 
-    <header className='min-w-full my-4 px-4 flex justify-between items-center border-b pb-4'> 
+            <HamburgerMenu showCloseAside={() => setShowAsideMenu(!showAsideMenu)}></HamburgerMenu>
 
-        <Logo></Logo>
+            <Logo></Logo>
+
+        </div>
 
         {showSearchBar && 
 
-            <form className='w-1/2 block relative'>
+            <form className='sm:hidden md:hidden tablet:w-1/2 mini:w-1/2 laptop:w-1/2 super:w-1/2 block relative'>
 
                 <BiSearch className='absolute left-5 top-3 text-slate-500'></BiSearch>
 
@@ -86,42 +76,15 @@ return (
 
             </form>
 
-            // {/* {searchResult.length > 0 &&
-            //     <div className='searchResult'>
-            //         {searchResult.map((item, index) => 
-            //             <Link to={`/products/${item}`} key={index}> {item }</Link>
-            //         )}
-            //     </div>
-            // }  */}
-
         }
 
-        <nav className={'flex justify-between items-center relative'}> 
+        <Menu cart={cart} seller={seller}></Menu>
 
-            <div  className='flex justify-between items-center cursor-pointer p-2 rounded-md mr-11 md:mr-5 lg:mr-7 xl:mr-9 bg-gray-200 hover:bg-gray-400' onClick={() => setActive(!active)} ref={navRef}> 
+        <MobileMenu showCloseSearch={()=> setShowMobileSearch(!showMobileSearch)} showSearchBar={showSearchBar} seller={seller} cart={cart}></MobileMenu>
 
-                <BiUserCircle className='text-2xl text-my-primary mr-2'></BiUserCircle>
-                <div className='flex items-center text-sm'>
-                    <span className='mr-1 text-my-primary font-Montserrat'> Account </span> 
-                    {active ? <IoIosArrowUp></IoIosArrowUp> : <IoIosArrowDown></IoIosArrowDown> }
-                </div>
+        {showAsideMenu && <Aside showDropDown={showDropDown} showCloseAside={()=> setShowAsideMenu(!showAsideMenu)} showCloseDropDown={() => setShowDropDown(!showDropDown)} buyer={buyer} user={user}></Aside>}
 
-            </div>
-
-            {active && <UserProfile onProfileClick={handleProfileClick}></UserProfile>}
-
-            {seller 
-                ?  null 
-                    : 
-                        <div className='cursor-pointer relative'>
-                            <Link to='/cart'> 
-                                {cart?.lenght > 0 && <p className='absolute left-2 -top-2 bg-crimson w-6 h-6 rounded-full text-center text-white font-Montserrat font-bold'>{cart?.length}</p> }
-                                <BsCart3 className='text-4xl text-gray-500 hover:text-my-primary'></BsCart3> 
-                            </Link>
-                        </div>
-            }
-
-        </nav>
+        {showMobileSearch && <MobileSearchInput showCloseSearch={() => setShowMobileSearch(!showMobileSearch)}></MobileSearchInput>}
 
     </header>
     

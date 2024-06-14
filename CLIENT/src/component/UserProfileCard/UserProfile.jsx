@@ -75,14 +75,27 @@ return (
 
             {user && <p className='my-1 font-medium'> Hi {user.userName} </p> }
 
-            <Link to='#' onClick={handleGoTOProfile} className='flex justify-center rounded-sm mb-1 py-1 hover:bg-gray-400'> <BiUserCircle className='text-xl mr-2'></BiUserCircle> My Account </Link>
+            <Link to='#' onClick={handleGoTOProfile} className='flex justify-center items-center px-3 rounded-sm mb-1 py-1 hover:bg-gray-400'> 
+                <BiUserCircle className='text-xl flex-shrink-0'></BiUserCircle> 
+                <span className='flex-1'> My Account </span>
+            </Link>
             
-            <Link to='/orders' className='flex justify-center rounded-sm my-1 py-1 hover:bg-gray-400'> <BsBox2 className='text-xl mr-2'></BsBox2> Orders </Link>
+            <Link to='/orders' className='flex justify-center items-center px-3 rounded-sm my-1 py-1 hover:bg-gray-400'> 
+                <BsBox2 className='text-xl flex-shrink-0'></BsBox2> 
+                <span className='flex-1'> Orders </span>
+            </Link>
             
             {seller 
-                ? <Link to='#' onClick={handleGoToShop} className='flex justify-center rounded-sm mb-1 py-1 hover:bg-gray-400'> <RxDashboard className='text-xl mr-2'></RxDashboard> Shop </Link> 
-                    :
-                        <Link to='/favourites' className='flex justify-center rounded-sm mb-1 py-1 hover:bg-gray-400'> <BsBagHeart className='text-xl mr-2'></BsBagHeart> Wishlist {buyer ? <span> 10 </span> : null}</Link> 
+                ? 
+                    <Link to='#' onClick={handleGoToShop} className='flex justify-center items-center rounded-sm px-3 mb-1 py-1 hover:bg-gray-400'> 
+                        <RxDashboard className='text-xl flex-shrink-0'></RxDashboard> 
+                        <span className='flex-1'> Shop </span>
+                    </Link> 
+                        :
+                            <Link to='/favourites' className='flex justify-center rounded-sm px-3 mb-1 py-1 hover:bg-gray-400'> 
+                                <BsBagHeart className='text-xl flex-shrink-0'></BsBagHeart> 
+                                <span className='flex-1'> Wishlist {buyer ? <span> 10 </span> : null} </span>
+                            </Link> 
                 
             }
             

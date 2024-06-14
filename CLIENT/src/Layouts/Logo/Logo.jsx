@@ -7,7 +7,7 @@ const Logo = () => {
 return (
 
     <>
-        <nav className=' text-blue-950 cursor-pointer font-Jost font-bold md:text-3xl lg:text-4xl'> 
+        <nav className='text-blue-950 cursor-pointer font-Jost font-bold text-xl tablet:text-2xl mini:text-3xl laptop:text-4xl super:text-4xl'> 
 
             <Link to='/'> <h1> Pick<span className='text-crimson'>N</span>Pay </h1> </Link> 
 

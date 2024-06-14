@@ -26,7 +26,9 @@ return (
     
     <section className='min-w-full my-4 px-4 flex justify-between items-start'> 
 
-        <Categories></Categories>
+        <div className="w-40 h-72 py-2 bg-gray-200 rounded-md shadow-sm text-center text-my-primary font-Montserrat sticky top-0">
+            <Categories></Categories>
+        </div>
 
         <Carousel></Carousel> 
 

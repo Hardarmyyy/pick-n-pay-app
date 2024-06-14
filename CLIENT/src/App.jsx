@@ -5,7 +5,10 @@ function App() {
 
 return (
   <>
-    <Outlet></Outlet>
+    <main className='flex-grow'>
+      <Outlet></Outlet>
+    </main>
+
   </>
 )
 }
