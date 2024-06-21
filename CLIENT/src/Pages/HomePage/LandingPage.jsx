@@ -1,5 +1,4 @@
 import React from 'react'
-import Navigation from '../../Layouts/Navigation/Navigation'
 import Footer from '../../Layouts/Footer/Footer'
 import { ToastContainer } from 'react-toastify'
 import Carousel from '../../component/Carousel/Carousel'
@@ -22,17 +21,17 @@ return (
         closeOnClick
         rtl={false}/>
     
-    <Navigation ></Navigation>
-    
-    <section className='min-w-full my-4 px-4 flex justify-between items-start'> 
+    <section className='w-full min-h-screen sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60'> 
 
-        <div className="w-40 h-72 py-2 bg-gray-200 rounded-md shadow-sm text-center text-my-primary font-Montserrat sticky top-0">
+        <div className="sm:hidden md:hidden w-40 h-72 py-2 bg-gray-200 rounded-md shadow-sm pl-2 text-my-primary font-Montserrat sticky top-0">
             <Categories></Categories>
         </div>
 
         <Carousel></Carousel> 
 
-        <NewsLetter></NewsLetter>
+        <div className='sm:hidden md:hidden'>
+            <NewsLetter></NewsLetter>
+        </div>
 
 
         {/* slide.js was removed in favor of photos */}
