@@ -5,6 +5,7 @@ import { BsBox2, BsBagHeart } from "react-icons/bs";
 import { BiUserCircle } from "react-icons/bi";
 import Logo from '../Layouts/Logo/Logo';
 import Categories from './Categories/Categories';
+import AsideNewsLetter from '../Layouts/NewsLetter/AsideNewsLetter';
 import UseLogout from '../Hooks/Auth/Logout/UseLogout';
 
 const Aside = ({showDropDown, showCloseAside, showCloseDropDown, buyer, user}) => {
@@ -128,6 +129,12 @@ return (
                     }
 
                 </ul>
+                
+                <div className='p-3'>
+                    <div class="sm:px-2 py-4 rounded-lg bg-blue-400">
+                        <AsideNewsLetter></AsideNewsLetter>
+                    </div>
+                </div>
 
             </div>
 
