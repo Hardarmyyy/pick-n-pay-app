@@ -13,7 +13,7 @@ const UseValidateNewsLetterForm = (value) => {
     
         for (const field in value) {
 
-            if (field === 'name' && value[field].trim() === '') {
+            if (field === 'username' && value[field].trim() === '') {
                 newErrors[field] = 'Name is required';
                 newInvalids[field] = true;
             }

@@ -4,9 +4,10 @@ import UseValidateNewsLetterForm from './UseValidateNewsLetterForm'
 import {toast} from 'react-toastify'
 
 const UseNewsletter = () => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     const [newsLetter, setNewsLetter] = useState({
-        name: '',
+        username: '',
         email: '' 
     })
     
@@ -15,23 +16,20 @@ const UseNewsletter = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     
     const handleChange = (e) => {
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const {name, value} = e.target
-        setNewsLetter((newsLetter) => {return {...newsLetter, [name]: name === 'name' ? value : value.replace(/\s/g, "")}})
+        setNewsLetter((newsLetter) => {return {...newsLetter, [name]: name === 'username' ? value : value.replace(/\s/g, "")}})
     
-        if (name === 'name') {
-            setError((error) => { return {...error, name: value ? '' : 'Enter name', email: value ? '' : null, multi: value ? '' : null }})
+        if (name === 'username') {
+            setError((error) => { return {...error, username: value ? '' : 'Enter your name', email: value ? '' : null}})
         }
         else if (name === 'email') {
-            setError((error) => { return {...error, name: '', email: value ? emailRegex.test(value) ? '' : 'Invalid email address' : 'Enter email address', multi: value ? '' : null}})
+            setError((error) => { return {...error, username: '', email: value ? emailRegex.test(value) ? '' : 'Invalid e-mail' : 'Enter email address'}})
         }
     } 
     
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    
     const handleCanSave = (value) => {
         const canSubmit = [
-            value.name.replace(/\s/g, "") && 
+            value.username.replace(/\s/g, "") && 
             emailRegex.test(value.email)
         ].every(Boolean) // enable the submit button 
     
@@ -45,10 +43,6 @@ const UseNewsletter = () => {
 
         setError(errors)
 
-        if (!newsLetter.name && !newsLetter.email) {
-            return setError({multi: 'Enter name and email'})
-        }
-
         if (isSubmitting) return;
 
         if (!isSubmitting && isSave) {
@@ -56,7 +50,7 @@ const UseNewsletter = () => {
                 toastStyle: { background: 'green', color: 'white' }
             })
             setNewsLetter({
-                name: '',
+                username: '',
                 email: '' 
             })
         }

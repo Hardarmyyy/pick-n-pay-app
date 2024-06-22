@@ -25,7 +25,9 @@ useEffect(() => {
 
         <section className='min-w-full my-4 px-4 flex justify-between items-start'>
 
-            <Categories></Categories>
+            <div className="sm:hidden md:hidden tablet:w-1/5 h-72 py-2 bg-gray-200 rounded-md shadow-sm pl-2 text-my-primary font-Montserrat sticky top-0">
+                <Categories></Categories>
+            </div>
 
             <main className='w-3/4 mx-auto md:ml-10'>
 

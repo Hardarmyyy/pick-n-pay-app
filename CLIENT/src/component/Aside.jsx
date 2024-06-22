@@ -15,6 +15,7 @@ const {handleLogout} = UseLogout()
 
 const handleSignOut = async () => {
     await handleLogout()
+    showCloseAside()
 }
 
 const handlecloseAsideAndCloseDropDown = () => {

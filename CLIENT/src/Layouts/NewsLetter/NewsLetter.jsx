@@ -12,36 +12,38 @@ const handleSubmit = (e) => {
 
   return (
     <>
-        <section className='md:w-44 lg:w-56 h-72 py-2 md:px-1 lg:px-3 font-Montserrat text-my-primary bg-gray-200 rounded-md shadow-sm text-center'>
+        <section className='w-full h-72 p-2 font-Montserrat text-my-primary bg-gray-200 rounded-md shadow-sm text-center'>
 
-            <p className='text-sm'> Get updates and receive alerts when we have new products </p> 
+            <p className='text-sm tablet:text-start'> Get updates and receive alerts when we have new products </p> 
 
-            <form onSubmit={handleSubmit} className='md:w-full lg:w-full relative' >
-                
+            <form onSubmit={handleSubmit} className='w-full relative' >
+
+              <div className='relative'>
                 <input 
-                  type="text" 
-                  name="name" 
-                  className='w-full mt-3 p-2 border rounded-md text-sm text-my-primary font-Montserrat shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-gray-400'
-                  placeholder="Enter your name" 
-                  value={newsLetter.name} 
-                  onChange={handleChange}  maxLength={20}
-                /> 
+                    type="text" 
+                    name="username" 
+                    className='w-full mt-3 p-2 border-transparent rounded-md text-sm text-my-primary font-Montserrat shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-none focus:border-2 focus:border-gray-600'
+                    placeholder="Enter your name" 
+                    value={newsLetter.username} 
+                    onChange={handleChange}  maxLength={20}
+                  /> 
+                  {error && <p className='text-crimson text-sm absolute left-0 font-Montserrat'> {error.username} </p>}
+              </div>
 
+              <div className='relative mt-4'>
                 <input 
-                  type="text" 
-                  name="email" 
-                  className='w-full mt-3 p-2 border rounded-md text-sm text-my-primary font-Montserrat shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-gray-400'
-                  placeholder="Enter your email address" 
-                  value={newsLetter.email} 
-                  onChange={handleChange}  
-                  maxLength={25}
-                /> 
+                    type="text" 
+                    name="email" 
+                    className='w-full p-2 border-transparent rounded-md text-sm text-my-primary font-Montserrat shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-none focus:border-2 focus:border-gray-600'
+                    placeholder="Enter your email address" 
+                    value={newsLetter.email} 
+                    onChange={handleChange}  
+                    maxLength={30}
+                  /> 
+                  {error && <p className='text-crimson text-sm absolute left-0 font-Montserrat'> {error.email} </p>}
+              </div>
 
-                {error && <p className='text-crimson text-sm absolute left-0 font-Montserrat'> {error.name} </p>}
-                {error && <p className='text-crimson text-sm absolute left-0 font-Montserrat'> {error.email} </p>}
-                {error && <p className='text-crimson text-sm absolute left-0 font-Montserrat'> {error.multi} </p>}
-
-                <button className='font-Montserrat md:px-2 lg:px-3 py-1 mt-6 text-white bg-crimson rounded-md hover:bg-red-700'> Subscribe now </button>
+              <button className='font-Montserrat tablet:px-3 mini:px-4 laptop:px-5 tablet:text-sm py-1 mt-6 text-white bg-crimson rounded-md hover:bg-red-700'> Subscribe </button>
 
             </form>
 

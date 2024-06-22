@@ -1,4 +1,5 @@
 import React from 'react'
+import Navigation from '../../Layouts/Navigation/Navigation'
 import Footer from '../../Layouts/Footer/Footer'
 import { ToastContainer } from 'react-toastify'
 import Carousel from '../../component/Carousel/Carousel'
@@ -20,17 +21,23 @@ return (
         newestOnTop={false}
         closeOnClick
         rtl={false}/>
+
+    <Navigation></Navigation>
     
-    <section className='w-full min-h-screen sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60'> 
+    <section className='w-full min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60'> 
 
-        <div className="sm:hidden md:hidden w-40 h-72 py-2 bg-gray-200 rounded-md shadow-sm pl-2 text-my-primary font-Montserrat sticky top-0">
-            <Categories></Categories>
-        </div>
+        <div className='w-full flex justify-between items-start'>
 
-        <Carousel></Carousel> 
+            <div className="sm:hidden md:hidden tablet:w-1/5 mini:w-36 laptop:w-44 super:w-44 h-72 py-2 bg-gray-200 rounded-md shadow-sm pl-2 text-my-primary font-Montserrat">
+                <Categories></Categories>
+            </div>
 
-        <div className='sm:hidden md:hidden'>
-            <NewsLetter></NewsLetter>
+            <Carousel></Carousel> 
+
+            <div className='sm:hidden md:hidden tablet:w-1/4 mini:w-52 laptop:w-60 super:w-60'>
+                <NewsLetter></NewsLetter>
+            </div>
+
         </div>
 
 
