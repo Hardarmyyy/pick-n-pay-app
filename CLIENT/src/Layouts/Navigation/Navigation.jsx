@@ -82,7 +82,7 @@ return (
 
         <MobileMenu showCloseSearch={()=> setShowMobileSearch(!showMobileSearch)} showSearchBar={showSearchBar} seller={seller} cart={cart}></MobileMenu>
 
-        {showAsideMenu && <Aside showDropDown={showDropDown} showCloseAside={()=> setShowAsideMenu(!showAsideMenu)} showCloseDropDown={() => setShowDropDown(!showDropDown)} buyer={buyer} user={user}></Aside>}
+        {showAsideMenu && <Aside showDropDown={showDropDown} showCloseAside={()=> setShowAsideMenu(!showAsideMenu)} showCloseDropDown={() => setShowDropDown(!showDropDown)} buyer={buyer} seller={seller} user={user}></Aside>}
 
         {showMobileSearch && <MobileSearchInput showCloseSearch={() => setShowMobileSearch(!showMobileSearch)}></MobileSearchInput>}
 

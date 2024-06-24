@@ -9,7 +9,7 @@ import Categories from './Categories/Categories';
 import AsideNewsLetter from '../Layouts/NewsLetter/AsideNewsLetter';
 import UseLogout from '../Hooks/Auth/Logout/UseLogout';
 
-const Aside = ({showDropDown, showCloseAside, showCloseDropDown, buyer, user}) => {
+const Aside = ({showDropDown, showCloseAside, showCloseDropDown, buyer, seller, user}) => {
 
 const accessToken = useSelector((state) => state.auth?.accessToken);
 
@@ -87,19 +87,17 @@ return (
                     </li>
 
                     <li>
-                        { buyer 
+                        { seller 
                             ?
-                                <Link to='/favourites' className="flex items-center p-2">
-                                    <BsBagHeart className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></BsBagHeart>
-                                    <span className="flex-1 ms-3 whitespace-nowrap"> Wishlist {buyer ? <span> 10 </span> : null} </span>
-                                </Link>
-
+                                <Link to='/shop' className='flex items-center p-2'> 
+                                    <RxDashboard className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></RxDashboard> 
+                                    <span className='flex-1 ms-3 whitespace-nowrap'> Shop </span>
+                                </Link> 
                                 :
-
-                                    <Link to='/shop' className='flex items-center p-2'> 
-                                        <RxDashboard className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></RxDashboard> 
-                                        <span className='flex-1 ms-3 whitespace-nowrap'> Shop </span>
-                                    </Link> 
+                                    <Link to='/favourites' className="flex items-center p-2">
+                                        <BsBagHeart className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></BsBagHeart>
+                                        <span className="flex-1 ms-3 whitespace-nowrap"> Wishlist {buyer ? <span> 10 </span> : null} </span>
+                                    </Link>
                         }
                     </li>
 
