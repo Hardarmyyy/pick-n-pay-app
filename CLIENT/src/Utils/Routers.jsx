@@ -16,7 +16,7 @@ import PrivateRoutes from './PrivateRoutes'
 import { admin, buyer, seller, registeredUser } from './AllowedRoles'
 
 const LandingPage = lazy(() => import ('../Pages/HomePage/LandingPage.jsx'))
-const CartProduct = lazy(() => import ('../Pages/CartProducts/CartProduct.jsx' )) 
+import CartProduct from '../Pages/CartProducts/CartProduct.jsx'  
 const CategoryProduct = lazy(() => import ('../Pages/Products/CategoryProducts/CategoryProduct.jsx'))
 
 const ProfileLayout = lazy(() => import ('../Pages/UserProfile/ProfileLayout.jsx'))
@@ -57,8 +57,8 @@ export const router = createBrowserRouter(
         
         <Route element={<PersistLogin></PersistLogin>}>
 
-            <Route path='/' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <LandingPage></LandingPage> </Suspense>}></Route>
-            <Route path='/cart' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <CartProduct></CartProduct> </Suspense>}></Route>
+            <Route path='/' element={<Suspense fallback={ <div className='loader'> <Spinner></Spinner> </div>}> <LandingPage></LandingPage> </Suspense>}></Route>
+            <Route path='/cart' element={ <CartProduct></CartProduct> }></Route>
             <Route path='/category/:category' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <CategoryProduct></CategoryProduct> </Suspense>}></Route>
 
             <Route element={<PrivateRoutes allowedRoles={registeredUser}></PrivateRoutes>}>

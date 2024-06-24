@@ -1,5 +1,6 @@
 import { createSlice, isPending, isFulfilled, isRejected } from "@reduxjs/toolkit";
 import {FETCHCARTITEMS} from '../Services/cartApi'
+import {toast} from 'react-toastify'
 
 
 export const initialState = {
@@ -35,8 +36,8 @@ export const cartSlice = createSlice({
                     isRejected(FETCHCARTITEMS),
                     (state, action) => {
                         state.status = 'failed';
-                        const message = action.payload.error
-                        toast.error(message, {
+                        const err = action.payload.error
+                        toast.error(err, {
                             toastStyle: { background: 'red', color: 'white' }
                         })
                 }
