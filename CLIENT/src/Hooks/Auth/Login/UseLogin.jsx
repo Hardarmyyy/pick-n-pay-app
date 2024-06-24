@@ -20,7 +20,6 @@ const [regUser, setRegUser] = useState({
 })
 
 const [error, setError] = useState({})
-const [invalid, setInvalid] = useState({})
 
 // define a function to handle form state
 const handleChange = (e) => {
@@ -29,11 +28,9 @@ const handleChange = (e) => {
     // validating form state;
     if (name === 'username') {
         setError((error) => {return {...error, username: value ? '': 'Kindly enter username' }})
-        setInvalid((invalid) => {return {...invalid, username: value ? false : true}})
     }
     if (name === 'password') {
         setError((error) => {return {...error, password: value ? '': 'Kindly enter password' }})
-        setInvalid((invalid) => {return {...invalid, password: value ? false : true}})
     }
 } 
 
@@ -48,7 +45,7 @@ const handleShowPassword = () => {
 const [isSubmitting, setIsSubmitting] = useState(false);
 
 // import and use validateLoginForm hook to catch errors on the form object;
-const {errors, invalids} = UseValidateLoginform(regUser)
+const {errors} = UseValidateLoginform(regUser)
 
 // define a function to check that all fields in the form object are not empty
 const handleCanLogin = (value) => {
@@ -99,7 +96,7 @@ useEffect(() => {
     handleCanLogin(regUser)
 }, [regUser])
 
-return {regUser, error, invalid, handleChange, showPassword, handleShowPassword, handleLogin}
+return {regUser, error, handleChange, showPassword, handleShowPassword, handleLogin}
 
 }
 

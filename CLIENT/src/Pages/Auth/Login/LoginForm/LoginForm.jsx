@@ -13,17 +13,17 @@ const LoginForm = ({regUser, error, handleChange, submitForm, showPassword, hand
     return (
         <>
 
-            <section className='w-96 h-auto mx-auto translate-y-10'>
+            <section className='w-full tablet:w-4/5 mini:w-3/4 laptop:w-1/2 super:w-3/5 mx-auto'>
 
-                <p className='font-Jost md:text-xl lg:text-3xl mb-3 text-blue-950 font-bold'> Login </p>
+                <p className='font-Jost text-lg tablet:text-xl mini:text-2xl laptop:text-3xl super:text-3xl mb-3 text-blue-950 font-bold text-center'> Login </p>
 
-                <form className='w-full text-sm font-Montserrat text-my-primary' onSubmit={submitForm}>
+                <form className='w-full text-sm font-Montserrat text-my-primary bg-[#fcfcfc] rounded-md my-3 sm:px-2 md:px-4 tablet:px-4 mini:px-5 laptop:px-4 py-3' onSubmit={submitForm}>
 
-                    <div>
+                    <div className='relative'>
                         <label> Username <span className='text-crimson'> * </span></label>
                         <input 
                             type='text' 
-                            className= 'w-full mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
+                            className= 'w-full mt-1 p-2 border-transparent rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:border-blue-950'
                             value={regUser.username} 
                             onChange={handleChange} 
                             placeholder='Enter username' 
@@ -36,7 +36,7 @@ const LoginForm = ({regUser, error, handleChange, submitForm, showPassword, hand
                         <label> Password <span className='text-crimson'> * </span></label>
                         <input 
                             type={showPassword ? 'text' : 'password'}  
-                            className= 'w-full mt-1 p-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
+                            className= 'w-full mt-1 p-2 border-transparent rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:border-blue-950'
                             value={regUser.password} 
                             onChange={handleChange} 
                             placeholder='Enter password' 
@@ -44,14 +44,14 @@ const LoginForm = ({regUser, error, handleChange, submitForm, showPassword, hand
                         /> 
                         {error.password && <p className='absolute text-crimson left-0'> {error.password} </p> }
 
-                        <div className="text-lg absolute top-8 right-4 cursor-pointer" onClick={handleShowPassword}>
+                        <div className="text-lg absolute top-9 right-4 cursor-pointer" onClick={handleShowPassword}>
                             {showPassword ? <BsEye /> : <BsEyeSlash />}
                         </div> 
 
                     </div>
 
                     <div className='text-center mt-3'>
-                        <Button padding='5px 60px' margin='10px auto'> {status === 'Loading.......' ? <span> Logging in </span> : <span> Sign in </span>}</Button>  
+                        <Button padding='10px 60px' margin='10px auto'> {status === 'Loading.......' ? <span> Logging in </span> : <span> Sign in </span>}</Button>  
                     </div>
 
                 </form>  

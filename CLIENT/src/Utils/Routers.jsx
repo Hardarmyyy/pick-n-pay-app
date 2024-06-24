@@ -49,7 +49,7 @@ export const router = createBrowserRouter(
     createRoutesFromElements(
     <Route element={<App></App>}> 
 
-        <Route path='/login' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <Login></Login> </Suspense>}></Route>
+        <Route path='/login' element={<Suspense fallback={<div className='loader'> <Spinner></Spinner> </div>}> <Login></Login> </Suspense>}></Route>
         <Route path='/signup' element={<Suspense fallback={ <div className='loader'> <Spinner></Spinner> </div>}> <SignUp></SignUp> </Suspense>}></Route>
         <Route path='/verify-email' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <VerifyEmail></VerifyEmail> </Suspense>}></Route>
         <Route path='/forgot-password' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <ForgotPassword></ForgotPassword> </Suspense>}></Route>

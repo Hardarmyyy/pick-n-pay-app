@@ -132,8 +132,8 @@ export const authSlice = createSlice({
                     isRejected(REGISTERUSERS, VERIFYEMAILTOKEN, VERIFYEMAIL, LOGIN, FORGOTPASSWORD, VERIFYRESETTOKEN, RESETPASSWORD, REFRESH, LOGOUT, SINGLEUSER, UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE),
                     (state, action) => {
                         state.status = 'failed';
-                        const message = action.payload.error
-                        toast.error(message, {
+                        const err = action.payload.error
+                        toast.error(err, {
                             toastStyle: { background: 'red', color: 'white' }
                         })
                 }

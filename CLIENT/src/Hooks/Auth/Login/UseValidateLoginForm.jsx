@@ -4,26 +4,21 @@ import { useState, useEffect } from "react";
 const UseValidateLoginform = (value) => { 
 
 const [errors, setError] = useState({})
-const [invalids, setInvalid] = useState({})
 
 
 const validate = (value) => {
     const newErrors = {};
-    const newInvalid = {};
 
     for (const field in value) {
         if (field === 'username' && value[field].trim() === '') {
             newErrors[field] = 'Username field is required';
-            newInvalid[field] = true;
         }
         else if (field === 'password' && value[field].trim() === '') {
             newErrors[field] = 'Password field is required';
-            newInvalid[field] = true;
         }
     }
 
     setError(newErrors)
-    setInvalid(newInvalid)
 }
 
 useEffect(() => {
@@ -31,7 +26,7 @@ useEffect(() => {
 }, [value])  
 
 
-return {errors, invalids}
+return {errors}
 
 }
 
