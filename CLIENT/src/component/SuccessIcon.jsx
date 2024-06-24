@@ -5,7 +5,7 @@ const SuccessIcon = () => {
 
 return (
     <>
-        <div className=" w-24 h-24 rounded-full p-3 shadow-sm border-2 border-green-600 bg-white text-7xl text-green-600">
+        <div className="sm:w-14 sm:h-14 tablet:w-20 tablet:h-20 w-24 h-24 sm:text-4xl text-6xl sm:p-2 p-3 rounded-full shadow-sm border-2 border-green-600 bg-white text-green-600 flex justify-center items-center">
             &#10003;
         </div>
     </>

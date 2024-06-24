@@ -4,12 +4,8 @@ import { useState, useEffect } from "react";
 const UseValidateSignupForm = (value) => {
 
     const [errors, setError] = useState({})
-    const [invalids, setInvalid] = useState({})
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const passwordRegexUpperCase = /^(?=.*[A-Z])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-    const passwordRegexNumber = /^(?=.*[0-9])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-    const passwordRegexSymbol = /^(?=.*[.!@#$%^&*])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
     
     
     const validate = (value) => {
@@ -44,22 +40,9 @@ const UseValidateSignupForm = (value) => {
                 newErrors[field] = 'Password must be at least 8 characters long';
                 newInvalid[field] = true;
             }
-            else if ((field === 'password' && value[field].trim() !== '') && !(passwordRegexUpperCase.test(value[field]))) {
-                newErrors[field] = 'Password must contain at least one uppercased letter!';
-                newInvalid[field] = true;
-            }
-            else if ((field === 'password' && value[field].trim() !== '') && !(passwordRegexNumber.test(value[field]))) {
-                newErrors[field] = 'Password must contain at least one number!';
-                newInvalid[field] = true;
-            }
-            else if ((field === 'password' && value[field].trim() !== '') && !(passwordRegexSymbol.test(value[field]))) {
-                newErrors[field] = 'Password must contain at least one symbol!';
-                newInvalid[field] = true;
-            }
         }
     
         setError(newErrors)
-        setInvalid(newInvalid)
     }
     
     useEffect(() => {
@@ -67,7 +50,7 @@ const UseValidateSignupForm = (value) => {
     }, [value]) 
     
     
-    return {errors, invalids}
+    return {errors}
 
 }
 

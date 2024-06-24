@@ -8,9 +8,6 @@ import {toast} from 'react-toastify'
 const UseSignup = () => {
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const passwordRegexUpperCase = /^(?=.*[A-Z])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-const passwordRegexNumber = /^(?=.*[0-9])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-const passwordRegexSymbol = /^(?=.*[.!@#$%^&*])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
 
 const dispatch = useDispatch()
 
@@ -23,7 +20,6 @@ const [newUser, setNewUser] = useState({
 })
 
 const [error, setError] = useState({})
-const [invalid, setInvalid] = useState({})
 
 // define a state to open Modal
 const [openModal, setOpenModal] = useState(false)
@@ -44,15 +40,12 @@ const handleChange = (e) => {
     }
     else if (name === 'username') {
         setError((error) => {return {...error, username: value ? value.length < 8 ? 'Username must be at least 8 characters!' : '' : 'Kindly enter username' }})
-        setInvalid((invalid) => {return {...invalid, username: value ? false : true}})
     }
     else if (name === 'email') {
         setError((error) => { return {...error, email: value ? emailRegex.test(value) ? '' : 'Enter a valid email address' : 'Enter email address'}})
-        setInvalid((invalid) => {return {...invalid, email: value ? false : true}})
     }
     else if (name === 'password') {
-        setError((error) => {return {...error, password: value ? '' : 'Kindly enter password' }})
-        setInvalid((invalid) => {return {...invalid, password: value ? false : true}})
+        setError((error) => {return {...error, password: value ? value.length >= 8 ? '' : 'Password must be at least 8 characters!' : 'Kindly enter password'}})
     }
 
 }
@@ -68,17 +61,14 @@ const handleShowPassword = () => {
 }
 
 // import and use validatesignup hook to catch errors on the form object ;
-const {errors, invalids} = UseValidateSignupForm(newUser)
+const {errors} = UseValidateSignupForm(newUser)
 
 const handleCanSave = (value) => {
     const canSave = [
         value.userRole &&
         value.username.length >= 8 &&
         emailRegex.test(value.email) &&
-        value.password.length >= 8 && 
-        passwordRegexUpperCase.test(value.password) && 
-        passwordRegexNumber.test(value.password) && 
-        passwordRegexSymbol.test(value.password)
+        value.password.length >= 8
     ].every(Boolean)
 
     return canSave
@@ -125,7 +115,7 @@ useEffect(() => {
     handleCanSave(newUser)
 }, [newUser])
 
-    return {newUser, error, invalid, handleChange, openModal, handleOpenModal, showPassword, handleShowPassword, handleSignup}
+    return {newUser, error, handleChange, openModal, handleOpenModal, showPassword, handleShowPassword, handleSignup}
 }
 
 export default UseSignup

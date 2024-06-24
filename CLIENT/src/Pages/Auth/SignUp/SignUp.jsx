@@ -31,20 +31,25 @@ return (
         closeOnClick
         rtl={false}/>
 
-    <div className='p-4'>
+    <div className='tablet:mt-4 mini:mt-4 laptop:mt-4 super:mt-4 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 sticky top-0 left-0 z-50 bg-white'>
         <Logo></Logo>
     </div>
 
-    <SignupForm 
-        newUser={newUser}
-        error={error}
-        showPassword={showPassword}
-        handleShowPassword={handleShowPassword}
-        handleChange={handleChange}
-        submitForm={handleFormSubmit}>
-    </SignupForm> 
+    <section className='w-full sm:h-4/5 md:h-4/5 tablet:min-h-screen mini:min-h-screen laptop:min-h-screen super:min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-center'>
 
-    {openModal && <SignUpModal handleOpenModal={handleOpenModal}></SignUpModal>}
+        <SignupForm 
+            newUser={newUser}
+            error={error}
+            showPassword={showPassword}
+            handleShowPassword={handleShowPassword}
+            handleChange={handleChange}
+            submitForm={handleFormSubmit}>
+        </SignupForm> 
+
+        {openModal && <SignUpModal handleOpenModal={handleOpenModal}></SignUpModal>}
+
+    </section>
+
 </>
 )
 }
