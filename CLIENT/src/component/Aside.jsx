@@ -3,6 +3,7 @@ import {useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
 import { BsBox2, BsBagHeart } from "react-icons/bs";
 import { BiUserCircle } from "react-icons/bi";
+import { RxDashboard } from "react-icons/rx";
 import Logo from '../Layouts/Logo/Logo';
 import Categories from './Categories/Categories';
 import AsideNewsLetter from '../Layouts/NewsLetter/AsideNewsLetter';
@@ -86,10 +87,20 @@ return (
                     </li>
 
                     <li>
-                        <Link to='/favourites' className="flex items-center p-2">
-                            <BsBagHeart className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></BsBagHeart>
-                            <span className="flex-1 ms-3 whitespace-nowrap"> Wishlist {buyer ? <span> 10 </span> : null} </span>
-                        </Link>
+                        { buyer 
+                            ?
+                                <Link to='/favourites' className="flex items-center p-2">
+                                    <BsBagHeart className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></BsBagHeart>
+                                    <span className="flex-1 ms-3 whitespace-nowrap"> Wishlist {buyer ? <span> 10 </span> : null} </span>
+                                </Link>
+
+                                :
+
+                                    <Link to='/shop' className='flex items-center p-2'> 
+                                        <RxDashboard className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></RxDashboard> 
+                                        <span className='flex-1 ms-3 whitespace-nowrap'> Shop </span>
+                                    </Link> 
+                        }
                     </li>
 
                     {accessToken 
