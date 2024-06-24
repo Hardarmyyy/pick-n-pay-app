@@ -51,9 +51,6 @@ body::-webkit-scrollbar-thumb:hover, .cart::-webkit-scrollbar {
     top: 50%;
     left: 50%;
     position: absolute;
-    color: #132A63;
-    font-family: 'Jost', sans-serif; 
-    font-size: 34px;
 }
 
 textarea {

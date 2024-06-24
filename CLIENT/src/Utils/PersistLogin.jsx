@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { REFRESH } from "../Services/authApi";
+import Spinner from "../component/Spinner";
 
 const PersistLogin = () => {
 
@@ -30,7 +31,7 @@ const PersistLogin = () => {
     return (
         <>
             {isLoading 
-                ? <h1 className="loader"> Loading ..... </h1>
+                ? <div className="loader"> <Spinner></Spinner> </div>
                 : <Outlet></Outlet>
             }
         </>

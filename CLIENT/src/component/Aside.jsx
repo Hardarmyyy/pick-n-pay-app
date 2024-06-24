@@ -131,7 +131,7 @@ return (
                 </ul>
                 
                 <div className='p-3'>
-                    <div class="sm:px-2 py-4 rounded-lg bg-blue-400">
+                    <div className="sm:px-2 py-4 rounded-lg bg-blue-400">
                         <AsideNewsLetter></AsideNewsLetter>
                     </div>
                 </div>
