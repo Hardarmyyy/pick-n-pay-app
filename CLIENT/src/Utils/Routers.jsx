@@ -52,7 +52,7 @@ export const router = createBrowserRouter(
         <Route path='/login' element={<Suspense fallback={<div className='loader'> <Spinner></Spinner> </div>}> <Login></Login> </Suspense>}></Route>
         <Route path='/signup' element={<Suspense fallback={ <div className='loader'> <Spinner></Spinner> </div>}> <SignUp></SignUp> </Suspense>}></Route>
         <Route path='/verify-email' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <VerifyEmail></VerifyEmail> </Suspense>}></Route>
-        <Route path='/forgot-password' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <ForgotPassword></ForgotPassword> </Suspense>}></Route>
+        <Route path='/forgot-password' element={<Suspense fallback={<div className='loader'> <Spinner></Spinner> </div>}> <ForgotPassword></ForgotPassword> </Suspense>}></Route>
         <Route path='/reset-password' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <ResetPassword></ResetPassword> </Suspense>}></Route>
         
         <Route element={<PersistLogin></PersistLogin>}>

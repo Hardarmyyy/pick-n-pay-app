@@ -17,7 +17,6 @@ const [user, setUser] = useState({
 
 // define a state to handle email input change validation
 const [error, setError] = useState({})
-const [invalid, setInvalid] = useState({})
 
 // define a state to handle user email input change
 const handleChange = (e) => {
@@ -26,12 +25,11 @@ const handleChange = (e) => {
 
     if (name === 'email') {
         setError((error) => { return {...error, email: value ? emailRegex.test(value) ? '' : 'Enter a valid email address' : 'Enter email address'}})
-        setInvalid((invalid) => { return {...invalid, email: value ? false : true }})
     }
 }
 
 // import and UseValidateForgotPasswordForm hook to catch errors on form object ;
-const {errors, invalids} = UseValidateForgotPasswordForm(user)
+const {errors} = UseValidateForgotPasswordForm(user)
 
 const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -76,7 +74,7 @@ useEffect(() => {
 }, [user])
 
 
-return {user, error, invalid, handleChange, handleForgotPassword}
+return {user, error, handleChange, handleForgotPassword}
 }
 
 export default UseForgotPassword
