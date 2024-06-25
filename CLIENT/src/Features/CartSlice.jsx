@@ -1,11 +1,19 @@
 import { createSlice, isPending, isFulfilled, isRejected } from "@reduxjs/toolkit";
 import {FETCHCARTITEMS} from '../Services/cartApi'
+import { LOGOUT } from "../Services/authApi";
 import {toast} from 'react-toastify'
 
 
 export const initialState = {
     status: 'idle',
-    cartItems: []
+    cartItems: {
+        myCart: [],
+        numberOfProducts: 0,
+        subTotal: 0,
+        shippingCost: 0,
+        vat: 0,
+        total: 0
+    },
 }
 
 export const cartSlice = createSlice({
@@ -17,8 +25,13 @@ export const cartSlice = createSlice({
     extraReducers (builder) {
         builder 
                 .addCase(FETCHCARTITEMS.fulfilled, (state, action) => { 
-                    const cart = action.payload.cart
-                    
+                    state.cartItems = action.payload.cart
+                })
+                .addCase(LOGOUT.fulfilled, (state, action) => {
+                    const {message} = action.payload;
+                    if (message) {
+                        state.cartItems = []
+                    } 
                 })
                 .addMatcher(
                     isFulfilled(FETCHCARTITEMS),

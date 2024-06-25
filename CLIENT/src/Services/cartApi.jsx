@@ -1,9 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance } from "../Utils/Axios";
 
-const FETCHCARTITEMS = createAsyncThunk('cart/all', async (_, {rejectWithValue}) => { 
+const FETCHCARTITEMS = createAsyncThunk('cart/all', async (username, {rejectWithValue}) => { 
+
     try {
-        const response = await axiosInstance.get('/all-cart-products')
+        const response = await axiosInstance.get(`all-cart-products`, { params: {username}})
         return response.data
     }
     catch (err) {

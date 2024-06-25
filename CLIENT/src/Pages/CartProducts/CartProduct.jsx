@@ -13,10 +13,11 @@ const CartProduct = () => {
 
 const dispatch = useDispatch();
 const cart = useSelector((state) => state?.cart?.cartItems);
-const status = useSelector((state) => state?.cart?.status)
+const status = useSelector((state) => state?.cart?.status);
+const username = useSelector((state) => state?.auth?.user?.userName);
 
 useEffect(() => {
-    dispatch(FETCHCARTITEMS())
+    dispatch(FETCHCARTITEMS(username))
 }, [dispatch]);
 
 if (status === 'Loading.......') {
@@ -52,7 +53,7 @@ return (
 
     <Navigation></Navigation>
 
-    { status !== 'Loading.......' && !cart.length
+    { status !== 'Loading.......' && !cart?.myCart?.length
 
         ?
             <section className='w-full h-1/2 tablet:h-1/2 mini:h-3/5 laptop:h-3/4 super:h-3/4 flex justify-center items-center py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60'>
