@@ -1,8 +1,6 @@
 import React from 'react'
-import {Link, useNavigate} from 'react-router-dom';
-import {useSelector, useDispatch } from 'react-redux'
-import { SINGLEUSER } from '../../Services/userApi';
-import { STOREPRODUCTS } from '../../Services/productAPi';
+import {Link} from 'react-router-dom';
+import {useSelector } from 'react-redux'
 import UseLogout from '../../Hooks/Auth/Logout/UseLogout';
 import { BiUserCircle } from "react-icons/bi";
 import { BsBox2, BsBagHeart } from "react-icons/bs";
@@ -13,41 +11,16 @@ import Button from '../Button'
 const UserProfile = ({onProfileClick}) => {
 
 const accessToken = useSelector((state) => state.auth?.accessToken);
-const id = useSelector((state) => state.auth?.user?.userID)
 const user = useSelector((state) => state.auth.user);
 const seller = user && user.userRole[0] === 'seller';
 const buyer = user && user.userRole[0] === 'buyer';
 
 const {handleLogout} = UseLogout()
-const dispatch = useDispatch()
-const navigate = useNavigate()
 
 const handleSignOut = async () => {
     await handleLogout()
 }
 
-const handleGoTOProfile = async () => {
-    await dispatch(SINGLEUSER(id))
-    .then((response) => {
-        navigate('/profile')
-    })
-    .catch((err) => {
-        console.error(err)
-    })
-}
-
-const handleGoToShop = async () => {
-    await dispatch(STOREPRODUCTS(id))
-    .then((response) => {
-        const {sellersStore} = response.payload
-        if (sellersStore) {
-            navigate('/shop')
-        }
-    })
-    .catch((err) => {
-        console.error(err)
-    })
-}
 
 
 return (
@@ -75,7 +48,7 @@ return (
 
             {user && <p className='my-1 font-medium'> Hi {user.userName} </p> }
 
-            <Link to='#' onClick={handleGoTOProfile} className='flex justify-center items-center px-3 rounded-sm mb-1 py-1 hover:bg-gray-400'> 
+            <Link to='/profile' className='flex justify-center items-center px-3 rounded-sm mb-1 py-1 hover:bg-gray-400'> 
                 <BiUserCircle className='text-xl flex-shrink-0'></BiUserCircle> 
                 <span className='flex-1'> My Account </span>
             </Link>
@@ -87,7 +60,7 @@ return (
             
             {seller 
                 ? 
-                    <Link to='#' onClick={handleGoToShop} className='flex justify-center items-center rounded-sm px-3 mb-1 py-1 hover:bg-gray-400'> 
+                    <Link to='/shop' className='flex justify-center items-center rounded-sm px-3 mb-1 py-1 hover:bg-gray-400'> 
                         <RxDashboard className='text-xl flex-shrink-0'></RxDashboard> 
                         <span className='flex-1'> Shop </span>
                     </Link> 
