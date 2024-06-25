@@ -50,7 +50,7 @@ return (
 
             <Link to='/profile' className='flex justify-center items-center px-3 rounded-sm mb-1 py-1 hover:bg-gray-400'> 
                 <BiUserCircle className='text-xl flex-shrink-0'></BiUserCircle> 
-                <span className='flex-1'> My Account </span>
+                <span className='flex-1'> My Profile </span>
             </Link>
             
             <Link to='/orders' className='flex justify-center items-center px-3 rounded-sm my-1 py-1 hover:bg-gray-400'> 
