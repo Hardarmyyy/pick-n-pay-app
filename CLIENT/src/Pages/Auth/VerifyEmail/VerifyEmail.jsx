@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import Logo from '../../../Layouts/Logo/Logo'
 import VerifyEmailForm from './VerifyEmailForm/VerifyEmailForm'
 import SuccessModal from '../../../Layouts/SuccessModal/SuccessModal'
-import ExpiredLink from '../../../component/ExpiredLink/ExpiredLink'
+import ExpiredLink from '../../../component/ExpiredLink'
 import Verified from '../../../component/Verified/Verified'
 import UseVerifyEmail from '../../../Hooks/Auth/VerifyEmail/UseVerifyEmail'
 import 'react-toastify/dist/ReactToastify.css';
