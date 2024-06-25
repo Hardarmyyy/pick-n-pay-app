@@ -5,6 +5,7 @@ import { FETCHCARTITEMS } from '../../Services/cartApi'
 import Navigation from '../../Layouts/Navigation/Navigation'
 import Footer from '../../Layouts/Footer/Footer'
 import Spinner from '../../component/Spinner'
+import Modal from '../../component/Modal'
 // import { AiFillDelete } from "react-icons/ai";
 // import ProductCheckout from '../../Components/Pages/Checkout/ProductCheckout/ProductCheckout'
 
@@ -14,6 +15,8 @@ const CartProduct = () => {
 const dispatch = useDispatch();
 const cart = useSelector((state) => state?.cart?.cartItems);
 const status = useSelector((state) => state?.cart?.status);
+const logoutStatus = useSelector((state) => state?.auth?.status);
+
 const username = useSelector((state) => state?.auth?.user?.userName);
 
 useEffect(() => {
@@ -50,6 +53,7 @@ if (status === 'failed') {
 return ( 
 
 <> 
+    {logoutStatus === 'Loading.......' && <Modal> <Spinner></Spinner> </Modal>}
 
     <Navigation></Navigation>
 
