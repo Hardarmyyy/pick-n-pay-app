@@ -1,18 +1,17 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Logo from '../../../Layouts/Logo/Logo'
 import Button from '../../../component/Button'
 import UseForgotPassword from '../../../Hooks/Auth/ForgotPassword/UseForgotPassword'
+import Modal from '../../../component/Modal'
+import Spinner from '../../../component/Spinner'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 const ForgotPassword = () => {
 
-const status = useSelector((state) => state.auth.status )
-
 //import and use the forgotPassword hook;
-const {user, error, handleChange, handleForgotPassword} = UseForgotPassword()
+const {status, user, error, handleChange, handleForgotPassword} = UseForgotPassword()
 
 // define a state to handle form submission
 const submitForm = (e) => {
@@ -25,6 +24,8 @@ const submitForm = (e) => {
 return (
     <>
 
+    {status === 'Loading.......' && <Modal> <Spinner></Spinner> </Modal>}
+
     <ToastContainer 
         position='top-right'
         autoClose={5000}
@@ -33,7 +34,7 @@ return (
         closeOnClick
         rtl={false}/>
 
-    <div className='tablet:mt-4 mini:mt-4 laptop:mt-4 super:mt-4 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 sticky top-0 left-0 z-50 bg-white'>
+    <div className='tablet:mt-4 mini:mt-4 laptop:mt-4 super:mt-4 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 sticky top-0 left-0 z-40 bg-white'>
         <Logo></Logo>
     </div>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { FORGOTPASSWORD } from '../../../Services/authApi'
 import {toast} from 'react-toastify'
 import UseValidateForgotPasswordForm from './UseValidateForgotPasswordForm'
@@ -9,6 +9,7 @@ const UseForgotPassword = () => {
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const dispatch = useDispatch()
+const status = useSelector((state) => state?.auth?.status)
 
 // define a state to handle user email
 const [user, setUser] = useState({
@@ -74,7 +75,7 @@ useEffect(() => {
 }, [user])
 
 
-return {user, error, handleChange, handleForgotPassword}
+return {status, user, error, handleChange, handleForgotPassword}
 }
 
 export default UseForgotPassword
