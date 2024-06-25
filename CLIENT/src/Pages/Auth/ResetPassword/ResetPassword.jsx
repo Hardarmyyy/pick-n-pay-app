@@ -5,7 +5,7 @@ import UseResetPassword from '../../../Hooks/Auth/ResetPassword/UseResetPassword
 import { ToastContainer } from 'react-toastify'
 import Logo from '../../../Layouts/Logo/Logo'
 import ResetPasswordForm from './ResetPasswordForm/ResetPasswordForm'
-import ExpiredLink from '../../../component/ExpiredLink/ExpiredLink'
+import ExpiredLink from '../../../component/ExpiredLink'
 import SuccessModal from '../../../Layouts/SuccessModal/SuccessModal'
 import 'react-toastify/dist/ReactToastify.css';
 
