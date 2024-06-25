@@ -1,12 +1,16 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import Logo from '../../../Layouts/Logo/Logo'
 import LoginForm from './LoginForm/LoginForm'
 import UseLogin from '../../../Hooks/Auth/Login/UseLogin'
+import Modal from '../../../component/Modal'
 
 
 
 const Login = () => { 
+
+const status = useSelector((state) => state?.auth?.status)
 
 //import and use the useLogin hook
 const  {regUser, error, handleChange, showPassword, handleShowPassword, handleLogin} = UseLogin()
@@ -21,6 +25,8 @@ const handleFormSubmit = async (e) => {
 return (
 
 <>
+    {status === 'Loading.......' && <Modal></Modal>}
+
     <ToastContainer 
         position='top-right'
         autoClose={2500}
@@ -29,7 +35,7 @@ return (
         closeOnClick
         rtl={false}/>
 
-    <div className='tablet:mt-4 mini:mt-4 laptop:mt-4 super:mt-4 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 sticky top-0 left-0 z-50 bg-white'>
+    <div className='tablet:mt-4 mini:mt-4 laptop:mt-4 super:mt-4 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 sticky top-0 left-0 z-45 bg-white'>
         <Logo></Logo>
     </div>
 
