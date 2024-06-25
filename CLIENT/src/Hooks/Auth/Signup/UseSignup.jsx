@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import UseValidateSignupForm from './UseValidateSignupForm'
 import { REGISTERUSERS } from '../../../Services/authApi'
 import {toast} from 'react-toastify'
@@ -10,6 +10,7 @@ const UseSignup = () => {
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const dispatch = useDispatch()
+const status = useSelector((state) => state?.auth?.status)
 
 // define state to manage form object data
 const [newUser, setNewUser] = useState({
@@ -115,7 +116,7 @@ useEffect(() => {
     handleCanSave(newUser)
 }, [newUser])
 
-    return {newUser, error, handleChange, openModal, handleOpenModal, showPassword, handleShowPassword, handleSignup}
+    return {status, newUser, error, handleChange, openModal, handleOpenModal, showPassword, handleShowPassword, handleSignup}
 }
 
 export default UseSignup

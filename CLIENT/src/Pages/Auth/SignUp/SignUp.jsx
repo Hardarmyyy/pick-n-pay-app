@@ -4,12 +4,14 @@ import Logo from '../../../Layouts/Logo/Logo'
 import SignupForm from './SignupForm/SignupForm'
 import SignUpModal from '../../../Layouts/SignUpModal/SignUpModal'
 import UseSignup from '../../../Hooks/Auth/Signup/UseSignup'
+import Modal from '../../../component/Modal'
+import Spinner from '../../../component/Spinner'
 import 'react-toastify/dist/ReactToastify.css';
 
 const SignUp = () => {
 
 //import UseSignup hook for form submission
-const {newUser, error, handleChange, openModal, handleOpenModal, showPassword, handleShowPassword, handleSignup} = UseSignup()
+const {status, newUser, error, handleChange, openModal, handleOpenModal, showPassword, handleShowPassword, handleSignup} = UseSignup()
 
 // define a function to handle form submission
 const handleFormSubmit = async (e) => {
@@ -22,6 +24,7 @@ const handleFormSubmit = async (e) => {
 return ( 
 
 <>
+    {status === 'Loading.......' && <Modal> <Spinner></Spinner> </Modal>}
 
     <ToastContainer 
         position='top-right'
@@ -31,7 +34,7 @@ return (
         closeOnClick
         rtl={false}/>
 
-    <div className='tablet:mt-4 mini:mt-4 laptop:mt-4 super:mt-4 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 sticky top-0 left-0 z-50 bg-white'>
+    <div className='tablet:mt-4 mini:mt-4 laptop:mt-4 super:mt-4 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 sticky top-0 left-0 z-40 bg-white'>
         <Logo></Logo>
     </div>
 
