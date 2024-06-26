@@ -50,10 +50,10 @@ export const setupInterceptors = () => {
             window.location.replace('/login')
             return Promise.reject(err);
         }
-        else if (error?.response && error?.response?.status === 401) {
-            window.location.replace('/login')
-            return Promise.reject(err);
-        }
+        // else if (error?.response && error?.response?.status === 401 && originalRequest?.sent) {
+        //     window.location.replace('/login')
+        //     return Promise.reject(err);
+        // }
 
         return Promise.reject(error);
         }

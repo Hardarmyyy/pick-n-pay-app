@@ -18,7 +18,7 @@ const REGISTERUSERS = createAsyncThunk('auth/register', async (initialUser, { re
 
 const VERIFYEMAILTOKEN = createAsyncThunk('auth/verify-email-token', async ({token, email}, { rejectWithValue }) => { 
     try {
-        const response = await axiosInstance.get(`/verify-email-token?token=${token}&email=${email}`)
+        const response = await axiosInstance.get(`/verify-email-token`, {params: {token, email}})
         return response.data
     }
     catch (err) {
@@ -31,7 +31,7 @@ const VERIFYEMAILTOKEN = createAsyncThunk('auth/verify-email-token', async ({tok
 
 const VERIFYEMAIL = createAsyncThunk('auth/verify-email', async ({token, Otp}, { rejectWithValue }) => { 
     try {
-        const response = await axiosInstance.post(`/verify?token=${token}`, Otp)
+        const response = await axiosInstance.post(`/verify`, Otp, {params: {token}} )
         return response.data
     }
     catch (err) {

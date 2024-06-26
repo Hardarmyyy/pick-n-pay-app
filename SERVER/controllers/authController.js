@@ -136,7 +136,7 @@ const verifyEmailToken = async (req, res) => {
                 if (err) return res.sendStatus(401)
                 
                 const existingUser = await User.findOne({email: decoded.email})
-                if(existingUser.email !== email) return res.sendStatus(403)
+                if(existingUser.email !== email) return res.sendStatus(401)
 
                 if (existingUser.verified) return res.status(200).json({verified: true})
                 
@@ -176,7 +176,7 @@ const emailVerification = async (req, res) =>  {
                 if (err) return res.sendStatus(401)
 
                 const unverifiedOtp = await Otp.findOne({userId: decoded.userId})  
-        
+                if (!unverifiedOtp) return res.status(400).json({error: 'Invalid OTP. Try again' })
                 // compare otp before verifying email
                 const isValidOtp = await bcrypt.compare(signupOtp, unverifiedOtp.otp)
                 if (!isValidOtp) return res.status(400).json({error: 'Invalid OTP. Try again' })

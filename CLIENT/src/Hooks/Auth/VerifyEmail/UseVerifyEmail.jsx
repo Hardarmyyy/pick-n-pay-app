@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import { VERIFYEMAIL, VERIFYEMAILTOKEN } from '../../../Services/authApi'
 import UseValidateVerifyEmailForm from './UseValidateVerifyEmailForm'
 import {toast} from 'react-toastify'
@@ -8,6 +8,10 @@ import {toast} from 'react-toastify'
 const UseVerifyEmail = (token, email) => {
 
 const dispatch = useDispatch()
+const isValid = useSelector((state) => state?.auth.isValid)
+const isVerified = useSelector((state) => state?.auth.isVerified)
+const status = useSelector((state) => state?.auth?.status)
+const verifyEmailStatus = useSelector((state) => state?.auth?.status)
 
 const [signupOtp, setSignupOtp] = useState({
     one: '',
@@ -18,14 +22,6 @@ const [signupOtp, setSignupOtp] = useState({
     six: '',
 }); 
 
-const [invalid, setInvalid] = useState({
-    one: false,
-    two: false,
-    three: false,
-    four: false,
-    five: false,
-    six: false,
-});
 
 const inputRefs = {
     one: useRef(null),
@@ -50,9 +46,6 @@ const handleChange = (e) => {
     const {name, value} = e.target;
 
     setSignupOtp((signupOtp) => {return {...signupOtp, [name]: value.replace(/[^0-9]/g, '').slice(0, 1)}})
-
-    // Update the invalid state based on whether there is any input value
-    setInvalid((invalid) => {return {...invalid, [name]: value ? false : true}});
 
     setError("")
     
@@ -79,23 +72,8 @@ const submitOTP = handleCanSubmitOTP(signupOtp)
 // define a function to send request to backend API
 const handleVerifyEmail = async () => {
 
-    if (!isOTPComplete) {
-        // Set invalid for each empty field to true
-        setInvalid((invalid) => {
-            const updatedInvalid = { ...invalid };
-            Object.keys(updatedInvalid).forEach((fieldName) => {
-                if (!signupOtp[fieldName]) {
-                    updatedInvalid[fieldName] = true;
-                }
-            });
-            return updatedInvalid;
-        });
+    if (!isOTPComplete) return setError("Invalid. Please enter a 6-digit OTP.")
 
-        setError("Incomplete OTP. Please enter a 6-digit OTP.")
-
-        return;
-    }
-    
     if (isSubmitting) return;
 
     if (!isSubmitting && submitOTP)  {
@@ -105,7 +83,7 @@ const handleVerifyEmail = async () => {
         .then((response) => {
             if (response.payload.message) {
                 setTimeout(() => {
-                    hanldeOpenModal()
+                    handleOpenModal()
                 }, 2500)
             }
         })
@@ -137,7 +115,7 @@ useEffect(() => {
 }, [signupOtp])
 
 
-    return {signupOtp, invalid, error, handleChange, inputRefs, openModal, handleOpenModal, handleBackspace, handleVerifyEmail, handleVerifyEmailToken}
+    return {isValid, isVerified, status, verifyEmailStatus, signupOtp, error, handleChange, inputRefs, openModal, handleOpenModal, handleBackspace, handleVerifyEmail, handleVerifyEmailToken}
 
 }
 
