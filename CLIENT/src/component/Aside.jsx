@@ -1,6 +1,6 @@
 import React from 'react'
 import {useSelector } from 'react-redux'
-import { Link } from 'react-router-dom';
+import { Link,  } from 'react-router-dom';
 import { BsBox2, BsBagHeart } from "react-icons/bs";
 import { BiUserCircle } from "react-icons/bi";
 import { RxDashboard } from "react-icons/rx";
@@ -13,11 +13,11 @@ const Aside = ({showDropDown, showCloseAside, showCloseDropDown, buyer, seller, 
 
 const accessToken = useSelector((state) => state.auth?.accessToken);
 
+
 const {handleLogout} = UseLogout()
 
 const handleSignOut = async () => {
-    await handleLogout()
-    showCloseAside()
+    await handleLogout(showCloseAside)
 }
 
 const handlecloseAsideAndCloseDropDown = () => {
