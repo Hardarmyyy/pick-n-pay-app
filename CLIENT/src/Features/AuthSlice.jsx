@@ -78,9 +78,12 @@ export const authSlice = createSlice({
                     }
                 }) 
                 .addCase(LOGOUT.fulfilled, (state, action) => {
-                    const {message} = action.payload;
+                    const {message} = action.payload; 
                     state.user = null
                     state.accessToken = null
+                    toast.success(message, {
+                        toastStyle: { background: 'green', color: 'white' }
+                    })
                 }) 
                 .addCase(SINGLEUSER.fulfilled, (state, action) => {
                     const userInfo = action.payload.user
