@@ -8,17 +8,23 @@ const UseLogout = () => {
 const dispatch = useDispatch();
 const navigate = useNavigate();
 
-const handleLogout = () => {
+const handleLogout = async () => {
     dispatch(LOGOUT())
-    navigate('/')
+    .then((response) => {
+      if (response.payload.message) {
+        setTimeout(() => {
+          navigate('/')
+        }, 2500) 
+      }
+  })
 }
 
-const handleLogoutforPassword = () => {
-    dispatch(LOGOUT())
-    navigate('/login')
-}
+// const handleLogoutforPassword = () => {
+//     dispatch(LOGOUT())
+//     navigate('/login')
+// }
 
-  return {handleLogout, handleLogoutforPassword}
+  return {handleLogout}
 }
 
 export default UseLogout
