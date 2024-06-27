@@ -70,7 +70,7 @@ const LOGIN = createAsyncThunk('auth/signin', async (regUser, { rejectWithValue 
 
 const VERIFYRESETTOKEN = createAsyncThunk('auth/verify-reset-token', async ({token, email}, { rejectWithValue }) => { 
     try {
-        const response = await axiosInstance.get(`/verify-reset-token?token=${token}&email=${email}`)
+        const response = await axiosInstance.get(`/verify-reset-token`, {params: {token, email}})
         return response.data
     }
     catch (err) {
@@ -83,7 +83,7 @@ const VERIFYRESETTOKEN = createAsyncThunk('auth/verify-reset-token', async ({tok
 
 const RESETPASSWORD = createAsyncThunk('auth/reset', async ({user, token}, { rejectWithValue }) => { // token will be the query parameter AND user will be the body of the post request; 
     try {
-        const response = await axiosInstance.post(`/reset?token=${token}`, user)
+        const response = await axiosInstance.post(`/reset`, user, {params: {token}})
         return response.data
     }
     catch (err) {
