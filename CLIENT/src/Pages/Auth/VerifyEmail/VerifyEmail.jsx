@@ -36,18 +36,6 @@ useEffect(() => {
     handleVerifyEmailToken()
 }, [token, email])
 
-if (status === 'Loading.......') {
-    return (
-        <>
-            <div className='tablet:mt-4 mini:mt-4 laptop:mt-4 super:mt-4 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 sticky top-0 left-0 z-40 bg-white'>
-                <Logo></Logo>
-            </div>
-            <section className='w-full h-1/2 tablet:h-1/2 mini:h-3/5 laptop:h-3/4 super:h-3/4 flex justify-center items-center py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 loader'>
-                <Spinner></Spinner>
-            </section>
-        </>
-    );
-}
 
 return (
 
@@ -66,36 +54,32 @@ return (
         <Logo></Logo>
     </div>
 
-    {isVerified && status !== 'Loading.......' && 
-    <>
-        <section className='w-full sm:h-4/5 md:h-4/5 tablet:min-h-screen mini:min-h-screen laptop:min-h-screen super:min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-center'>
-            <Verified></Verified> 
-        </section>
-    </>
-    }
+    <section className='w-full sm:h-4/5 md:h-4/5 tablet:min-h-screen mini:min-h-screen laptop:min-h-screen super:min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 
+    laptop:px-6 super:px-60 flex justify-center items-center'>
 
-    {!isValid && !isVerified && status !== 'Loading.......' && 
-        
-        <section className='w-full sm:h-4/5 md:h-4/5 tablet:min-h-screen mini:min-h-screen laptop:min-h-screen super:min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-center'>
-            <ExpiredLink></ExpiredLink> 
-        </section>
+        {status === 'Loading.......' && <Spinner></Spinner>}
+
+        {isVerified && status !== 'Loading.......' && <Verified></Verified> }
+
+        {!isValid && !isVerified && status !== 'Loading.......' && <ExpiredLink></ExpiredLink> }
+
+        {isValid && status !== 'Loading.......' &&
+            <>
+                <VerifyEmailForm 
+                    verifyEmailStatus={verifyEmailStatus}
+                    signupOtp={signupOtp} 
+                    error={error}
+                    inputRefs={inputRefs}
+                    handleBackspace={handleBackspace}
+                    handleChange={handleChange} 
+                    submitForm={handleFormSubmit}>
+                </VerifyEmailForm>
+                {openModal && <SuccessModal handleOpenModal={handleOpenModal} message={modalMessage}></SuccessModal>}
+            </>          
+        }
+    </section>
+
     
-    }
-
-    {isValid && status !== 'Loading.......' &&
-        <section className='w-full sm:h-4/5 md:h-4/5 tablet:min-h-screen mini:min-h-screen laptop:min-h-screen super:min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-center'>
-            <VerifyEmailForm 
-                verifyEmailStatus={verifyEmailStatus}
-                signupOtp={signupOtp} 
-                error={error}
-                inputRefs={inputRefs}
-                handleBackspace={handleBackspace}
-                handleChange={handleChange} 
-                submitForm={handleFormSubmit}>
-            </VerifyEmailForm>
-            {openModal && <SuccessModal handleOpenModal={handleOpenModal} message={modalMessage}></SuccessModal>}
-        </section>          
-    }
 </>
 
 )
