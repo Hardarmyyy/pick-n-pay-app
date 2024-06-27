@@ -67,25 +67,23 @@ return (
     </div>
 
     {isVerified && status !== 'Loading.......' && 
-        <section className='w-full h-1/2 tablet:h-1/2 mini:h-3/5 laptop:h-3/4 super:h-3/4 flex justify-center items-center py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60'>
-        <div className='sm:w-4/5 sm:h-1/2 md:w-3/4 md:h-1/2 tablet:w-80 shadow-md tablet:h-72 mini:w-80 mini:h-80 laptop:w-96 laptop:h-96 super:w-96 super:h-96 flex flex-col justify-center items-center font-Montserrat text-my-primary mx-auto rounded-md p-4 bg-white relative popupmodal'>
+    <>
+        <section className='w-full sm:h-4/5 md:h-4/5 tablet:min-h-screen mini:min-h-screen laptop:min-h-screen super:min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-center'>
             <Verified></Verified> 
-        </div>
-    </section>
+        </section>
+    </>
     }
 
     {!isValid && !isVerified && status !== 'Loading.......' && 
         
-        <section className='w-full h-1/2 tablet:h-1/2 mini:h-3/5 laptop:h-3/4 super:h-3/4 flex justify-center items-center py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60'>
-            <div className='sm:w-4/5 sm:h-1/2 md:w-3/4 md:h-1/2 tablet:w-80 shadow-md tablet:h-72 mini:w-80 mini:h-80 laptop:w-96 laptop:h-96 super:w-96 super:h-96 flex flex-col justify-center items-center font-Montserrat text-my-primary mx-auto rounded-md p-4 bg-white relative popupmodal'>
-                <ExpiredLink></ExpiredLink> 
-            </div>
+        <section className='w-full sm:h-4/5 md:h-4/5 tablet:min-h-screen mini:min-h-screen laptop:min-h-screen super:min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-center'>
+            <ExpiredLink></ExpiredLink> 
         </section>
     
     }
 
     {isValid && status !== 'Loading.......' &&
-        <section className='w-full h-4/5 py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-center'>
+        <section className='w-full sm:h-4/5 md:h-4/5 tablet:min-h-screen mini:min-h-screen laptop:min-h-screen super:min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-center'>
             <VerifyEmailForm 
                 verifyEmailStatus={verifyEmailStatus}
                 signupOtp={signupOtp} 
