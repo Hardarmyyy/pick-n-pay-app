@@ -225,7 +225,7 @@ const signIn = async (req, res) => {
         if (!isPasswordValid) return res.status(400).json({error: 'Incorrect password'})
 
         // Check if the user has verified their email account.
-        if (!existingUser.verified) return res.status(403).json({error: "Please verify your email and try again"})
+        if (!existingUser.verified) return res.status(401).json({error: "Please verify your email and try again"})
 
         let newRefreshTokenArray = !cookies?.refresh ? existingUser.token : existingUser.token.filter((rt) => rt !== cookies.refresh)
 
@@ -337,7 +337,7 @@ const verifyResetToken = async (req, res) => {
                 if (err) return res.sendStatus(401)
                 
                 const existingUser = await User.findOne({email: decoded.email})
-                if(existingUser.email !== email) return res.sendStatus(403)
+                if(existingUser.email !== email) return res.sendStatus(401)
                 
                 return res.json({
                     message: 'Reset token is valid',
