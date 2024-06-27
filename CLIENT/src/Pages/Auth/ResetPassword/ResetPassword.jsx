@@ -31,18 +31,6 @@ const ResetPassword = () => {
         handleVerifyResetToken()
     }, [token, email])
 
-    if (status === 'Loading.......') {
-        return (
-            <>
-                <div className='tablet:mt-4 mini:mt-4 laptop:mt-4 super:mt-4 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 sticky top-0 left-0 z-40 bg-white'>
-                    <Logo></Logo>
-                </div>
-                <section className='w-full h-1/2 tablet:h-1/2 mini:h-3/5 laptop:h-3/4 super:h-3/4 flex justify-center items-center py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 loader'>
-                    <Spinner></Spinner>
-                </section>
-            </>
-        );
-    }
 
 return (
 
@@ -61,31 +49,35 @@ return (
             <Logo></Logo>
         </div>
 
-        {!isValid && status !== 'Loading.......' && 
-            <section className='w-full sm:h-4/5 md:h-4/5 tablet:min-h-screen mini:min-h-screen laptop:min-h-screen super:min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-center'>
-                <ExpiredLink></ExpiredLink> 
-            </section>
-        }
+        <section className='w-full sm:h-4/5 md:h-4/5 tablet:min-h-screen mini:min-h-screen laptop:min-h-screen super:min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-center'>
 
-        {isValid && status !== 'Loading.......' && 
-            <section className='w-full sm:h-4/5 md:h-4/5 tablet:min-h-screen mini:min-h-screen laptop:min-h-screen super:min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-center'>
+            {status === 'Loading.......' && <Spinner></Spinner>}
 
-                <ResetPasswordForm
-                    verifyResetStatus={verifyResetStatus}
-                    submitForm = {handleSubmit} 
-                    error={error} 
-                    handleChange={handleChange} 
-                    user={user}
-                    showPassword={showPassword}
-                    handleShowPassword={handleShowPassword}
-                    showConfirmPassword={showConfirmPassword}
-                    handleShowConfirmPassword={handleShowConfirmPassword}>
-                </ResetPasswordForm>
+            {!isValid && status !== 'Loading.......' && <ExpiredLink></ExpiredLink> }
 
-                {openModal && <SuccessModal handleOpenModal={handleOpenModal} message={modalMessage}></SuccessModal>}
+            {isValid && status !== 'Loading.......' && 
+                <>
 
-            </section>
-        }
+                    <ResetPasswordForm
+                        verifyResetStatus={verifyResetStatus}
+                        submitForm = {handleSubmit} 
+                        error={error} 
+                        handleChange={handleChange} 
+                        user={user}
+                        showPassword={showPassword}
+                        handleShowPassword={handleShowPassword}
+                        showConfirmPassword={showConfirmPassword}
+                        handleShowConfirmPassword={handleShowConfirmPassword}>
+                    </ResetPasswordForm>
+
+                    {openModal && <SuccessModal handleOpenModal={handleOpenModal} message={modalMessage}></SuccessModal>}
+
+                </>
+            }
+
+        </section>
+
+        
 
     </>
 )
