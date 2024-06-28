@@ -41,7 +41,7 @@ return (
             </div>
         }
 
-        { cartStatus !== 'Loading.......' && !cart?.myCart?.length && 
+        { cart?.myCart?.length === 0  && 
                 <p className='font-Jost text-lg tablet:text-xl mini:text-3xl laptop:text-4xl super:text-4xl text-blue-950'> Your cart list is empty </p> }
 
         {cart?.myCart?.length > 0 &&
