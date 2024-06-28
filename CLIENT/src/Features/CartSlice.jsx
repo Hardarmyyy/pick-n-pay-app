@@ -6,14 +6,7 @@ import {toast} from 'react-toastify'
 
 export const initialState = {
     status: 'idle',
-    cartItems: {
-        myCart: [],
-        numberOfProducts: 0,
-        subTotal: 0,
-        shippingCost: 0,
-        vat: 0,
-        total: 0
-    },
+    cartItems: null
 }
 
 export const cartSlice = createSlice({
