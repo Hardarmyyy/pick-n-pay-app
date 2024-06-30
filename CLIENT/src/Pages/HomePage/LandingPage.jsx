@@ -1,23 +1,16 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import Navigation from '../../Layouts/Navigation/Navigation'
-import Footer from '../../Layouts/Footer/Footer'
 import { ToastContainer } from 'react-toastify'
 import Carousel from '../../component/Carousel/Carousel'
 import Categories from '../../component/Categories/Categories'
 import NewsLetter from '../../Layouts/NewsLetter/NewsLetter'
 import 'react-toastify/dist/ReactToastify.css';
-import Modal from '../../component/Modal'
-import Spinner from '../../component/Spinner'
+
 
 const LandingPage = () => {
-
-const status = useSelector((state) => state?.auth?.status)
 
 return (
 
 <>
-    {status === 'Loading.......' && <Modal> <Spinner></Spinner> </Modal>}
 
     <ToastContainer 
         position='top-right'
@@ -26,8 +19,6 @@ return (
         newestOnTop={false}
         closeOnClick
         rtl={false}/>
-
-    <Navigation></Navigation>
     
     <section className='w-full min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60'> 
 
@@ -53,7 +44,6 @@ return (
 
     </section>
 
-    <Footer></Footer>
 </>
 
 )
