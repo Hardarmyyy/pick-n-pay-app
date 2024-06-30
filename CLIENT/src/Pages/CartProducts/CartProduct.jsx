@@ -2,10 +2,7 @@ import React from 'react'
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { FETCHCARTITEMS } from '../../Services/cartApi'
-import Navigation from '../../Layouts/Navigation/Navigation'
-import Footer from '../../Layouts/Footer/Footer'
 import Spinner from '../../component/Spinner'
-import Modal from '../../component/Modal'
 // import { AiFillDelete } from "react-icons/ai";
 // import ProductCheckout from '../../Components/Pages/Checkout/ProductCheckout/ProductCheckout'
 
@@ -15,7 +12,6 @@ const CartProduct = () => {
 const dispatch = useDispatch();
 const cart = useSelector((state) => state?.cart?.cartItems);
 const cartStatus = useSelector((state) => state?.cart?.status);
-const logoutStatus = useSelector((state) => state?.auth?.status);
 
 const username = useSelector((state) => state?.auth?.user?.userName);
 
@@ -26,9 +22,6 @@ useEffect(() => {
 return ( 
 
 <> 
-    {logoutStatus === 'Loading.......' && <Modal> <Spinner></Spinner> </Modal>}
-
-    <Navigation></Navigation>
 
     <section className='w-full h-1/2 tablet:h-1/2 mini:h-3/5 laptop:h-3/4 super:h-3/4 flex justify-center items-center py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60'>
 
@@ -41,10 +34,10 @@ return (
             </div>
         }
 
-        { cart?.myCart?.length === 0  && 
+        {cartStatus !== 'Loading.......' && cart?.myCart?.length === 0  && 
                 <p className='font-Jost text-lg tablet:text-xl mini:text-3xl laptop:text-4xl super:text-4xl text-blue-950'> Your cart list is empty </p> }
 
-        {cart?.myCart?.length > 0 &&
+        {cartStatus !== 'Loading.......' && cart?.myCart?.length > 0 &&
             <div className='w-full py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60'>
 
                 <p className='font-Jost text-lg tablet:text-xl mini:text-2xl laptop:text-3xl super:text-3xl text-blue-950'> Shopping Cart </p>
@@ -101,8 +94,6 @@ return (
         }
 
     </section>
-
-    <Footer></Footer>
 
 </>
 
