@@ -4,8 +4,8 @@ import {FETCHALLCATEGORIES, CATEGORYPRODUCTS} from "../Services/categoryApi";
 
 export const initialState = {
     status: 'idle',
-    allCategories: [],
-    categoryProducts: []
+    allCategories: null,
+    categoryProducts: null
 }
 
 export const categorySlice = createSlice({
@@ -21,7 +21,7 @@ export const categorySlice = createSlice({
                     if (categories) {
                         const sortedCategories = categories.sort((a, b) => a.categoryName > b.categoryName ? 1 : -1);
                         const categoryData = sortedCategories.map((category) => {return {categoryID: category._id, category: category.categoryName} })
-                        state.allCategories = state.allCategories.concat(categoryData)
+                        state.allCategories = categoryData
                     }
                 })
                 .addCase(CATEGORYPRODUCTS.fulfilled, (state, action) => { 
@@ -37,7 +37,7 @@ export const categorySlice = createSlice({
                 }
                 )
                 .addMatcher(
-                    isPending(FETCHALLCATEGORIES, CATEGORYPRODUCTS),
+                    isPending(CATEGORYPRODUCTS),
                     (state) => {
                     state.status = 'Loading.......';
                 }
@@ -46,8 +46,8 @@ export const categorySlice = createSlice({
                     isRejected(FETCHALLCATEGORIES, CATEGORYPRODUCTS),
                     (state, action) => {
                         state.status = 'failed';
-                        const message = action.payload.error
-                        toast.error(message, {
+                        const err = action.payload.error
+                        toast.error(err, {
                             toastStyle: { background: 'red', color: 'white' }
                         })
                 }
