@@ -126,13 +126,13 @@ export const authSlice = createSlice({
                 }
                 )
                 .addMatcher(
-                    isPending(REGISTERUSERS, VERIFYEMAILTOKEN, LOGIN, FORGOTPASSWORD, VERIFYRESETTOKEN, REFRESH, LOGOUT, UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER),
+                    isPending(REGISTERUSERS, VERIFYEMAILTOKEN, LOGIN, FORGOTPASSWORD, VERIFYRESETTOKEN, REFRESH, UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER),
                     (state) => {
                     state.status = 'Loading.......';
                 }
                 )
                 .addMatcher(
-                    isPending( VERIFYEMAIL, RESETPASSWORD ),
+                    isPending( VERIFYEMAIL, RESETPASSWORD, LOGOUT ),
                     (state) => {
                     state.status = 'Loading...';
                 }
