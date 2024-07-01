@@ -71,11 +71,11 @@ export const router = createBrowserRouter(
 
                 </Route>
 
-                <Route path='/orders' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <Orders></Orders> </Suspense>}></Route>
+                <Route path='/orders' element={ <Orders></Orders> }></Route>
 
                 <Route element={<PrivateRoutes allowedRoles={seller}></PrivateRoutes>}>
 
-                    <Route path='/shop' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <ShopLayout></ShopLayout> </Suspense>}>
+                    <Route path='/shop' element={ <ShopLayout></ShopLayout> }>
 
                         <Route index element={<Dashboard></Dashboard>}></Route>
                         <Route path='add-new-product' element={<NewProduct></NewProduct>}></Route>
@@ -89,10 +89,10 @@ export const router = createBrowserRouter(
 
                 <Route element={<PrivateRoutes allowedRoles={buyer}></PrivateRoutes>}>
 
-                    <Route path='/favourites' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <FavouritesLayout></FavouritesLayout> </Suspense>}></Route>
-                    <Route path='/checkout' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <CheckoutLayout></CheckoutLayout> </Suspense>}></Route>
+                    <Route path='/favourites' element={ <FavouritesLayout></FavouritesLayout> }></Route>
+                    <Route path='/checkout' element={ <CheckoutLayout></CheckoutLayout> }></Route>
 
-                    <Route path='/shipping-address' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <AddressLayout></AddressLayout> </Suspense>}>
+                    <Route path='/shipping-address' element={ <AddressLayout></AddressLayout> }>
                         <Route index element={<AddShipping></AddShipping>}></Route>
                         <Route path='update/:id' element={<UpdateShipping></UpdateShipping>}></Route>
                     </Route>
