@@ -3,7 +3,7 @@ import Modal from '../component/Modal.jsx'
 import Spinner from '../component/Spinner.jsx'
 
 import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom'
-import App from '../App'
+const App = lazy(() => import ('../App')) 
 const Login = lazy(() => import ('../Pages/Auth/Login/Login.jsx')) 
 const SignUp = lazy(() => import ('../Pages/Auth/SignUp/SignUp.jsx')) 
 const VerifyEmail = lazy(() => import ('../Pages/Auth/VerifyEmail/VerifyEmail.jsx'))
@@ -11,12 +11,12 @@ const ForgotPassword = lazy(() => import ('../Pages/Auth/ForgotPassword/ForgotPa
 const ResetPassword = lazy(() => import ('../Pages/Auth/ResetPassword/ResetPassword.jsx'))
 
 
-import PersistLogin from './PersistLogin'
+const PersistLogin = lazy(() => import ('./PersistLogin'))
 import PrivateRoutes from './PrivateRoutes'
 import { admin, buyer, seller, registeredUser } from './AllowedRoles'
 
 const LandingPage = lazy(() => import ('../Pages/HomePage/LandingPage.jsx'))
-import CartProduct from '../Pages/CartProducts/CartProduct.jsx'  
+const CartProduct  = lazy(() => import ('../Pages/CartProducts/CartProduct.jsx' )) 
 const CategoryProduct = lazy(() => import ('../Pages/Products/CategoryProducts/CategoryProduct.jsx'))
 
 const ProfileLayout = lazy(() => import ('../Pages/UserProfile/ProfileLayout.jsx'))
@@ -47,7 +47,7 @@ import Unauthorized from '../Pages/Unauthorized/Unauthorized.jsx'
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
-    <Route element={<App></App>}> 
+    <Route  element={ <Suspense fallback={<div className='loader'> <Spinner></Spinner> </div>}> <App></App> </Suspense> }> 
 
         <Route path='/login' element={<Suspense fallback={<div className='loader'> <Spinner></Spinner> </div>}> <Login></Login> </Suspense>}></Route>
         <Route path='/signup' element={<Suspense fallback={ <div className='loader'> <Spinner></Spinner> </div>}> <SignUp></SignUp> </Suspense>}></Route>
@@ -55,15 +55,15 @@ export const router = createBrowserRouter(
         <Route path='/forgot-password' element={<Suspense fallback={<div className='loader'> <Spinner></Spinner> </div>}> <ForgotPassword></ForgotPassword> </Suspense>}></Route>
         <Route path='/reset-password' element={<Suspense fallback={<div className='loader'> <Spinner></Spinner> </div>}> <ResetPassword></ResetPassword> </Suspense>}></Route>
         
-        <Route element={<PersistLogin></PersistLogin>}>
+        <Route element={ <PersistLogin></PersistLogin> }>
 
-            <Route path='/' element={<Suspense fallback={ <div className='loader'> <Spinner></Spinner> </div>}> <LandingPage></LandingPage> </Suspense>}></Route>
+            <Route path='/' element={ <LandingPage></LandingPage> }></Route>
             <Route path='/cart' element={ <CartProduct></CartProduct> }></Route>
-            <Route path='/category/:category' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <CategoryProduct></CategoryProduct> </Suspense>}></Route>
+            <Route path='/category/:category' element={ <CategoryProduct></CategoryProduct> }></Route>
 
             <Route element={<PrivateRoutes allowedRoles={registeredUser}></PrivateRoutes>}>
 
-                <Route path='/profile' element={<Suspense fallback={<Modal> <Spinner></Spinner> </Modal>}> <ProfileLayout></ProfileLayout> </Suspense>}>
+                <Route path='/profile' element={ <ProfileLayout></ProfileLayout> }>
 
                     <Route index element={<Profile></Profile>}></Route>
                     <Route path='update-profile' element={<UpdateProfile></UpdateProfile>}></Route>
