@@ -1,9 +1,7 @@
 import React from 'react'
-import { ToastContainer } from 'react-toastify'
 import Carousel from '../../component/Carousel/Carousel'
 import Categories from '../../component/Categories/Categories'
 import NewsLetter from '../../Layouts/NewsLetter/NewsLetter'
-import 'react-toastify/dist/ReactToastify.css';
 
 
 const LandingPage = () => {
@@ -11,14 +9,6 @@ const LandingPage = () => {
 return (
 
 <>
-
-    <ToastContainer 
-        position='top-right'
-        autoClose={4000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}/>
     
     <section className='w-full min-h-screen py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60'> 
 
