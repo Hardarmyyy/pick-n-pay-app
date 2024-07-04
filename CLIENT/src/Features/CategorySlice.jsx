@@ -1,5 +1,6 @@
 import { createSlice, isPending, isFulfilled, isRejected } from "@reduxjs/toolkit";
 import {FETCHALLCATEGORIES, CATEGORYPRODUCTS} from "../Services/categoryApi";
+import {toast} from 'react-toastify'
 
 
 export const initialState = {
@@ -43,7 +44,7 @@ export const categorySlice = createSlice({
                 }
                 )
                 .addMatcher(
-                    isRejected(FETCHALLCATEGORIES, CATEGORYPRODUCTS),
+                    isRejected(CATEGORYPRODUCTS),
                     (state, action) => {
                         state.status = 'failed';
                         const err = action.payload.error
