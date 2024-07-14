@@ -24,7 +24,7 @@ const checkAuth = (req, res, next) => {
                 next();
             }
             else {
-                return res.status(401).json({error:'Invalid refreshToken reuse'})
+                return res.sendStatus(403);
             }
     })
 }
