@@ -15,75 +15,92 @@ const submitUpdatePassword = async (e) => {
 
   return (
     <>
-        <section className='lg:w-1/2 xl:w-1/2 md:px-2 lg:px-6 py-2 font-Montserrat text-my-primary border rounded-md shadow-sm bg-white mx-auto translate-y-0'>
+        <section className='w-full tablet:w-3/4 mini:w-3/5 laptop:w-1/2 super:w-3/5 mx-auto'>
 
-            <p className='text-center mb-2 font-bold font-Jost md:text-xl lg:text-2xl'> Change password </p>
+            <p className='font-Jost text-lg tablet:text-xl mini:text-2xl laptop:text-3xl super:text-3xl mb-2 text-blue-950 font-bold text-center'> Change password </p>
 
-            <div className='w-full md:text-sm text-lg mt-2'>
+            <form onSubmit={submitUpdatePassword} className='w-full h-auto text-sm font-Montserrat text-my-primary bg-[#fcfcfc] rounded-md py-3 sm:px-2 md:px-4 tablet:px-4 mini:px-5 laptop:px-4 flex flex-col justify-center items-center'>
 
-                <form onSubmit={submitUpdatePassword} className='w-full'>
+                <div className='w-full mt-2'>
 
-                    <div className='flex md:px-1 md:justify-between lg:justify-between xl:justify-start items-center relative'>
-                        <label className='font-bold'> Current password: </label>
+                    <div className='flex justify-between items-center'>
 
-                        <input 
-                            type={showCurrentPassword ? 'text' : 'password'} 
-                            className='md:w-56 lg:w-72 xl:w-3/4 ml-2 mt-2 px-2 py-1 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
-                            name='currentPassword' 
-                            value={updatePassword.currentPassword} 
-                            onChange={handleChange} 
-                            maxLength={22}
-                        />
-                        {error && <p className='absolute left-1 -bottom-5 text-crimson text-sm'> {error.currentPassword} </p>}
+                        <label className='font-bold text-sm flex-shrink-0'> Current password: </label>
+                        <div className='w-full relative'>
+                            <input 
+                                type={showCurrentPassword ? 'text' : 'password'} 
+                                className='w-full px-2 ms-2 text-sm border-transparent rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:border-blue-950'
+                                name='currentPassword' 
+                                value={updatePassword.currentPassword} 
+                                onChange={handleChange} 
+                                maxLength={22}
+                            />
+                            {error && <p className='text-crimson absolute left-0 ms-2 text-sm'> {error.currentPassword} </p>}
 
-                        <div className="text-lg absolute bottom-2 md:right-3 lg:right-5 xl:right-8 cursor-pointer" onClick={handleShowCurrentPassword}>
-                            {showCurrentPassword ? <BsEye /> : <BsEyeSlash />} 
+                            <div className="text-lg absolute top-2 right-0 cursor-pointer" onClick={handleShowCurrentPassword}>
+                                {showCurrentPassword ? <BsEye /> : <BsEyeSlash />} 
+                            </div>
                         </div>
+
                     </div>
 
-                    <div className='flex md:px-1  md:justify-between lg:justify-between xl:justify-start items-center mt-4 relative'>
-                        <label className='font-bold'> New password: </label>
+                </div>
 
-                        <input 
-                            type={showNewPassword ? 'text' : 'password'}
-                            className='md:w-56 lg:w-72 xl:w-3/4 md:ml-0 lg:ml-8 mt-2 px-2 py-1 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
-                            name='newPassword' 
-                            value={updatePassword.newPassword} 
-                            onChange={handleChange} 
-                            maxLength={22}
-                        />
-                        {error && <p className='absolute left-1 -bottom-5 text-crimson text-sm'> {error.newPassword} </p>}
+                <div className='w-full mt-4'>
 
-                        <div className="text-lg absolute bottom-2 md:right-3  lg:right-5 xl:right-8 cursor-pointer" onClick={handleShowNewPassword}>
-                            {showNewPassword ? <BsEye /> : <BsEyeSlash />} 
+                    <div className='flex justify-between items-center'> 
+
+                        <label className='font-bold text-sm flex-shrink-0'> New password: </label>
+                        <div className='w-full relative'>
+                            <input 
+                                type={showNewPassword ? 'text' : 'password'}
+                                className='w-full px-2 ms-2 text-sm border-transparent rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:border-blue-950'
+                                name='newPassword' 
+                                value={updatePassword.newPassword} 
+                                onChange={handleChange} 
+                                maxLength={22}
+                            />
+                            {error && <p className='text-crimson absolute left-0 ms-2 text-sm'> {error.newPassword} </p>}
+
+                            <div className="text-lg absolute top-2 right-0 cursor-pointer" onClick={handleShowNewPassword}>
+                                {showNewPassword ? <BsEye /> : <BsEyeSlash />} 
+                            </div>
                         </div>
+
                     </div>
 
-                    <div className='flex md:px-1  md:justify-between lg:justify-between xl:justify-start items-center mt-4 relative'>
-                        <label className='font-bold'> Confirm password: </label>
+                </div>
 
-                        <input 
-                            type={showConfirmPassword ? 'text' : 'password'}
-                            className='md:w-56 lg:w-72 xl:w-3/4 md:ml-0 lg:ml-2 mt-2 px-2 py-1 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
-                            name='confirmPassword' 
-                            value={updatePassword.confirmPassword} 
-                            onChange={handleChange} 
-                            maxLength={22}
-                        />
-                        {error && <p className='absolute left-1 -bottom-5 text-crimson text-sm'> {error.confirmPassword} </p>}
+                <div className='w-full mt-4'>
 
-                        <div className="text-lg absolute bottom-2 md:right-3  lg:right-5 xl:right-8 cursor-pointer" onClick={handleShowConfirmPassword}>
-                            {showConfirmPassword ? <BsEye /> : <BsEyeSlash />} 
+                    <div className='flex justify-between items-center'>
+
+                        <label className='font-bold text-sm flex-shrink-0'> Confirm password: </label>
+                        <div className='w-full relative'>
+                            <input 
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                className='w-full px-2 ms-2 text-sm border-transparent rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:border-blue-950'
+                                name='confirmPassword' 
+                                value={updatePassword.confirmPassword} 
+                                onChange={handleChange} 
+                                maxLength={22}
+                            />
+                            {error && <p className='text-crimson absolute left-0 ms-2 text-sm'> {error.confirmPassword} </p>}
+
+                            <div className="text-lg absolute top-2 right-0 cursor-pointer" onClick={handleShowConfirmPassword}>
+                                {showConfirmPassword ? <BsEye /> : <BsEyeSlash />} 
+                            </div>
                         </div>
+
                     </div>
 
-                    <div className='text-center md:text-sm lg:text-lg'>
-                        <Button margin='30px 10px'> {status === 'Loading.......' ? <span> Updating </span> : <span> Update password </span>} </Button>
-                    </div>
+                </div>
 
-                </form>
+                <div className='text-center mt-3'>
+                    <Button margin='15px 10px' padding='5px 50px'> {status === 'Loading.......' ? <span> Updating </span> : <span> Update password </span>} </Button>
+                </div>
 
-            </div>
+            </form>
 
         </section>
     </>
