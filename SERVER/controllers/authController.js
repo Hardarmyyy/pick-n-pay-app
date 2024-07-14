@@ -403,7 +403,7 @@ const refreshToken = async (req, res) => {
 
     try {
         
-        if (!refreshToken) return res.sendStatus(400); 
+        if (!refreshToken) return res.sendStatus(401); 
         // clear the current refreshToken;
         res.clearCookie('refresh', refreshToken, { httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 });
 
@@ -453,14 +453,14 @@ const logout = async (req, res) => {
         const refreshToken = cookies.refresh
 
     try {
-        if (!refreshToken) return res.sendStatus(401)  
+        if (!refreshToken) return res.sendStatus(403)
 
         // check if the existing user has a refresh token
         const existingUser = await User.findOne({token: refreshToken})
         if (!existingUser) {
             // clear the refresh cookie
             res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 }) 
-            return res.sendStatus(204)
+            return res.sendStatus(403)
         }
         
         // remove the refresh token from the user database
