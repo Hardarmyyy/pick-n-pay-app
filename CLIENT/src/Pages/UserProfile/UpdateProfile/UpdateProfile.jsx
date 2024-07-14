@@ -16,48 +16,55 @@ const handleUpdateUserProfile = async (e) => {
   return (
 
     <>
-        <section className='w-1/2 px-10 py-2 font-Montserrat text-my-primary border rounded-md shadow-sm bg-white mx-auto translate-y-0'>
+        <section className='w-full tablet:w-3/4 mini:w-3/5 laptop:w-1/2 super:w-3/5 mx-auto'>
 
-            <p className='text-center mb-2 font-bold font-Jost md:text-xl lg:text-2xl'> Update profile </p>
+            <p className='font-Jost text-lg tablet:text-xl mini:text-2xl laptop:text-3xl super:text-3xl mb-2 text-blue-950 font-bold text-center'> Update profile </p>
 
-            <div className='lg:w-96 xl:w-full md:text-sm lg:text-lg mt-2'>
+            <form onSubmit={handleUpdateUserProfile} className='w-full h-auto text-sm font-Montserrat text-my-primary bg-[#fcfcfc] rounded-md py-3 sm:px-2 md:px-4 tablet:px-4 mini:px-5 laptop:px-4 flex flex-col justify-center items-center'>
 
-                <form onSubmit={handleUpdateUserProfile} className='w-full'>
+              <div className='w-full mt-2'>
 
-                  <div className='flex justify-center items-center mb-4 relative'>
-                    <label className='font-bold'> Username: </label>
+                <div className='flex justify-between items-center'>
+                  <label className='font-bold text-sm flex-shrink-0'> Username: </label>
+                  <div className='w-full relative'>
                     <input 
                       type='text' 
-                      className='w-full ml-2 mt-2 px-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
+                      className='w-full px-2 ms-2 text-sm border-transparent rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:border-blue-950'
                       name='username' 
                       value={updateProfile?.username} 
                       onChange={handleChange} 
                       maxLength={16}
                     />
-                    {error && <p className='text-crimson absolute left-0 -bottom-5 text-sm'> {error.username} </p>}
+                    {error && <p className='text-crimson absolute left-0 ms-2 text-sm'> {error.username} </p>}
                   </div>
-                  
+                </div>
 
-                  <div className='flex justify-center items-center my-1 relative'>
-                      <label className='font-bold'> Email: </label>
-                      <input 
+              </div>
+              
+              <div className='w-full mt-4'>
+
+                <div className='flex justify-between items-center'>
+                  <label className='font-bold text-sm flex-shrink-0'> Email: </label>
+                  <div className='w-full relative'>
+                    <input 
                         type='text' 
-                        className='w-full ml-2 mt-2 px-2 border-2 rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:outline-blue-950'
+                        className='w-full px-2 ms-2 text-sm border-transparent rounded-md shadow-sm bg-white placeholder:italic placeholder:text-slate-400 focus:outline-2 focus:border-blue-950'
                         name='email'
                         value={updateProfile?.email} 
                         onChange={handleChange}
                         maxLength={30}
                       />
-                      {error && <p className='text-crimson absolute left-0 -bottom-5 text-sm'> {error.email} </p>}
-                  </div>
+                      {error && <p className='text-crimson absolute left-0 ms-2 text-sm'> {error.email} </p>}
+                    </div>
+                </div>
 
-                  <div className='text-center'>
-                      <Button margin='30px 10px'> {status === 'Loading.......' ? <span> Updating </span> : <span> Save changes </span> } </Button>
-                  </div>
+              </div>
 
-                </form>
+              <div className='text-center mt-3'>
+                  <Button margin='15px 10px' padding='5px 50px'> {status === 'Loading.......' ? <span> Updating </span> : <span> Save changes </span> } </Button>
+              </div>
 
-            </div>
+            </form>
 
         </section>
     </>
