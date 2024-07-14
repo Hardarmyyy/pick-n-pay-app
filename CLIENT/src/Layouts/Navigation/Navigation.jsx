@@ -12,9 +12,9 @@ import { BiSearch } from "react-icons/bi";
 
 
 
-const Navigation = ({category}) => {
+const Navigation = ({category, isLoading}) => {
 
-const user = useSelector((state) => state?.auth?.user);
+const user = useSelector((state) => state?.user?.user);
 const cart = useSelector((state) => state?.cart?.cartItems);
 const location = useLocation();
 const showSearchBar = location.pathname === '/' || location.pathname === `/category/${category}`
@@ -58,7 +58,7 @@ return (
     <header className='w-full tablet:mt-4 mini:mt-4 laptop:mt-4 super:mt-4 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-between items-center border-b tablet:pb-4 mini:pb-4 laptop:pb-4 super:pb-4 sticky top-0 right-0 z-40 bg-white'> 
         <div className='flex items-center'>
 
-            <HamburgerMenu showCloseAside={() => setShowAsideMenu(!showAsideMenu)}></HamburgerMenu>
+            <HamburgerMenu isLoading={isLoading}  showCloseAside={() => setShowAsideMenu(!showAsideMenu)}></HamburgerMenu>
 
             <Logo></Logo>
 
@@ -78,7 +78,7 @@ return (
 
         }
 
-        <Menu cart={cart} seller={seller}></Menu>
+        <Menu cart={cart} seller={seller} isLoading={isLoading}></Menu>
 
         <MobileMenu showCloseSearch={()=> setShowMobileSearch(!showMobileSearch)} showSearchBar={showSearchBar} seller={seller} cart={cart}></MobileMenu>
 
