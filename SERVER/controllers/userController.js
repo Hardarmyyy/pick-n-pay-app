@@ -139,7 +139,7 @@ try {
         return {...u, createdAt: createdTime, updatedAt: updatedTime}
     }))
 
-    if (!allBuyers.length) return res.json({
+    if (!allBuyers.length) return res.status(404).json({
         error: 'The buyers list is empty', 
         allBuyers: allBuyers
     })
@@ -188,17 +188,22 @@ const getSingleUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
         const {id} = req.params
+        const cookies = req.cookies;
+        const refreshToken = cookies?.refresh
 
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
         const existingUser = await User.findById({_id: id})
-        if (!existingUser) return res.json({error: 'User not found'});
+        if (!existingUser) return res.status(404).json({error: 'User not found'});
 
         const deletedUser = await User.findByIdAndDelete({_id: id})
-            return res.status(200).json({
-                message: 'User profile deleted successfully',
-                deletedUser: deletedUser
+         // clear the refresh cookie
+         res.clearCookie('refresh', refreshToken, {  httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 }) 
+
+        return res.status(200).json({
+            message: 'User profile deleted successfully',
+            deletedUser: deletedUser
         })
 	} 
     catch (err) {
