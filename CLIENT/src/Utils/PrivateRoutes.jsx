@@ -8,7 +8,7 @@ const PrivateRoutes = ({allowedRoles}) => {
 
 const location = useLocation()
 
-const user = useSelector((state) => state.auth?.user)
+const user = useSelector((state) => state?.user?.user)
 
 return (
 
