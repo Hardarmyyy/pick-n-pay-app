@@ -10,7 +10,10 @@ const SINGLEUSER = createAsyncThunk('users/singleUser', async (id) => {
         return response.data
     }
     catch (err) {
-        return err.message
+        if (!err.response) {
+            return rejectWithValue({ error: "Unable to connect to the server" });
+        }
+        return rejectWithValue(err.response.data);
     }
 }) 
 
@@ -20,6 +23,9 @@ const UPDATEUSERPROFILE = createAsyncThunk('users/update-profile', async ({id, u
         return response.data
     }
     catch (err) {
+        if (!err.response) {
+            return rejectWithValue({ error: "Unable to connect to the server" });
+        }
         return rejectWithValue(err.response.data);
     }
 }) 
@@ -30,6 +36,9 @@ const UPDATEPASSWORD = createAsyncThunk('users/update-password', async ({id, upd
         return response.data
     }
     catch (err) {
+        if (!err.response) {
+            return rejectWithValue({ error: "Unable to connect to the server" });
+        }
         return rejectWithValue(err.response.data);
     }
 }) 
@@ -40,6 +49,9 @@ const DELETEUSER = createAsyncThunk('users/delete-user', async (id, { rejectWith
         return response.data
     }
     catch (err) {
+        if (!err.response) {
+            return rejectWithValue({ error: "Unable to connect to the server" });
+        }
         return rejectWithValue(err.response.data);
     }
 }) 
@@ -50,6 +62,9 @@ const SWICTHPROFILE = createAsyncThunk('users/swicth-profile', async (id, { reje
         return response.data
     }
     catch (err) {
+        if (!err.response) {
+            return rejectWithValue({ error: "Unable to connect to the server" });
+        }
         return rejectWithValue(err.response.data);
     }
 }) 
