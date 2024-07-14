@@ -4,11 +4,6 @@ import { useState, useEffect } from 'react'
 const UseValidateChangePassword = (value) => {
 
     const [errors, setError] = useState({})
-
-    const passwordRegexUpperCase = /^(?=.*[A-Z])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-    const passwordRegexNumber = /^(?=.*[0-9])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-    const passwordRegexSymbol = /^(?=.*[.!@#$%^&*])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-    
     
     const validate = (value) => {
 
@@ -26,15 +21,6 @@ const UseValidateChangePassword = (value) => {
             }
             else if (field === 'newPassword' && value[field].trim() !== '' && value[field].length < 8 ) {
                 newErrors[field] = 'Password must be at least 8 characters long';
-            }
-            else if ((field === 'newPassword' && value[field].trim() !== '') && !(passwordRegexUpperCase.test(value[field]))) {
-                newErrors[field] = 'Password must contain one uppercased letter!';
-            }
-            else if ((field === 'newPassword' && value[field].trim() !== '') && !(passwordRegexNumber.test(value[field]))) {
-                newErrors[field] = 'Password must contain at least one number!';
-            }
-            else if ((field === 'newPassword' && value[field].trim() !== '') && !(passwordRegexSymbol.test(value[field]))) {
-                newErrors[field] = 'Password must contain at least one symbol!';
             }
         }
     

@@ -6,15 +6,11 @@ import UseValidateChangePassword from './UseValidateChangePassword';
 import UseLogout from '../../../Hooks/Auth/Logout/UseLogout'
 
 const UseChangePassword = () => {
-
-    const passwordRegexUpperCase = /^(?=.*[A-Z])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-    const passwordRegexNumber = /^(?=.*[0-9])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
-    const passwordRegexSymbol = /^(?=.*[.!@#$%^&*])[a-zA-Z0-9.!@#$%^&*]{8,}$/;
     
     const dispatch = useDispatch()
-    const {handleLogoutforPassword} = UseLogout()
-    const id = useSelector((state) => state.auth?.user?.userID)
-    const status = useSelector((state) => state.auth?.status)
+    const {handlePasswordLogout} = UseLogout()
+    const id = useSelector((state) => state?.user?.user?.userId)
+    const status = useSelector((state) => state?.user?.status)
     
     // define state to manage form object data
     const [updatePassword, setUpdatepassword] = useState({
@@ -40,13 +36,16 @@ const UseChangePassword = () => {
 
         // validating form state;
         if (name === 'currentPassword') {
-            setError((error) => {return {...error, currentPassword: value ? '': 'Enter current password'}})
+            setError((error) => {return {...error, currentPassword: value ? '' : 'Enter current password'}}) 
         }
         else if (name === 'newPassword') {
-            setError((error) => {return {...error, newPassword: value ? '': 'Enter new password' }})
+            setError((error) => {return {...error, newPassword: value ? value.length >= 8 ? '' : 'New password must be at least 8 characters' : 'Enter new password' }})
         }
         else if (name === 'confirmPassword') {
-            setError((error) => { return {...error, confirmPassword: value ? '' : 'Confirm new password'}})
+            const newPassword = updatePassword.newPassword
+            setError((error) => { return {...error, confirmPassword: value ? 
+                                                                            newPassword === value ? '' : 'Password does not match' 
+                                                                                : 'Confirm new password' }})
         }
     }
     
@@ -69,10 +68,7 @@ const UseChangePassword = () => {
             value.currentPassword &&
             value.newPassword &&
             value.newPassword.length >= 8 &&
-            passwordRegexUpperCase.test(value.newPassword) && 
-            passwordRegexNumber.test(value.newPassword) && 
-            passwordRegexSymbol.test(value.newPassword) && 
-            value.confirmPassword
+            value.confirmPassword === value.newPassword
         ].every(Boolean)
     
         return canUpdatepassword
@@ -98,8 +94,8 @@ const UseChangePassword = () => {
                         confirmPassword: ''
                     })
                     setTimeout(() => {
-                        handleLogoutforPassword()
-                    }, 3000)
+                        handlePasswordLogout()
+                    }, 1500)
                 }
             })
             .catch((err) => {

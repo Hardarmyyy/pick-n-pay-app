@@ -34,7 +34,7 @@ const UseResetPassword = (email, token) => {
         setUser((user) => {return {...user, [name]: value.replace(/\s/g, "")}});
         // validating form state;
         if (name === 'password') {
-            setError((error) => {return {...error, password: value ? value.length > 8 ? '' : 'Password must be at least 8 characters' : 'Kindly enter password' }})
+            setError((error) => {return {...error, password: value ? value.length >= 8 ? '' : 'Password must be at least 8 characters' : 'Kindly enter password' }})
         }
         if (name === 'confirmPassword') {
             const password = user.password

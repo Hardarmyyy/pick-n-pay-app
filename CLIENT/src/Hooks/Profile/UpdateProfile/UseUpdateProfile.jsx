@@ -12,12 +12,12 @@ const navigate = useNavigate();
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-const currentUser = useSelector((state) => state.auth?.user)
-const id = useSelector((state) => state.auth?.user?.userID)
-const status = useSelector((state) => state.auth.status)
+const currentUser = useSelector((state) => state?.user?.user)
+const id = useSelector((state) => state?.user?.user?.userId)
+const status = useSelector((state) => state?.user?.status)
 
 const [updateProfile, setUpdateProfile] = useState({
-    username: currentUser?.userName,
+    username: currentUser?.username,
     email: currentUser?.email
 })
 
@@ -29,7 +29,7 @@ const handleChange = (e) => {
     setUpdateProfile((updateProfile) => {return {...updateProfile, [name]: value.replace(/\s/g, "")}})
     // validating form state;
     if (name === 'username') {
-        setError((error) => {return {...error, username: value ? value.length < 8 ? 'Username must be at least 8 characters!' : '' : 'Kindly enter username' }})
+        setError((error) => {return {...error, username: value ? value.length < 8 ? 'Username must be at least 8 characters!' : '' : 'Enter username' }})
     }
     if (name === 'email') {
         setError((error) => { return {...error, email: value ? emailRegex.test(value) ? '' : 'Enter a valid email address' : 'Enter email address'}})

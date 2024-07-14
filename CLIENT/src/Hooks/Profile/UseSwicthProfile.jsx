@@ -6,7 +6,7 @@ import {toast} from 'react-toastify'
 
 const UseSwicthProfile = () => {
 
-const id = useSelector((state) => state?.auth?.user?.userID)
+const id = useSelector((state) => state?.user?.user?.userId)
 const dispatch = useDispatch()
 const navigate = useNavigate()
 
@@ -15,7 +15,7 @@ const handleSwicthProfile = async () => {
     .then((response) => {
         if (response.payload.message) {
           setTimeout(() => {
-            navigate('/')
+            navigate('/profile')
           }, 2500)
         }
     })
