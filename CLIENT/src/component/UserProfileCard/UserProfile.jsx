@@ -11,7 +11,7 @@ import Button from '../Button'
 const UserProfile = ({onProfileClick}) => {
 
 const accessToken = useSelector((state) => state.auth?.accessToken);
-const user = useSelector((state) => state.auth.user);
+const user = useSelector((state) => state?.user?.user);
 const seller = user && user.userRole[0] === 'seller';
 const buyer = user && user.userRole[0] === 'buyer';
 
@@ -46,7 +46,7 @@ return (
         
         <div className='block text-sm text-my-primary font-Montserrat'>
 
-            {user && <p className='my-1 font-medium'> Hi {user.userName} </p> }
+            {user && <p className='my-1 font-medium'> Hi {user.username} </p> }
 
             <Link to='/profile' className='flex justify-center items-center px-3 rounded-sm mb-1 py-1 hover:bg-gray-400'> 
                 <BiUserCircle className='text-xl flex-shrink-0'></BiUserCircle> 
