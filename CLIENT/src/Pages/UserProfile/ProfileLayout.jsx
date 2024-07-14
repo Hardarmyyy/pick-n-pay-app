@@ -1,14 +1,17 @@
 import React from 'react'
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Outlet, NavLink } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-import Navigation from '../../Layouts/Navigation/Navigation';
 import DeleteProfileModal from '../../Layouts/DeleteProfileModal/DeleteProfileModal';
 import UseSwicthProfile from '../../Hooks/Profile/UseSwicthProfile';
 import Button from '../../component/Button';
+import Modal from '../../component/Modal'
+import Spinner from '../../component/Spinner'
 
 
 const ProfileLayout = () => {
+
+const profileStatus = useSelector((state) => state?.user?.status)
 
 const {handleSwicthProfile} = UseSwicthProfile()
 
@@ -23,22 +26,14 @@ const handleOpenModal = () => {
 
 return (
 <>
-    <ToastContainer 
-        position='top-right'
-        autoClose={4000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}/>
+    {profileStatus === 'Loading.......' && <Modal> <Spinner></Spinner> </Modal>}
 
-    <Navigation></Navigation>
-    
-    <section className='min-w-full h-auto px-6 flex'>
+    <section className='w-full min-h-[70vh] py-6 sm:p-2 md:p-2 tablet:px-4 mini:px-6 laptop:px-6 super:px-60 flex justify-center items-start sm:items-center'>
 
-        <div className='w-40 h-96 py-3 bg-gray-200 rounded-md md:text-sm shadow-sm text-center text-my-primary font-Montserrat'>
+        <div className='sm:hidden md:hidden tablet:w-1/5 mini:w-36 laptop:w-44 super:w-44 h-auto py-3 text-sm bg-gray-200 rounded-md shadow-sm text-my-primary font-Montserrat flex flex-col justify-center items-center'>
 
-            <p className='mb-2'><NavLink className={({ isActive }) => isActive ? "py-1 px-3 mb-2 bg-gray-400 rounded-sm" : null} to={`/profile/update-profile`}>  Update profile  </NavLink></p>
-            <p className='mb-2'> <NavLink className={({ isActive }) => isActive ? "py-1 px-2 bg-gray-400 rounded-sm" : null} to={`/profile/update-password`}> Change Password </NavLink> </p>
+            <p className='mb-2'><NavLink className={({ isActive }) => isActive ? "" : null} to={`/profile/update-profile`}>  Update profile  </NavLink></p>
+            <p className='mb-2'> <NavLink className={({ isActive }) => isActive ? "" : null} to={`/profile/update-password`}> Update Password </NavLink> </p>
             <Button margin= '5px 0px' eventHandler={() => handleSwicthProfile()}> Switch Profile </Button>
             <Button padding='5px 5px' margin= '8px 0px' backgroundColor='crimson' eventHandler={handleOpenModal}> Delete account </Button>
 
