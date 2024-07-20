@@ -1,28 +1,50 @@
 import React from 'react'
 import {useSelector } from 'react-redux'
-import { Link,  } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { BsBox2, BsBagHeart } from "react-icons/bs";
 import { BiUserCircle } from "react-icons/bi";
 import { RxDashboard } from "react-icons/rx";
 import Logo from '../Layouts/Logo/Logo';
+import Button from './Button';
 import Categories from './Categories/Categories';
 import AsideNewsLetter from '../Layouts/NewsLetter/AsideNewsLetter';
 import UseLogout from '../Hooks/Auth/Logout/UseLogout';
+import UseSwicthProfile from '../Hooks/Profile/UseSwicthProfile';
+import UseDeleteUser from '../Hooks/Profile/UseDeleteUser';
 
-const Aside = ({showDropDown, showCloseAside, showCloseDropDown, buyer, seller, user}) => {
+const Aside = ({showDropDown, showProfile, showCloseProfile, showCloseAside, showCloseDropDown, buyer, seller, user}) => {
 
 const accessToken = useSelector((state) => state.auth?.accessToken);
+const location = useLocation();
+const hideCategory = location.pathname === '/profile' || location.pathname === '/profile/update-profile' || location.pathname === '/profile/update-password';
 
+const {handleMobileLogout} = UseLogout()
+const {handleSwicthProfile} = UseSwicthProfile()
+const {handleOpenModal} = UseDeleteUser()
 
-const {handleLogout} = UseLogout()
 
 const handleSignOut = async () => {
-    await handleLogout(showCloseAside)
+    await handleMobileLogout(showCloseAside)
 }
 
 const handlecloseAsideAndCloseDropDown = () => {
     showCloseAside()
     showCloseDropDown()
+}
+
+const handlecloseAsideAndCloseProfile = () => {
+    showCloseAside()
+    showCloseProfile()
+}
+
+const handlecloseAsideAndSwitchProfile = () => {
+    showCloseAside()
+    handleSwicthProfile()
+}
+
+const handlecloseAsideAndModal = () => { 
+    showCloseAside();
+    handleOpenModal();
 }
 
 
@@ -39,54 +61,87 @@ return (
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                     </button>
-                    <Logo></Logo>
+                    <Logo eventHandler={() => showCloseAside()}></Logo>
                 </div>
 
                 <ul className="space-y-2 font-medium p-2">
 
-                    {user && <p className='my-1 flex justify-start pl-11 items-center font-medium'> Hi  <span className='font-bold ml-3'> {user.userName} </span> </p> }
+                    {user && <p className='my-1 flex justify-start pl-11 items-center font-medium'> Hi  <span className='font-bold ml-3'> {user.username} </span> </p> }
+
+                    {!hideCategory && 
+                        <li>
+                            <button type="button" onClick={() => showCloseDropDown()} className="flex items-center w-full p-2 text-base transition duration-75">
+                                <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                                    <path d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z"/>
+                                </svg>
+                                <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"> Categories </span>
+                                {showDropDown
+                                        ?
+                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5L5 1L9 5"/>
+                                        </svg>
+                                            :
+                                                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
+                                                </svg>
+                                }
+                            </button>
+                            {showDropDown &&
+                                <ul className="px-9 space-y-2">
+                                    <div className='pl-2'>
+                                        <Categories eventHandler={() => handlecloseAsideAndCloseDropDown()}></Categories>
+                                    </div>
+                                </ul>
+                            }
+                        </li>
+                    }
 
                     <li>
-                        <button type="button" onClick={() => showCloseDropDown()} className="flex items-center w-full p-2 text-base transition duration-75">
-                            <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-                                <path d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z"/>
-                            </svg>
-                            <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"> Categories </span>
-                            {showDropDown
-                                    ?
-                                    <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5L5 1L9 5"/>
-                                    </svg>
-                                        :
-                                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
-                                            </svg>
-                            }
-                        </button>
-                        {showDropDown &&
-                            <ul className="px-9 space-y-2">
-                                <div className='pl-2'>
-                                    <Categories eventHandler={() => handlecloseAsideAndCloseDropDown()}></Categories>
-                                </div>
-                            </ul>
+                        {hideCategory 
+                            ? 
+                            <>
+                                <button type="button" onClick={() => showCloseProfile()} className="flex items-center w-full p-2 text-base transition duration-75">
+                                    <BiUserCircle className='flex-shrink-0 w-5 h-5 text-gray-500'></BiUserCircle>
+                                    <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"> My profile </span> 
+                                    {showProfile
+                                        ?
+                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5L5 1L9 5"/>
+                                        </svg>
+                                            :
+                                                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
+                                                </svg>
+                                    }
+                                </button>
+                                {showProfile &&
+                                    <ul className="px-9 space-y-2">
+                                        <div className='pl-2'>
+                                            <p className='mb-2' onClick={handlecloseAsideAndCloseProfile}><NavLink className={({ isActive }) => isActive ? "" : null} to={`/profile/update-profile`}>  Update profile  </NavLink></p>
+                                            <p className='mb-2' onClick={handlecloseAsideAndCloseProfile}> <NavLink className={({ isActive }) => isActive ? "" : null} to={`/profile/update-password`}> Update password </NavLink> </p>
+                                        </div>
+                                    </ul>
+                                }
+                            </>
+                            : 
+                                <Link to='/profile' onClick={() => showCloseAside()} className="flex items-center w-full p-2 text-base">
+                                    <BiUserCircle className='flex-shrink-0 w-5 h-5 text-gray-500'></BiUserCircle>
+                                    {accessToken 
+                                        ? <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"> My profile </span> 
+                                            : <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"> Account </span> 
+                                    }
+                                </Link>
                         }
                     </li>
 
-                    <li>
-                        <Link to='/profile' className="flex items-center p-2">
-                            <BiUserCircle className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></BiUserCircle>
-                            <span className="flex-1 ms-3 whitespace-nowrap"> Account </span>
-                        </Link>
-                    </li>
-
-                    <li>
+                    <li onClick={() => showCloseAside()}>
                         <Link to='/orders' className="flex items-center p-2">
                             <BsBox2 className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></BsBox2>
                             <span className="flex-1 ms-3 whitespace-nowrap"> Orders </span>
                         </Link>
                     </li>
 
-                    <li>
+                    <li onClick={() => showCloseAside()}>
                         { seller 
                             ?
                                 <Link to='/shop' className='flex items-center p-2'> 
@@ -140,9 +195,16 @@ return (
                 </ul>
                 
                 <div className='p-3'>
-                    <div className="sm:px-2 py-4 rounded-lg bg-blue-400">
-                        <AsideNewsLetter></AsideNewsLetter>
-                    </div>
+                    {hideCategory ?
+                        <>
+                            <Button margin= '5px 0px' padding='5px 40px' eventHandler={handlecloseAsideAndSwitchProfile}> Switch profile </Button>
+                            <Button margin= '8px 0px' padding='5px 34px'  backgroundColor='crimson' eventHandler={handlecloseAsideAndModal}> Delete account </Button>
+                        </>
+                        :
+                        <div className="sm:px-2 py-4 rounded-lg bg-blue-400">
+                            <AsideNewsLetter></AsideNewsLetter>
+                        </div>
+                    }
                 </div>
 
             </div>
