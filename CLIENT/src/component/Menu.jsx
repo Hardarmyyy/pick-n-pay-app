@@ -6,7 +6,7 @@ import { BiUserCircle } from "react-icons/bi";
 import { IoIosArrowDown, IoIosArrowUp} from "react-icons/io";
 import { BsCart3 } from "react-icons/bs";
 
-const Menu = ({cart, seller}) => {
+const Menu = ({cart, seller, isLoading}) => {
 
 const navRef = useRef(null);
 
@@ -35,15 +35,17 @@ return (
 <>
     <nav className={'sm:hidden md:hidden flex justify-between items-center relative'}> 
 
-        <div  className='sm:hidden md:hidden flex justify-between items-center cursor-pointer p-2 rounded-md tablet:mr-2 mini:mr-6 laptop:mr-8 super:mr-10 bg-gray-200 hover:bg-gray-400' onClick={() => setActive(!active)} ref={navRef}> 
+        {!isLoading && 
+            <div  className='sm:hidden md:hidden flex justify-between items-center cursor-pointer p-2 rounded-md tablet:mr-2 mini:mr-6 laptop:mr-8 super:mr-10 bg-gray-200 hover:bg-gray-400' onClick={() => setActive(!active)} ref={navRef}> 
 
-            <BiUserCircle className='text-2xl text-my-primary mr-2'></BiUserCircle>
-            <div className='sm:hidden md:hidden flex items-center text-sm'>
-                <span className='mr-1 text-my-primary font-Montserrat'> Account </span> 
-                {active ? <IoIosArrowUp></IoIosArrowUp> : <IoIosArrowDown></IoIosArrowDown> }
+                <BiUserCircle className='text-2xl text-my-primary mr-2'></BiUserCircle>
+                <div className='sm:hidden md:hidden flex items-center text-sm'>
+                    <span className='mr-1 text-my-primary font-Montserrat'> Account </span> 
+                    {active ? <IoIosArrowUp></IoIosArrowUp> : <IoIosArrowDown></IoIosArrowDown> }
+                </div>
+
             </div>
-
-        </div>
+        }
 
         {active && <UserProfile onProfileClick={handleProfileClick}></UserProfile>}
 
@@ -59,6 +61,7 @@ return (
         }
 
     </nav>
+    
 </>
 
 )
