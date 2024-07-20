@@ -1,6 +1,6 @@
 import { createSlice, isPending, isFulfilled, isRejected} from "@reduxjs/toolkit";
 import { LOGIN, REFRESH, LOGOUT } from "../Services/authApi";
-import { SINGLEUSER, UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE } from "../Services/userApi";
+import { UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE } from "../Services/userApi";
 import { decodeToken } from "../Utils/DecodeJwt";
 import {toast} from 'react-toastify'
 
@@ -8,14 +8,17 @@ import {toast} from 'react-toastify'
 
 const initialState = {
     status: 'idle',
-    user: null
+    user: null,
+    isDelete: false
 }
 
 export const userSlice = createSlice({ 
     name:'user',
     initialState,
     reducers: {
-        
+        OPENMODAL: (state) => {
+            state.isDelete = !state.isDelete
+        }
     },
     extraReducers (builder) {
         builder
@@ -37,10 +40,6 @@ export const userSlice = createSlice({
                         state.user = null
                     }
                 }) 
-                .addCase(SINGLEUSER.fulfilled, (state, action) => {
-                    const {user} = action.payload
-                    console.log(user)
-                })
                 .addCase(UPDATEUSERPROFILE.fulfilled, (state, action) => {
                     const {token, message} = action.payload
                     const decodedUser = decodeToken(token)
@@ -68,19 +67,19 @@ export const userSlice = createSlice({
                     state.user = {...state.user, userRole: decodedUser.userRole}
                 })
                 .addMatcher(
-                    isFulfilled(UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE, SINGLEUSER),
+                    isFulfilled(UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE),
                     (state) => {
                     state.status = 'success'
                 }
                 )
                 .addMatcher(
-                    isPending(UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE, SINGLEUSER),
+                    isPending(UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE),
                     (state) => {
                     state.status = 'Loading.......';
                 }
                 )
                 .addMatcher(
-                    isRejected(UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE, SINGLEUSER),
+                    isRejected(UPDATEUSERPROFILE, UPDATEPASSWORD, DELETEUSER, SWICTHPROFILE),
                     (state, action) => {
                         state.status = 'failed';
                         const err = action.payload.error
@@ -92,5 +91,5 @@ export const userSlice = createSlice({
     }
 })
 
-
+export const {OPENMODAL} = userSlice.actions
 export default userSlice.reducer
