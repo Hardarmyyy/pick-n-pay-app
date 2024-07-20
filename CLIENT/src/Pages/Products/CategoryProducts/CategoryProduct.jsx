@@ -48,7 +48,7 @@ const CategoryProduct = () => {
 
                         {categoryStatus === 'Loading.......' && <> <Spinner></Spinner> </>}
 
-                        {categoryStatus === 'failed' &&
+                        {!categoryProducts && categoryStatus === 'failed' &&
                             <div className="font-Jost text-lg tablet:text-xl mini:text-3xl laptop:text-4xl super:text-4xl text-blue-950 text-center">
                                 <p> Failed to load items in this category.</p>
                                 <p> Please try again. </p>
