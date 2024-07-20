@@ -1,32 +1,43 @@
 import React from 'react'
 import {LOGOUT} from '../../../Services/authApi'
 import {useDispatch } from 'react-redux'
-import {useNavigate, useLocation } from 'react-router-dom';
+import {useNavigate } from 'react-router-dom';
 
 const UseLogout = () => {
 
 const dispatch = useDispatch();
 const navigate = useNavigate();
 
+const handleLogout = async () => {
+  dispatch(LOGOUT())
+  .then((response) => {
+    if (response.payload.message) {
+        navigate('/')
+    }
+})
+}
 
-const handleLogout = async (closeAside) => {
+
+const handleMobileLogout = async (closeAside) => {
     dispatch(LOGOUT())
     .then((response) => {
       if (response.payload.message) {
         closeAside()
-        setTimeout(() => {
-          navigate('/')
-        }, 2500) 
+        navigate('/')
       }
   })
 }
 
-// const handleLogoutforPassword = () => {
-//     dispatch(LOGOUT())
-//     navigate('/login')
-// }
+const handlePasswordLogout = () => {
+    dispatch(LOGOUT())
+    .then((response) => {
+      if (response.payload.message) {
+        navigate('/login')
+      }
+  })
+}
 
-  return {handleLogout}
+  return {handleLogout, handleMobileLogout, handlePasswordLogout}
 }
 
 export default UseLogout
