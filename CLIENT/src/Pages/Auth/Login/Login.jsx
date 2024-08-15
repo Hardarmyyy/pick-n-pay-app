@@ -6,7 +6,7 @@ import LoginForm from './LoginForm/LoginForm'
 import UseLogin from '../../../Hooks/Auth/Login/UseLogin'
 import Modal from '../../../component/Modal'
 import Spinner from '../../../component/Spinner'
-
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const Login = () => { 
