@@ -1,0 +1,120 @@
+version: "3.7"
+
+services:
+
+  # CLIENT
+  client:
+    build:
+      context: ./CLIENT # This specifies the directory for the dockerfile of the server service
+      dockerfile: Dockerfile.prod
+      args:
+        - "VITE_API_URI=${VITE_API_URI}"
+    image: ${USERNAME}/picknpay-client
+    labels:
+      - ${USERNAME}/picknpay-client:latest
+    container_name: picknpay-client
+    restart: always
+    networks:
+      - app-network
+    env_file:
+      - .env.prod # ensure to point the path to the env file
+    environment:
+      - "VITE_API_URI=${VITE_API_URI}" # EX. "VAR_NAME=value"
+    ports:
+      - 5173:5173
+    depends_on:
+      - server
+
+  # SERVER
+  server:
+    build:
+      context: ./SERVER # This specifies the directory for the dockerfile of the server service
+      dockerfile: Dockerfile
+      args:
+        - "SALT=${SALT}"
+        - "PORT=${PORT}"
+        - "MONGODB_URI=${MONGODB_URI}" 
+        - "EXPIRY_KEY_EMAIL=${EXPIRY_KEY_EMAIL}"
+        - "EXPIRY_KEY_ACCESS=${EXPIRY_KEY_ACCESS}"
+        - "EXPIRY_KEY_REFRESH=${EXPIRY_KEY_REFRESH}"
+        - "EXPIRY_KEY_RESET=${EXPIRY_KEY_RESET}"
+        - "SESSION_SECRET=${SESSION_SECRET}"
+        - "VERIFY_EMAIL_TOKEN_SECRET=${VERIFY_EMAIL_TOKEN_SECRET}"
+        - "ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}"
+        - "REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}"
+        - "RESET_PASSWORD_TOKEN_SECRET=${RESET_PASSWORD_TOKEN_SECRET}"
+        - "SMTP_HOST=${SMTP_HOST}"
+        - "SMTP_PORT=${SMTP_PORT}"
+        - "SMTP_SERVICE=${SMTP_SERVICE}"
+        - "SMTP_MAIL=${SMTP_MAIL}"
+        - "SMTP_PASSWORD=${SMTP_PASSWORD}"
+        - "GOOGLESPREADSHEETID=${GOOGLESPREADSHEETID}"
+        - "FRONTEND_URL=${FRONTEND_URL}"
+        - "CLOUDINARY_NAME=${CLOUDINARY_NAME}"
+        - "CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}"
+        - "CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}"
+    image: ${USERNAME}/picknpay-server
+    labels:
+      - ${USERNAME}/picknpay-server:latest
+    container_name: picknpay-server
+    restart: always
+    networks:
+      - app-network
+    env_file:
+      - .env.prod # ensure to point the path to the env file
+    ports:
+      - "${PORT}:${PORT}"  # container will be exposed to the outside on this port
+    environment:
+      - "SALT=${SALT}"
+      - "PORT=${PORT}"
+      - "MONGODB_URI=${MONGODB_URI}" 
+      - "EXPIRY_KEY_EMAIL=${EXPIRY_KEY_EMAIL}"
+      - "EXPIRY_KEY_ACCESS=${EXPIRY_KEY_ACCESS}"
+      - "EXPIRY_KEY_REFRESH=${EXPIRY_KEY_REFRESH}"
+      - "EXPIRY_KEY_RESET=${EXPIRY_KEY_RESET}"
+      - "SESSION_SECRET=${SESSION_SECRET}"
+      - "VERIFY_EMAIL_TOKEN_SECRET=${VERIFY_EMAIL_TOKEN_SECRET}"
+      - "ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}"
+      - "REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}"
+      - "RESET_PASSWORD_TOKEN_SECRET=${RESET_PASSWORD_TOKEN_SECRET}"
+      - "SMTP_HOST=${SMTP_HOST}"
+      - "SMTP_PORT=${SMTP_PORT}"
+      - "SMTP_SERVICE=${SMTP_SERVICE}"
+      - "SMTP_MAIL=${SMTP_MAIL}"
+      - "SMTP_PASSWORD=${SMTP_PASSWORD}"
+      - "GOOGLESPREADSHEETID=${GOOGLESPREADSHEETID}"
+      - "FRONTEND_URL=${FRONTEND_URL}"
+      - "CLOUDINARY_NAME=${CLOUDINARY_NAME}"
+      - "CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}"
+      - "CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}"
+    volumes:
+      - server-data:/usr/src/app/logs  # Mount a volume for persisting data on the server 
+
+  # PROXY MANAGER
+  proxy_manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: proxy
+    restart: unless-stopped
+    networks:
+      - app-network
+    env_file:
+      - .env.prod # ensure to point the path to the env file
+    ports:
+      - '${WEBPORT}:80'  # container will be exposed to the outside on this port
+      - '81:81'
+      - '443:443'
+    depends_on:
+      - client
+      - server
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+      - ./CONFIG/nginx.conf:/data/nginx/custom/http_top.conf
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  server-data: {}
+
