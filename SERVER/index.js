@@ -7,8 +7,8 @@ const session = require('express-session');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const {logger} = require('./middleware/logEvents');
-const {checkAuth} = require('./Middleware/checkAuth');
-const {credentails} = require('./Middleware/credentials');
+const {checkAuth} = require('./middleware/checkAuth');
+const {credentails} = require('./middleware/credentials');
 const {corsOptions} = require('./Utilities/corsOptions');
 
 
