@@ -403,7 +403,7 @@ const refreshToken = async (req, res) => {
 
     try {
         
-        if (!refreshToken) return res.sendStatus(401); 
+        if (!refreshToken) return res.sendStatus(204); 
         // clear the current refreshToken;
         res.clearCookie('refresh', refreshToken, { httpOnly: true,  sameSite: "None", secure: true, maxAge: 24 * 60 * 60 * 1000 });
 
