@@ -1,0 +1,36 @@
+# Use an official Node.js runtime as a parent image
+FROM node:20-alpine AS build
+
+# Set args and environment variables
+ARG VITE_API_URI
+
+ENV VITE_API_URI=${VITE_API_URI}
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install
+
+# Copy the current directory contents into the container at /usr/src/app
+COPY . .
+
+# Build the app
+RUN npm run build
+
+# Use a lighter image for the final stage
+FROM nginx
+
+# Copy only the necessary files from the previous stage
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html/
+
+COPY /NGINX/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Make port 5173 available to the world outside this container
+EXPOSE 5173
+
+# Run the command
+CMD ["nginx", "-g", "daemon off;"]
