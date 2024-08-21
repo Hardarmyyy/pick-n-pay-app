@@ -1,4 +1,10 @@
 const mongoose = require('mongoose');
+const Cart = require('./CartModel.js');
+const Favourite = require('./FavouritesModel.js');
+const Order = require('./OrderModel.js');
+const Product = require('./ProductsModel.js');
+const ShippingAddress = require('./ShippingAddressModel.js');
+
 
 // create a User schema for users
 
@@ -34,22 +40,24 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    cart: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' }
-    ],
-    favourites: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Favourites' }
-    ],
-    myOrders: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Orders' }
-    ],
-    store: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Store' }
-    ],
     token: [
         {type: String}
     ]
 
 }, { timestamps: { createdAt: true, updatedAt: true } });
 
+userSchema.post('findOneAndDelete', async (doc) => {
+    // Delete existing cart for the deleted user
+    await Cart.findOneAndDelete({buyer: doc._id});
+    // Delete existing wishlist items for the deleted user
+    await Favourite.deleteMany({buyer: doc._id});
+    // Delete order history for the deleted user
+    await Order.deleteMany({buyer: doc._id});
+    // Delete all products for the deleted user
+    await Product.deleteMany({seller: doc._id});
+    // Delete all shipping address for the deleted user
+    await ShippingAddress.deleteMany({buyer: doc._id});
+})
+
 module.exports = mongoose.model('User', userSchema);
+
