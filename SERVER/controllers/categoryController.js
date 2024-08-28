@@ -8,14 +8,14 @@ const addCategory = async (req, res) => {
         const {categoryName} = req.body
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(400)
+        if (!mongoose.Types.ObjectId.isValid(userId)) return res.sendStatus(400) 
 
-        if (!categoryName) return res.status(400).json({message: "All fields are required!" })
+        if (!categoryName) return res.status(400).json({error: "All fields are required!" })
         
         //check category duplicate
         const existingCategory = await Category.findOne({ categoryName: categoryName})
 
-        if (existingCategory) return res.status(409).send({message: "Category name exists already"})
+        if (existingCategory) return res.status(409).send({error: "Category name exists already"})
 
         const newCategory = new Category({categoryName: categoryName});
         await newCategory.save();
@@ -38,7 +38,7 @@ const allCategories = async (req, res) => {
         const allCategory = await Category.find({}).sort({createdAt: -1}).lean();
 
         if (!allCategory.length) return res.status(404).json({
-            message: 'There are no categories to show', 
+            error: 'There are currently no categories', 
             categories: allProductCategories
         })
 
@@ -67,16 +67,16 @@ const updateCategory = async (req, res) => {
         
         if (!mongoose.Types.ObjectId.isValid(id)) return res.sendStatus(400)
 
-        if (!categoryName) return res.status(400).json({message: "All fields are required!"})
+        if (!categoryName) return res.status(400).json({error: "All fields are required!"})
         
         const existingCategory = await Category.findById({ _id: id })
 
-        if (!existingCategory) return res.status(404).json({message: "category doesn't exist!" })
+        if (!existingCategory) return res.status(404).json({error: "category doesn't exist!" })
 
         //check for category name duplicate
         const registeredCategoryName = await Category.findOne({ categoryName: categoryName })
 
-        if (registeredCategoryName && registeredCategoryName?._id.toString() !== existingCategory._id.toString()) return res.status(409).json({message: "Category name exists already" })
+        if (registeredCategoryName && registeredCategoryName?._id.toString() !== existingCategory._id.toString()) return res.status(409).json({error: "Category name exists already" })
 
         existingCategory.categoryName = categoryName
         await existingCategory.save()
