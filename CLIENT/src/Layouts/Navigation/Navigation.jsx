@@ -24,6 +24,7 @@ const buyer = user && user.userRole[0] === 'buyer';
 const [showAsideMenu, setShowAsideMenu] = useState(false)  
 const [showDropDown, setShowDropDown] = useState(false)
 const [showProfile, setShowProfile] = useState(false)
+const [showShop, setShowShop] = useState(false)
 const [showMobileSearch, setShowMobileSearch] = useState(false)
 
 
@@ -83,7 +84,7 @@ return (
 
         <MobileMenu showCloseSearch={()=> setShowMobileSearch(!showMobileSearch)} showSearchBar={showSearchBar} seller={seller} cart={cart}></MobileMenu>
 
-        {showAsideMenu && <Aside showDropDown={showDropDown} showProfile={showProfile} showCloseAside={()=> setShowAsideMenu(!showAsideMenu)} showCloseDropDown={() => setShowDropDown(!showDropDown)} showCloseProfile={() => setShowProfile(!showProfile)} buyer={buyer} seller={seller} user={user}></Aside>}
+        {showAsideMenu && <Aside showDropDown={showDropDown} showProfile={showProfile} showShop={showShop} showCloseAside={()=> setShowAsideMenu(!showAsideMenu)} showCloseDropDown={() => setShowDropDown(!showDropDown)} showCloseProfile={() => setShowProfile(!showProfile)} showCloseShop={() => setShowShop(!showShop)} buyer={buyer} seller={seller} user={user} category={category}></Aside>}
 
         {showMobileSearch && <MobileSearchInput showCloseSearch={() => setShowMobileSearch(!showMobileSearch)}></MobileSearchInput>}
 

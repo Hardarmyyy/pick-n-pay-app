@@ -12,11 +12,12 @@ import UseLogout from '../Hooks/Auth/Logout/UseLogout';
 import UseSwicthProfile from '../Hooks/Profile/UseSwicthProfile';
 import UseDeleteUser from '../Hooks/Profile/UseDeleteUser';
 
-const Aside = ({showDropDown, showProfile, showCloseProfile, showCloseAside, showCloseDropDown, buyer, seller, user}) => {
+const Aside = ({showDropDown, showProfile, showShop, showCloseProfile, showCloseShop, showCloseAside, showCloseDropDown, buyer, seller, user, category}) => {
 
 const accessToken = useSelector((state) => state.auth?.accessToken);
 const location = useLocation();
-const hideCategory = location.pathname === '/profile' || location.pathname === '/profile/update-profile' || location.pathname === '/profile/update-password';
+const showCategory = location.pathname === '/' || location.pathname === `/category/${category}`;
+const showProfileAction = location.pathname === '/profile';
 
 const {handleMobileLogout} = UseLogout()
 const {handleSwicthProfile} = UseSwicthProfile()
@@ -35,6 +36,11 @@ const handlecloseAsideAndCloseDropDown = () => {
 const handlecloseAsideAndCloseProfile = () => {
     showCloseAside()
     showCloseProfile()
+}
+
+const handlecloseAsideAndCloseShop = () => {
+    showCloseAside()
+    showCloseShop()
 }
 
 const handlecloseAsideAndSwitchProfile = () => {
@@ -68,7 +74,7 @@ return (
 
                     {user && <p className='my-1 flex justify-start pl-11 items-center font-medium'> Hi  <span className='font-bold ml-3'> {user.username} </span> </p> }
 
-                    {!hideCategory && 
+                    {showCategory && 
                         <li>
                             <button type="button" onClick={() => showCloseDropDown()} className="flex items-center w-full p-2 text-base transition duration-75">
                                 <svg className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
@@ -97,7 +103,7 @@ return (
                     }
 
                     <li>
-                        {hideCategory 
+                        {!showCategory 
                             ? 
                             <>
                                 <button type="button" onClick={() => showCloseProfile()} className="flex items-center w-full p-2 text-base transition duration-75">
@@ -117,6 +123,7 @@ return (
                                 {showProfile &&
                                     <ul className="px-9 space-y-2">
                                         <div className='pl-2'>
+                                            <p className='mb-2' onClick={handlecloseAsideAndCloseProfile}><NavLink className={({ isActive }) => isActive ? "" : null} to={`/profile`}>  profile  </NavLink></p>
                                             <p className='mb-2' onClick={handlecloseAsideAndCloseProfile}><NavLink className={({ isActive }) => isActive ? "" : null} to={`/profile/update-profile`}>  Update profile  </NavLink></p>
                                             <p className='mb-2' onClick={handlecloseAsideAndCloseProfile}> <NavLink className={({ isActive }) => isActive ? "" : null} to={`/profile/update-password`}> Update password </NavLink> </p>
                                         </div>
@@ -141,18 +148,54 @@ return (
                         </Link>
                     </li>
 
-                    <li onClick={() => showCloseAside()}>
-                        { seller 
-                            ?
-                                <Link to='/shop' className='flex items-center p-2'> 
-                                    <RxDashboard className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></RxDashboard> 
-                                    <span className='flex-1 ms-3 whitespace-nowrap'> Shop </span>
-                                </Link> 
-                                :
-                                    <Link to='/favourites' className="flex items-center p-2">
-                                        <BsBagHeart className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></BsBagHeart>
-                                        <span className="flex-1 ms-3 whitespace-nowrap"> Wishlist {buyer ? <span> 10 </span> : null} </span>
-                                    </Link>
+                    <li>
+                        {!showCategory && seller &&
+                                <>
+                                    <button type="button" onClick={() => showCloseShop()} className="flex items-center w-full p-2 text-base transition duration-75">
+                                        <RxDashboard className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></RxDashboard> 
+                                        <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap"> Shop </span>
+                                        {showShop
+                                            ?
+                                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5L5 1L9 5"/>
+                                            </svg>
+                                                :
+                                                    <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
+                                                    </svg>
+                                        }
+                                    </button>
+                                    {showShop &&
+                                        <ul className="px-9 space-y-2">
+                                            <div className='pl-2'>
+                                                <p className='mb-2' onClick={handlecloseAsideAndCloseShop}><NavLink className={({ isActive }) => isActive ? "" : null} to={`/shop`}>  store  </NavLink></p>
+                                                <p className='mb-2' onClick={handlecloseAsideAndCloseShop}><NavLink className={({ isActive }) => isActive ? "" : null} to={`/shop/add-new-product`}>  new product  </NavLink></p>
+                                                <p className='mb-2' onClick={handlecloseAsideAndCloseShop}> <NavLink className={({ isActive }) => isActive ? "" : null} to={`/shop/all-products`}> products </NavLink> </p>
+                                            </div>
+                                        </ul>
+                                    }
+                                </>
+                        }
+
+                        {!showCategory && !seller && 
+                            <Link to='/favourites' className="flex items-center p-2">
+                                <BsBagHeart className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></BsBagHeart>
+                                <span className="flex-1 ms-3 whitespace-nowrap"> Wishlist {buyer ? <span> 10 </span> : null} </span>
+                            </Link>
+                        }
+
+                        {showCategory && seller &&
+                            <Link to='/shop' className='flex items-center p-2'> 
+                                <RxDashboard className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></RxDashboard> 
+                                <span className='flex-1 ms-3 whitespace-nowrap'> Shop </span>
+                            </Link> 
+                        }  
+                        
+                        {showCategory && !seller &&
+                            <Link to='/favourites' className="flex items-center p-2">
+                                <BsBagHeart className='flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75'></BsBagHeart>
+                                <span className="flex-1 ms-3 whitespace-nowrap"> Wishlist {buyer ? <span> 10 </span> : null} </span>
+                            </Link>
                         }
                     </li>
 
@@ -195,12 +238,14 @@ return (
                 </ul>
                 
                 <div className='p-3'>
-                    {hideCategory ?
+                    {!showCategory && showProfileAction &&
                         <>
                             <Button margin= '5px 0px' padding='5px 40px' eventHandler={handlecloseAsideAndSwitchProfile}> Switch profile </Button>
                             <Button margin= '8px 0px' padding='5px 34px'  backgroundColor='crimson' eventHandler={handlecloseAsideAndModal}> Delete account </Button>
                         </>
-                        :
+                    }
+
+                    { showCategory &&
                         <div className="sm:px-2 py-4 rounded-lg bg-blue-400">
                             <AsideNewsLetter></AsideNewsLetter>
                         </div>
