@@ -5,7 +5,7 @@ import { DELETEPRODUCT } from '../../Services/productAPi'
 
 const UseDeleteProduct = () => {
 
-const username = useSelector((state) => state.auth?.user?.userName)
+const username = useSelector((state) => state?.user?.user?.username)
 const dispatch = useDispatch()
 
 const handleDeleteproduct = async (id) => {
