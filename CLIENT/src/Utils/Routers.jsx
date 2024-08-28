@@ -1,5 +1,4 @@
 import { lazy, Suspense } from 'react'
-import Modal from '../component/Modal.jsx'
 import Spinner from '../component/Spinner.jsx'
 
 import {createBrowserRouter, createRoutesFromElements, Route} from 'react-router-dom'
@@ -31,7 +30,6 @@ import Dashboard from '../Pages/Shop/Dashboard/Dashboard.jsx'
 import NewProduct from '../Pages/Shop/NewProduct/NewProduct.jsx'
 import Products from '../Pages/Shop/Products/Products.jsx'
 import UpdateProduct from '../Pages/Shop/UpdateProduct/UpdateProduct.jsx'
-import ProductAdded from '../component/ProductAdded.jsx'
 
 const FavouritesLayout = lazy(() => import ('../Pages/Favourites/FavouritesLayout.jsx'))
 const CheckoutLayout = lazy(() => import ('../Pages/Checkout/CheckoutLayout.jsx'))
@@ -81,7 +79,6 @@ export const router = createBrowserRouter(
                         <Route path='add-new-product' element={<NewProduct></NewProduct>}></Route>
                         <Route path='all-products' element={<Products></Products>}></Route>
                         <Route path='edit-product/:id' element={<UpdateProduct></UpdateProduct>}></Route>
-                        <Route path='product-success/:id' element={<ProductAdded></ProductAdded>}></Route>
 
                     </Route>
 
@@ -101,10 +98,10 @@ export const router = createBrowserRouter(
 
             </Route>
 
-        </Route>
+            <Route path='/unauthorized' element={<Unauthorized></Unauthorized>}></Route>
+            <Route path='*' element={<PageNotFound></PageNotFound>}></Route>
 
-        <Route path='/unauthorized' element={<Unauthorized></Unauthorized>}></Route>
-        <Route path='*' element={<PageNotFound></PageNotFound>}></Route>
+        </Route>
 
     </Route> 
 )
