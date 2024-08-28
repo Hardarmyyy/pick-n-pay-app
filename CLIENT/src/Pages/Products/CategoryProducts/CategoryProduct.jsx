@@ -21,7 +21,7 @@ const CategoryProduct = () => {
 
                 <div className='sm:hidden md:hidden tablet:w-1/5 mini:w-36 laptop:w-44 super:w-44 text-my-primary font-Montserrat flex-shrink-0'>
 
-                    <div className="w-full h-auto py-2 bg-gray-200 rounded-md shadow-sm">
+                    <div className="w-full min-h-[100vh] py-2 bg-gray-200 rounded-md shadow-sm">
 
                         <Categories></Categories>
 
