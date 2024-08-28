@@ -13,7 +13,7 @@ const dispatch = useDispatch();
 const cart = useSelector((state) => state?.cart?.cartItems);
 const cartStatus = useSelector((state) => state?.cart?.status);
 
-const username = useSelector((state) => state?.auth?.user?.userName);
+const username = useSelector((state) => state?.user?.user?.username);
 
 useEffect(() => {
     dispatch(FETCHCARTITEMS(username))
