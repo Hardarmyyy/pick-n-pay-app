@@ -89,7 +89,7 @@ const addProductToCart = async (req, res) => {
         }
 
         // check if the product is already existing in the cart 
-        const existingCartProduct = cart.myCart.find((item) => item.product === id)
+        const existingCartProduct = cart.myCart.find((item) => item.product.equals(id))
         if (existingCartProduct) return res.status(404).json({error: "Product is existing in the cart already"})
         
         cart.myCart.push(newCartProduct)
