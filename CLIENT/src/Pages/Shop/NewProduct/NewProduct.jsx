@@ -1,10 +1,10 @@
 import React from 'react'
 import UseNewProduct from '../../../Hooks/Shop/NewProduct/UseNewProduct'
-import ProductForm from './ProductForm.jsx/ProductForm'
+import ProductForm from '../../../component/ProductForm.jsx/ProductForm'
 
 const NewProduct = () => {
 
-const {newProduct, handleChange, error, handleUploadNewProduct} = UseNewProduct()
+const {newProduct, handleChange, error, handleUploadNewProduct, categories, productStatus} = UseNewProduct();
 
 const handleFormSubmit = async (e) => {
     e.preventDefault()
@@ -14,13 +14,15 @@ const handleFormSubmit = async (e) => {
   return (
     <>
 
-    <section className='w-3/4 px-10 py-6 font-Montserrat text-my-primary border rounded-md shadow-sm bg-white mx-auto translate-y-0'>
+    <section className='w-full tablet:w-3/4 mini:w-4/5 laptop:w-4/5 super:w-4/5 mx-auto flex justify-center items-start'>
 
         <ProductForm
             newProduct={newProduct}
             handleChange={handleChange}
             error={error}
             handleFormSubmit={handleFormSubmit}
+            categories={categories}
+            status={productStatus}
         ></ProductForm>
 
     </section>

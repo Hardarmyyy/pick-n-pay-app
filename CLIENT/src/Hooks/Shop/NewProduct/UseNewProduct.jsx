@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import UseValidateProductForm from './UseValidateProductForm'
 import { UPLOADPRODUCT } from '../../../Services/productAPi'
 import {toast} from 'react-toastify'
@@ -9,9 +8,11 @@ import {toast} from 'react-toastify'
 const UseNewProduct = () => {
 
 
-const navigate = useNavigate()
 const dispatch = useDispatch()
-const userId = useSelector((state) => state.auth?.user?.userID)
+const userId = useSelector((state) => state?.user?.user?.userId)
+const categories = useSelector((state) => state.category?.allCategories)
+const productStatus = useSelector((state) => state.product?.status) 
+
 
 //define a state to handle the product information form;
 const [newProduct, setNewProduct] = useState({
@@ -42,17 +43,13 @@ const handleChange = (e) => {
 
 
     setNewProduct((newProduct) => {return {...newProduct, [name]: 
-        name === 'title' 
-            ? value 
-                : name === 'description' 
-                    ? value
-                        : name === 'category' 
-                            ? value
-                            : name === 'price' 
-                                ? formattedValue
-                                    : name === 'countInStock' 
-                                        ? value.replace(/[^0-9]/g, '')
-                                            : value.replace(/\s/g, "")
+        name === 'price' 
+            ? formattedValue
+                : name === 'countInStock' 
+                    ? value.replace(/[^0-9]/g, '')
+                        : name === 'brand'
+                            ? value.replace(/\s/g, "")
+                                : value
     }})
 
     if (name === 'title') {
@@ -115,9 +112,6 @@ const handleUploadNewProduct = async () => {
                     brand: '',
                     countInStock: ''
                 })
-                setTimeout(() => {
-                    navigate(`/shop/product-success/${newProduct._id}`)
-                }, 500)
             }
         })
         .catch((err) => {
@@ -135,7 +129,7 @@ useEffect(() => {
     handleCanUpload(newProduct)
 }, [newProduct])  
 
-  return { newProduct, handleChange, error, handleUploadNewProduct}
+  return { newProduct, handleChange, error, handleUploadNewProduct, categories, productStatus}
 }
 
 export default UseNewProduct
