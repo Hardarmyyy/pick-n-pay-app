@@ -58,7 +58,7 @@ const allProducts =  async (req, res) => {
             },
             {
                 $sort: {
-                    createdAt: -1
+                    updatedAt: -1
                 }
             }
         ])
@@ -71,7 +71,10 @@ const allProducts =  async (req, res) => {
             return {sellerName: seller.username, ...p, createdAt: createdTime, updatedAt: updatedTime}
         }))
 
-        if (!products.length) return res.status(404).json({error: 'The product list is empty'})
+        if (!allProducts.length) return res.status(200).json({
+            success: "The product list is empty", 
+            products: allProducts
+        })
 
         res.status(200).json({
             success: 'All products fetched successfully', 
@@ -115,7 +118,7 @@ const sellerStoreProducts =  async (req, res) => {
             },
             {
                 $sort: {
-                    createdAt: -1
+                    updatedAt: -1
                 }
             }
         ])
@@ -169,7 +172,7 @@ const getProductsByCategory = async (req, res) => {
             },
             {
                 $sort: {
-                    createdAt: -1
+                    updatedAt: -1
                 }
             }
         ])
@@ -235,7 +238,7 @@ const singleProduct = async (req, res) => {
 
         let existingProduct = sellerProducts.find((item) => item.productId.equals(id))
 
-        if (!existingProduct) return res.status(400).json({ 
+        if (!existingProduct) return res.status(404).json({ 
             error: "Product not found in the user (seller) store!",
             product: product,
             sellerStoreProducts: sellerProducts
