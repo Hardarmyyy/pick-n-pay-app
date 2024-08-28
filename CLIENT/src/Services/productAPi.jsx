@@ -3,20 +3,19 @@ import { setupInterceptors } from "../Utils/Axios";
 const axiosInstance = setupInterceptors();
 
 
-
-const STOREPRODUCTS = createAsyncThunk('products/store-products', async (userId) => { 
+const STOREPRODUCTS = createAsyncThunk('products/store-products', async (userId, { rejectWithValue }) => { 
     try {
         const response = await axiosInstance.get(`/store-all-products/${userId}`)
         return response.data
     }
     catch (err) {
-        return err.message
+        return rejectWithValue(err.response.data);
     }
 }) 
 
 const SINGLEPRODUCT = createAsyncThunk('products/single-product', async ({id, username}) => { 
     try {
-        const response = await axiosInstance.get(`/product/${id}?username=${username}`)
+        const response = await axiosInstance.get(`/product/${id}?username=${username}`) 
         return response.data
     }
     catch (err) {
@@ -30,9 +29,6 @@ const UPLOADPRODUCT = createAsyncThunk('products/upload-product', async ({userId
         return response.data
     }
     catch (err) {
-        if (!err.response) {
-            return rejectWithValue({ error: "Unable to connect to the server" });
-        }
         return rejectWithValue(err.response.data);
     }
 }) 
@@ -43,9 +39,6 @@ const UPDATEPRODUCT = createAsyncThunk('products/update-product', async ({id, us
         return response.data
     }
     catch (err) {
-        if (!err.response) {
-            return rejectWithValue({ error: "Unable to connect to the server" });
-        }
         return rejectWithValue(err.response.data);
     }
 }) 
@@ -56,9 +49,6 @@ const DELETEPRODUCT = createAsyncThunk('products/delete-product', async ({id, us
         return response.data
     }
     catch (err) {
-        if (!err.response) {
-            return rejectWithValue({ error: "Unable to connect to the server" });
-        }
         return rejectWithValue(err.response.data);
     }
 }) 

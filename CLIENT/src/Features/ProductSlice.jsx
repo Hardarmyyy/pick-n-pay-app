@@ -1,5 +1,5 @@
 import { createSlice, isPending, isFulfilled, isRejected} from "@reduxjs/toolkit";
-import { STOREPRODUCTS, UPLOADPRODUCT, UPDATEPRODUCT, DELETEPRODUCT } from "../Services/productAPi";
+import { STOREPRODUCTS, UPLOADPRODUCT, UPDATEPRODUCT, DELETEPRODUCT, SINGLEPRODUCT } from "../Services/productAPi";
 import { LOGOUT } from "../Services/authApi";
 import {toast} from 'react-toastify'
 
@@ -7,27 +7,29 @@ import {toast} from 'react-toastify'
 
 const initialState = {
     status: 'idle',
-    store: [],
+    store: null,
+    selectedProduct: null
 }
 
 export const productSlice = createSlice({ 
     name:'product',
     initialState,
     reducers: {
-        
+
     },
     extraReducers (builder) {
         builder
                 .addCase(STOREPRODUCTS.fulfilled, (state, action) => {
                     const {sellersStore} = action.payload
-                    if (sellersStore) {
-                        state.store = [...sellersStore]
-                    }
+                    state.store = sellersStore
+                })
+                .addCase(SINGLEPRODUCT.fulfilled, (state, action) => {
+                    const {singleProduct} = action.payload;
+                    state.selectedProduct = singleProduct
                 })
                 .addCase(UPLOADPRODUCT.fulfilled, (state, action) => {
                     const {success, newProduct} = action.payload
-                    const product = {productId: newProduct._id, title: newProduct.title, price:newProduct.price, description: newProduct.description, category: newProduct.category, brand: newProduct.brand, countInStock: newProduct.countInStock}
-
+                    const product = {productId: newProduct._id, ...newProduct}
                     state.store = [product, ...state.store]
                     toast.success(success, {
                         toastStyle: { background: 'green', color: 'white' }
@@ -35,10 +37,10 @@ export const productSlice = createSlice({
                 })
                 .addCase(UPDATEPRODUCT.fulfilled, (state, action) => {
                     const {success, updatedProduct} = action.payload
-                    const currentProduct = {productId: updatedProduct._id, title: updatedProduct.title, price:updatedProduct.price, description: updatedProduct.description, category: updatedProduct.category, brand: updatedProduct.brand, countInStock: updatedProduct.countInStock}
+                    const currentProduct = {productId: updatedProduct._id, ...updatedProduct}
 
-                    const updateStore = state.store.filter((product) => product.productId !== currentProduct.productId)
-                    state.store = [currentProduct, ...updateStore]
+                    const updatedStore = state.store.filter((product) => product.productId !== currentProduct.productId)
+                    state.store = [currentProduct, ...updatedStore]
                     toast.success(success, {
                         toastStyle: { background: 'green', color: 'white' }
                     })
@@ -58,29 +60,34 @@ export const productSlice = createSlice({
                     }
                 })
                 .addMatcher(
-                    isFulfilled(STOREPRODUCTS, UPLOADPRODUCT, UPDATEPRODUCT, DELETEPRODUCT, LOGOUT),
+                    isFulfilled(STOREPRODUCTS, UPLOADPRODUCT, UPDATEPRODUCT, DELETEPRODUCT, SINGLEPRODUCT, LOGOUT),
                     (state) => {
                     state.status = 'success'
                 }
                 )
                 .addMatcher(
-                    isPending(STOREPRODUCTS, UPLOADPRODUCT, UPDATEPRODUCT),
+                    isPending(UPLOADPRODUCT, UPDATEPRODUCT, DELETEPRODUCT),
                     (state) => {
                     state.status = 'Loading.......';
                 }
                 )
                 .addMatcher(
-                    isRejected(STOREPRODUCTS, UPLOADPRODUCT, UPDATEPRODUCT, DELETEPRODUCT, LOGOUT),
+                    isPending(STOREPRODUCTS, SINGLEPRODUCT),
+                    (state) => {
+                    state.status = 'Loading...';
+                }
+                )
+                .addMatcher(
+                    isRejected(STOREPRODUCTS, UPLOADPRODUCT, UPDATEPRODUCT, DELETEPRODUCT, SINGLEPRODUCT, LOGOUT),
                     (state, action) => {
                         state.status = 'failed';
-                        const message = action.payload.error
-                        toast.error(message, {
+                        const err = action.payload.error
+                        toast.error( err, {
                             toastStyle: { background: 'red', color: 'white' }
                         })
                 }
                 )
     }
 })
-
 
 export default productSlice.reducer
