@@ -1,4 +1,4 @@
- # [pickNpay](http://3.89.247.229) Ecommerce website and dashboard Documentation
+ # [pickNpay](https://www.picknpay.twilightparadox.com) Ecommerce website and dashboard Documentation
  
    -  Welcome to the documentation for pickNpay an open source e-commerce built using the MERN stack (MongoDB, Express, React, Node.js) with a Vite frontend project. This document will guide you through the key features and functionalities of the application.
 
